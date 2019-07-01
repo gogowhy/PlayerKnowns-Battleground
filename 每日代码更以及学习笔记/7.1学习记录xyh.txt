@@ -1,0 +1,12 @@
+前端界面排版视图样式。
+React Native：
+	原生环境配置；
+	Flexbox布局（flexDirection、alignItems和justifyContent样式属性）；
+	触摸事件（Touchable 系列组件）；
+	滚动视图（ScrollView一个通用的可滚动的容器）；
+	组件接口；
+	静态图片资源（require语法）；
+	两个互补的动画系统：用于创建精细的交互控制的动画Animated和用于全局的布局动画LayoutAnimation；
+	手势响应系统（TouchableHighlight与Touchable系列组件）；
+
+搜索了一些可能需要的资源（图片）。
