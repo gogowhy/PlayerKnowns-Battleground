@@ -4,21 +4,25 @@ import {
     StyleSheet,
     TextInput,
     View,
-    Text,
-    Alert
+    Text
 } from 'react-native';
 
 import axios from 'axios';
-import { ensureExpectedIsNonNegativeInteger } from 'jest-matcher-utils';
 
-
-class CheckOut extends Comment {
+/* 组件 : CheckOut
+-- 作用 : 在前端检测各项填写规范
+   具体检测内容 : 1.两次密码是否一致
+                 2.邮箱格式
+                 3.手机号格式
+*/
+class CheckOut extends Component {
+    /*
     constructor(props){
         super(props);
         this.state = {
-            pw : true,
-            em : true,
-            ph : true
+            pw : true, //密码提示 ， true则表示格式正确 ， 不显示在屏幕上 ， 下同
+            em : true, //邮箱提示
+            ph : true, //手机号提示
         }
     }
     
@@ -26,49 +30,52 @@ class CheckOut extends Comment {
         var expr_email = /^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})$/;
         var expr_phone = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0-9]{1})|(15[0-3]{1})|(15[4-9]{1})|(18[0-9]{1})|(199))+\d{8})$/;
         this.setState({
-            pw : !this.props.pw1.indexOf(this.props.pw2),
-            em : expr_email.test(this.props.email),
-            ph : expr_phone.test(this.props.phone)
+            pw : !this.props.pw1.indexOf(this.props.pw2), //检测密码
+            em : expr_email.test(this.props.email) || (this.props.email === ""), //检测邮箱
+            ph : expr_phone.test(this.props.phone) || (this.props.phone === "") //检测手机号
         })
     }
+    */
     render(){
 
-        var rows=[];
-        if(!pw)
-        rows.push(
-            <TouchableOpacity
-                    style={styles.button}>
-                    <Text
-                        style={styles.btText}>两次密码不一致</Text>
-                </TouchableOpacity>
-        )
+        var expr_email = /^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})$/;
+        var expr_phone = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0-9]{1})|(15[0-3]{1})|(15[4-9]{1})|(18[0-9]{1})|(199))+\d{8})$/;
         
-        if(!em)
-        rows.push(
-            <TouchableOpacity
-                    style={styles.button}>
-                    <Text
-                        style={styles.btText}>邮箱地址不合法</Text>
-                </TouchableOpacity>
-        )
+        var pw = !this.props.pw1.indexOf(this.props.pw2); //密码检测 ， true则表示格式正确 、不显示在屏幕上 ， 下同
+        var em = expr_email.test(this.props.email) || (this.props.email === ""); //邮箱检测
+        var ph = expr_phone.test(this.props.phone) || (this.props.phone === ""); //手机号检测
 
-        if(!ph)
-        rows.push(
-            <TouchableOpacity
-                    style={styles.button}>
-                    <Text
-                        style={styles.btText}>手机号不合法</Text>
-                </TouchableOpacity>
-        )
+        var password_line = pw ? "" : "两次密码不一致" ;
+        var email_line = em ? "" : "邮箱地址不合法" ;
+        var phone_line = ph ? "" : "手机号格式不合法" ;
+        
 
         return(
-            <View>{rows}</View>
+            <View>
+                <TouchableOpacity
+                        style={styles.button}>
+                        <Text
+                            style={styles.btText}>{this.props.pw2} {password_line}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                        style={styles.button}>
+                        <Text
+                            style={styles.btText}>{this.props.email} {email_line}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                        style={styles.button}>
+                        <Text
+                            style={styles.btText}>{this.props.phone} {phone_line}</Text>
+                </TouchableOpacity>
+            </View>
         )
 
     }
 }
-
-class Register extends Component {
+/* 组件 : Register
+-- 作用 : 收集用户信息，并提交至后端
+*/
+export default class Register extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -84,8 +91,10 @@ class Register extends Component {
         this.onEmailChanged = this.onEmailChanged.bind(this);
         this.onTelephoneChanged = this.onTelephoneChanged.bind(this);
         this.register = this.register.bind(this);
+        this.gobackLogin = this.gobackLogin.bind(this);
     }
 
+    /* 修改state(用户名、密码等) 下同 */
     onUsernameChanged( n ){
         this.setState(
             { username : n }
@@ -115,11 +124,13 @@ class Register extends Component {
             { telephone : n }
         )
     }
+    /* 以上是修改state(用户名、密码等) */
 
+    /* 注册 ： 向后端发送注册信息 */
     register(){
         const _this = this;
 
-        const url = "http://local:8080/Register";
+        const url = "http://local:8080/mydb/Register";
         
         data = {
             username : _this.state.username,
@@ -142,11 +153,13 @@ class Register extends Component {
             });
     }
 
+    /* 返回登录界面 */
+    gobackLogin(){
+        const { goBack } = this.props.navigation ;
+        goBack();
+    }
+
     render() {
-
-        var B = !this.state.password.indexOf(this.state.confirmpassword) ? "" : "两次密码不一致";
-
-        
 
         return (
             <TouchableOpacity
@@ -156,8 +169,8 @@ class Register extends Component {
                     style={styles.inputBox}>
                     <TextInput
                         style={styles.input}
-                        name="username"
-                        onChangeText = {this.onUsernameChanged}
+                        name="username" 
+                        onChangeText = {this.onUsernameChanged} //-----------该属性需要保留！-------------
                         autoCapitalize='none'  //设置首字母不自动大写
                         underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
                         placeholderTextColor={'#ccc'}  //设置占位符颜色
@@ -169,7 +182,7 @@ class Register extends Component {
                     <TextInput
                         style={styles.input}
                         name="password"
-                        onChangeText = {this.onPasswordChanged}
+                        onChangeText = {this.onPasswordChanged} //-----------该属性需要保留！-------------
                         secureTextEntry={true}  //设置为密码输入框
                         autoCapitalize='none'  //设置首字母不自动大写
                         underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
@@ -182,7 +195,7 @@ class Register extends Component {
                     <TextInput
                         style={styles.input}
                         name="confirmpassword"
-                        onChangeText = {this.onConfirmPasswordChanged}
+                        onChangeText = {this.onConfirmPasswordChanged} //-----------该属性需要保留！-------------
                         secureTextEntry={true}  //设置为密码输入框
                         autoCapitalize='none'  //设置首字母不自动大写
                         underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
@@ -195,7 +208,7 @@ class Register extends Component {
                     <TextInput
                         style={styles.input}
                         name="email"
-                        onChangeText = {this.onEmailChanged}
+                        onChangeText = {this.onEmailChanged} //-----------该属性需要保留！-------------
                         autoCapitalize='none'  //设置首字母不自动大写
                         underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
                         placeholderTextColor={'#ccc'}  //设置占位符颜色
@@ -207,24 +220,24 @@ class Register extends Component {
                     <TextInput
                         style={styles.input}
                         name="telephone"
-                        onChangeText = {this.onTelephoneChanged}
-                        secureTextEntry={true}  //设置为密码输入框
+                        onChangeText = {this.onTelephoneChanged} //-----------该属性需要保留！-------------
                         autoCapitalize='none'  //设置首字母不自动大写
                         underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
                         placeholderTextColor={'#ccc'}  //设置占位符颜色
                         placeholder={'电话号码'}  //设置占位符
                     />
                 </View>
-                <TouchableOpacity onPress = {this.register}
+                <TouchableOpacity 
+                    onPress = {this.register} //-----------该属性需要保留！-------------
                     style={styles.button}>
                     <Text
                         style={styles.btText}>注册</Text>
                 </TouchableOpacity>
-                
-                <TouchableOpacity onPress = {this.register}
+                <TouchableOpacity 
+                    onPress = {this.gobackLogin} //-----------该属性需要保留！-------------
                     style={styles.button}>
                     <Text
-                        style={styles.btText}>{B}</Text>
+                        style={styles.btText}>返回登录界面</Text>
                 </TouchableOpacity>
                 <CheckOut pw1={this.state.password} pw2={this.state.confirmpassword} email={this.state.email} phone={this.state.telephone} />
             </TouchableOpacity>
@@ -232,14 +245,6 @@ class Register extends Component {
     }
 
 
-}
-
-export default class RegisterScene extends Component {
-    render() {
-        return (
-            <Register />
-        );
-    }
 }
 
 const styles = StyleSheet.create({
