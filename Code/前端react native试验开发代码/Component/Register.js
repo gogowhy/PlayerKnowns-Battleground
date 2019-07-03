@@ -4,7 +4,8 @@ import {
     StyleSheet,
     TextInput,
     View,
-    Text
+    Text,
+    ImageBackground
 } from 'react-native';
 
 import axios from 'axios';
@@ -45,27 +46,27 @@ class CheckOut extends Component {
         var em = expr_email.test(this.props.email) || (this.props.email === ""); //邮箱检测
         var ph = expr_phone.test(this.props.phone) || (this.props.phone === ""); //手机号检测
 
-        var password_line = pw ? "" : "两次密码不一致" ;
-        var email_line = em ? "" : "邮箱地址不合法" ;
-        var phone_line = ph ? "" : "手机号格式不合法" ;
+        var password_line = pw ? "" : "!两次密码不一致" ;
+        var email_line = em ? "" : "!邮箱地址不合法" ;
+        var phone_line = ph ? "" : "!手机号格式不合法" ;
         
 
         return(
             <View>
                 <TouchableOpacity
-                        style={styles.button}>
+                        style={styles.CheckOut}>
                         <Text
-                            style={styles.btText}>{this.props.pw2} {password_line}</Text>
+                            style={styles.CheckOutInfo}> {password_line}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                        style={styles.button}>
+                        style={styles.CheckOut}>
                         <Text
-                            style={styles.btText}>{this.props.email} {email_line}</Text>
+                            style={styles.CheckOutInfo}>{email_line}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                        style={styles.button}>
+                        style={styles.CheckOut}>
                         <Text
-                            style={styles.btText}>{this.props.phone} {phone_line}</Text>
+                            style={styles.CheckOutInfo}>{phone_line}</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -94,7 +95,6 @@ export default class Register extends Component {
         this.gobackLogin = this.gobackLogin.bind(this);
     }
 
-    /* 修改state(用户名、密码等) 下同 */
     onUsernameChanged( n ){
         this.setState(
             { username : n }
@@ -158,130 +158,182 @@ export default class Register extends Component {
         goBack();
     }
 
-    
 
     render() {
 
         return (
-            <TouchableOpacity
-                activeOpacity={1.0}  //设置背景被点击时，透明度不变
-                style={styles.container}>
-                <View
-                    style={styles.inputBox}>
-                    <TextInput
-                        style={styles.input}
-                        name="username" 
-                        onChangeText = {this.onUsernameChanged} //-----------该属性需要保留！-------------
-                        autoCapitalize='none'  //设置首字母不自动大写
-                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
-                        placeholderTextColor={'#ccc'}  //设置占位符颜色
-                        placeholder={'用户名'}  //设置占位符
-                    />
-                </View>
-                <View
-                    style={styles.inputBox}>
-                    <TextInput
-                        style={styles.input}
-                        name="password"
-                        onChangeText = {this.onPasswordChanged} //-----------该属性需要保留！-------------
-                        secureTextEntry={true}  //设置为密码输入框
-                        autoCapitalize='none'  //设置首字母不自动大写
-                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
-                        placeholderTextColor={'#ccc'}  //设置占位符颜色
-                        placeholder={'密码'}  //设置占位符
-                    />
-                </View>
-                <View
-                    style={styles.inputBox}>
-                    <TextInput
-                        style={styles.input}
-                        name="confirmpassword"
-                        onChangeText = {this.onConfirmPasswordChanged} //-----------该属性需要保留！-------------
-                        secureTextEntry={true}  //设置为密码输入框
-                        autoCapitalize='none'  //设置首字母不自动大写
-                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
-                        placeholderTextColor={'#ccc'}  //设置占位符颜色
-                        placeholder={'确认密码'}  //设置占位符
-                    />
-                </View>
-                <View
-                    style={styles.inputBox}>
-                    <TextInput
-                        style={styles.input}
-                        name="email"
-                        onChangeText = {this.onEmailChanged} //-----------该属性需要保留！-------------
-                        autoCapitalize='none'  //设置首字母不自动大写
-                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
-                        placeholderTextColor={'#ccc'}  //设置占位符颜色
-                        placeholder={'电子邮箱'}  //设置占位符
-                    />
-                </View>
-                <View
-                    style={styles.inputBox}>
-                    <TextInput
-                        style={styles.input}
-                        name="telephone"
-                        onChangeText = {this.onTelephoneChanged} //-----------该属性需要保留！-------------
-                        autoCapitalize='none'  //设置首字母不自动大写
-                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
-                        placeholderTextColor={'#ccc'}  //设置占位符颜色
-                        placeholder={'电话号码'}  //设置占位符
-                    />
-                </View>
-                <TouchableOpacity 
-                    onPress = {this.register} //-----------该属性需要保留！-------------
-                    style={styles.button}>
-                    <Text
-                        style={styles.btText}>注册</Text>
+            <ImageBackground style={styles.background}
+                source={require('../src/img/bg1.png')}>
+                <TouchableOpacity
+                    activeOpacity={1.0}  //设置背景被点击时，透明度不变
+                    style={styles.container}>
+                    <View style={styles.container}>
+                        <View style={styles.container_rev}>
+                            <CheckOut pw1='' pw2='' email='' phone='' />
+                            <View style={styles.container}>
+                                <View
+                                    style={styles.inputBox}>
+                                    <TextInput
+                                        style={styles.input}
+                                        name="username"
+                                        onChangeText = {this.onUsernameChanged} //-----------该属性需要保留！-------------
+                                        autoCapitalize='none'  //设置首字母不自动大写
+                                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
+                                        placeholderTextColor={'#ccc'}  //设置占位符颜色
+                                        placeholder={'用户名'}  //设置占位符
+                                    />
+                                </View>
+                                <View
+                                    style={styles.inputBox}>
+                                    <TextInput
+                                        style={styles.input}
+                                        name="password"
+                                        onChangeText = {this.onPasswordChanged} //-----------该属性需要保留！-------------
+                                        secureTextEntry={true}  //设置为密码输入框
+                                        autoCapitalize='none'  //设置首字母不自动大写
+                                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
+                                        placeholderTextColor={'#ccc'}  //设置占位符颜色
+                                        placeholder={'密码'}  //设置占位符
+                                    />
+                                </View>
+                                <View
+                                    style={styles.inputBox}>
+                                    <TextInput
+                                        style={styles.input}
+                                        name="confirmpassword"
+                                        onChangeText = {this.onConfirmPasswordChanged} //-----------该属性需要保留！-------------
+                                        secureTextEntry={true}  //设置为密码输入框
+                                        autoCapitalize='none'  //设置首字母不自动大写
+                                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
+                                        placeholderTextColor={'#ccc'}  //设置占位符颜色
+                                        placeholder={'确认密码'}  //设置占位符
+                                    />
+                                </View>
+                                <View
+                                    style={styles.inputBox}>
+                                    <TextInput
+                                        style={styles.input}
+                                        name="email"
+                                        onChangeText = {this.onEmailChanged} //-----------该属性需要保留！-------------
+                                        autoCapitalize='none'  //设置首字母不自动大写
+                                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
+                                        placeholderTextColor={'#ccc'}  //设置占位符颜色
+                                        placeholder={'电子邮箱'}  //设置占位符
+                                    />
+                                </View>
+                                <View
+                                    style={styles.inputBox}>
+                                    <TextInput
+                                        style={styles.input}
+                                        name="telephone"
+                                        onChangeText = {this.onTelephoneChanged} //-----------该属性需要保留！-------------
+                                        autoCapitalize='none'  //设置首字母不自动大写
+                                        underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
+                                        placeholderTextColor={'#ccc'}  //设置占位符颜色
+                                        placeholder={'电话号码'}  //设置占位符
+                                    />
+                                </View>
+                            </View>
+                            <CheckOut pw1={this.state.password} pw2={this.state.confirmpassword} email={this.state.email} phone={this.state.telephone} />
+                        </View>
+                        <TouchableOpacity
+                            onPress = {this.register} //-----------该属性需要保留！-------------
+                            style={styles.button}>
+                            <Text
+                                style={styles.btText}>注册</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress = {this.gobackLogin} //-----------该属性需要保留！-------------
+                            style={styles.underline}>
+                            <Text
+                                style={styles.ulText}>返回登录</Text>
+                        </TouchableOpacity>
+                    </View>
                 </TouchableOpacity>
-                <TouchableOpacity 
-                    onPress = {this.gobackLogin} //-----------该属性需要保留！-------------
-                    style={styles.button}>
-                    <Text
-                        style={styles.btText}>返回登录界面</Text>
-                </TouchableOpacity>
-                <CheckOut pw1={this.state.password} pw2={this.state.confirmpassword} email={this.state.email} phone={this.state.telephone} />
-            </TouchableOpacity>
+            </ImageBackground>
         );
     }
-
-
 }
+
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        //backgroundColor: '#F5FCFF',
+    },
+    container_rev: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        height: null,
+        width: null,
+        zIndex: -1,
     },
     input: {
-        width: 200,
-        height: 40,
-        fontSize: 20,
-        color: '#fff',//输入框输入的文本为白色
+        width: 180,
+        height: 50,
+        fontSize: 18,
+        color: '#000',//输入框输入的文本为黑色
     },
     inputBox: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 280,
-        height: 50,
+        width: 180,
+        height: 40,
         borderRadius: 8,
-        backgroundColor: '#66f',
+        backgroundColor: '#FFFFF0',
         marginBottom: 8,
     },
     button: {
-        height: 50,
-        width: 280,
+        height: 40,
+        width: 100,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
-        backgroundColor: '#66f',
-        marginTop: 20,
+        backgroundColor: '#FF4500',
+        marginTop: 10,
+        marginBottom: 10,
     },
     btText: {
         color: '#fff',
         fontSize: 20,
+        fontWeight: 'bold',
+    },
+    CheckOut: {
+        flexDirection: 'row',
+        height: 40,
+        width: 180,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 8,
+        backgroundColor: 'transparent',
+        marginBottom: 4,
+    },
+    CheckOutInfo: {
+        color: '#FF4500',
+        fontSize: 15,
+        //marginBottom: 4,
+    },
+    underline: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    ulText: {
+        textDecorationLine:'underline',
+        color: '#0000CD',
+        fontWeight: 'bold',
+        fontSize: 18,
     }
 });
