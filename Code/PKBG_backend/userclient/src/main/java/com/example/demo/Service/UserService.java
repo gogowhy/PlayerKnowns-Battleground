@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 public interface UserService {
 public String register(HttpServletRequest request);
-
+public String login(HttpServletRequest request);
+public String resetPass(HttpServletRequest request);
 
 }

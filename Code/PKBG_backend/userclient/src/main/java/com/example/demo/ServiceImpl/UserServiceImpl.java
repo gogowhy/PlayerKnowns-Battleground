@@ -17,4 +17,16 @@ public class UserServiceImpl implements UserService {
     {
         return userDao.register(request);
     }
+
+    @Override
+    public  String login(HttpServletRequest request)
+    {
+        return  userDao.login(request);
+    }
+
+    @Override
+    public String resetPass(HttpServletRequest request)
+    {
+        return userDao.resetPass(request);
+    }
 }

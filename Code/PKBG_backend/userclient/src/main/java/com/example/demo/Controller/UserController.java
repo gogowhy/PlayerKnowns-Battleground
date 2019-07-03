@@ -22,4 +22,20 @@ public class UserController {
     {
         return userService.register(request);
     }
+
+    @RequestMapping("/login")
+    @ResponseBody
+    public String login(HttpServletRequest request) { return userService.login(request); }
+
+    @RequestMapping("/resetPass")
+    @ResponseBody
+    public String resetPass(HttpServletRequest request) { return userService.resetPass(request); }
+
+    @RequestMapping("/test")
+    @ResponseBody
+    public String test()
+    {
+        return "hi";
+    }
+
 }
