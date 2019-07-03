@@ -134,10 +134,9 @@ export default class Register extends Component {
         
         data = {
             username : _this.state.username,
-            password : _this.state.password,
-            confirmpassword : _this.state.confirmpassword,
-            email : _this.state.email,
-            telephone : _this.state.telephone
+            userpassword : _this.state.password,
+            useremail : _this.state.email,
+            usertele : _this.state.telephone
         }
         axios.post( url , data )
             .then(function (response) {
@@ -158,6 +157,8 @@ export default class Register extends Component {
         const { goBack } = this.props.navigation ;
         goBack();
     }
+
+    
 
     render() {
 
