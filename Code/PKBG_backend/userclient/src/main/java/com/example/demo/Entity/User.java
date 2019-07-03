@@ -15,6 +15,10 @@ public class User implements Serializable {
     @Column(name = "username")
     private String username;
 
+    @Column(name="userpassword")
+    private String userpassword;
+
+
     @Column(name = "useremail")
     private String useremail;
 
@@ -73,5 +77,13 @@ public class User implements Serializable {
 
     public void setCoins(Integer coins) {
         this.coins = coins;
+    }
+
+    public String getUserpassword() {
+        return userpassword;
+    }
+
+    public void setUserpassword(String userpassword) {
+        this.userpassword = userpassword;
     }
 }
