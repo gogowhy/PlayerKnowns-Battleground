@@ -14,8 +14,8 @@ public class Room {
     @Column(name = "RoomNumber")
    public Integer roomnumber;
 
-    @Column(name = "HostId")
-    public Integer hostid;
+    @Column(name = "HostName")
+    public String hostname;
 
     @Column(name="PlayerNumber")
     public Integer playernumber;
@@ -27,8 +27,62 @@ public class Room {
     public List<String>  playerlist;
 
 
+    @Column(name = "RoomPassword")
+    public String roompassword;
 
+    public Integer getRoomid() {
+        return roomid;
+    }
 
+    public void setRoomid(Integer roomid) {
+        this.roomid = roomid;
+    }
 
+    public Integer getRoomnumber() {
+        return roomnumber;
+    }
 
+    public void setRoomnumber(Integer roomnumber) {
+        this.roomnumber = roomnumber;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public Integer getPlayernumber() {
+        return playernumber;
+    }
+
+    public void setPlayernumber(Integer playernumber) {
+        this.playernumber = playernumber;
+    }
+
+    public Integer getGamestatus() {
+        return gamestatus;
+    }
+
+    public void setGamestatus(Integer gamestatus) {
+        this.gamestatus = gamestatus;
+    }
+
+    public List<String> getPlayerlist() {
+        return playerlist;
+    }
+
+    public void setPlayerlist(List<String> playerlist) {
+        this.playerlist = playerlist;
+    }
+
+    public String getRoompassword() {
+        return roompassword;
+    }
+
+    public void setRoompassword(String roompassword) {
+        this.roompassword = roompassword;
+    }
 }
