@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import Orientation from 'react-native-orientation';
-import { Button } from 'antd-mobile-rn';
-import End from './Component/End.js';
 import Home from './Component/Home.js';
 import RootStack from './Navigator/StackNavigator.js'
 

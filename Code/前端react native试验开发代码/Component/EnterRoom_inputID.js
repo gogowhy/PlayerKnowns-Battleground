@@ -15,24 +15,23 @@ import axios from 'axios';
 /* 组件 : Login
 -- 作用 : 收集用户登录信息，并提交至后端
 */
-export default class Login extends Component {
+export default class EnterRoom_inputID extends Component {
     constructor(props){
         super(props);
         this.state = {
-            username : '', //用户名
+            RoomID : '', //房间ID
             password : '', //密码
         }
-        this.onUsernameChanged = this.onUsernameChanged.bind(this);
+        this.onRoomIDChanged = this.onRoomIDChanged.bind(this);
         this.onPasswordChanged = this.onPasswordChanged.bind(this);
-        this.forgetPW = this.forgetPW.bind(this);
-        this.login = this.login.bind(this);
-        this.gotoRegister = this.gotoRegister.bind(this);
+        this.enterRoom = this.enterRoom.bind(this);
+        this.gobackMainPage = this.gobackMainPage.bind(this);
     }
 
-    /* 修改state(用户名、密码等) 下同 */
-    onUsernameChanged( n ){
+    /* 修改state(房间ID、密码等) 下同 */
+    onRoomIDChanged( n ){
         this.setState(
-            { username : n }
+            { RoomID : n }
         )
     }
 
@@ -41,19 +40,19 @@ export default class Login extends Component {
             { password : n }
         )
     }
-    /* 以上是修改state(用户名、密码等) */
+    /* 以上是修改state(房间ID、密码等) */
 
-    /* 登录 ： 向后端发送用户名和密码 */
-    login(){
+    /* 登录 ： 向后端发送房间ID和密码 */
+    enterRoom(){
         const { navigate } = this.props.navigation ; 
-        navigate('MainPage');
+        navigate('Room',{ id : this.state.RoomID , password : this.state.password });
         /*
         const _this = this;
 
         const url = "http://local:8080/Login";
 
         data = {
-            username : _this.state.username,
+            RoomID : _this.state.RoomID,
             userpassword : _this.state.password,
         }
         axios.post( url , data )
@@ -71,33 +70,9 @@ export default class Login extends Component {
         */
     }
 
-
-    /* 忘记密码 ： 向后端发送用户名，根据此用户名绑定的邮箱账号发送邮件重置密码 */
-    forgetPW(){
-        const _this = this;
-
-        const url = "http://local:8080/forgetPassword";
-
-        data = {
-            username : _this.state.username,
-        }
-        axios.post( url , data )
-            .then(function (response) {
-                // handle success
-                console.log(response);
-            })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
-    }
-
-    gotoRegister(){
-        const { navigate } = this.props.navigation ;
-        navigate('Register');
+    gobackMainPage(){
+        const { goBack } = this.props.navigation ;
+        goBack();
     }
 
     render() {
@@ -113,12 +88,12 @@ export default class Login extends Component {
                             style={styles.inputBox}>
                             <TextInput
                                 style={styles.input}
-                                name="username"
-                                onChangeText = {this.onUsernameChanged} //-----------该属性需要保留！-------------
+                                name="RoomID"
+                                onChangeText = {this.onRoomIDChanged} //-----------该属性需要保留！-------------
                                 autoCapitalize='none'  //设置首字母不自动大写
                                 underlineColorAndroid={'transparent'}  //将下划线颜色改为透明
                                 placeholderTextColor={'#ccc'}  //设置占位符颜色
-                                placeholder={'用户名'}  //设置占位符
+                                placeholder={'房间ID'}  //设置占位符
                             />
                         </View>
                         <View
@@ -135,25 +110,17 @@ export default class Login extends Component {
                             />
                         </View>
                         <TouchableOpacity
-                            onPress = {this.login} //-----------该属性需要保留！-------------
+                            onPress = {this.enterRoom} //-----------该属性需要保留！-------------
                             style={styles.button}>
                             <Text
-                                style={styles.btText}>登录</Text>
+                                style={styles.btText}>进入房间</Text>
                         </TouchableOpacity>
-                        <View style={styles.underline}>
-                            <TouchableOpacity
-                                onPress = {this.forgetPW} //-----------该属性需要保留！-------------
-                                >
-                                <Text
-                                    style={styles.ulText}>忘记密码</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress = {this.gotoRegister} //-----------该属性需要保留！-------------
-                                >
-                                <Text
-                                    style={styles.ulText}>没有账号?去注册</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity
+                            onPress = {this.gobackMainPage} //-----------该属性需要保留！-------------
+                            style={styles.button}>
+                            <Text
+                                style={styles.btText}>返回</Text>
+                        </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
             </ImageBackground>
