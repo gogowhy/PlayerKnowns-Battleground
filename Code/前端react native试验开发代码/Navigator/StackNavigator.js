@@ -20,20 +20,27 @@ import {
   View
 } from 'react-native';
 
+import Home from '../Component/Home';
 import Login from '../Component/Login';
 import Register from '../Component/Register';
 
 const RootStack1 = createStackNavigator({
+  Home: {
+    screen: Home,
+    navigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
+        header: null,  //隐藏导航栏标题
+    }
+  },
   Login: {
     screen: Login,
     navigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
-        headerTitle: '登录',  //设置导航栏标题
+      header: null,  //隐藏导航栏标题
     }
   },
   Register: {
     screen: Register,
     navigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
-        headerTitle: '注册',  //设置导航栏标题
+      header: null,  //隐藏导航栏标题
     }
   }
 });
