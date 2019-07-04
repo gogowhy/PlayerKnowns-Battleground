@@ -28,7 +28,7 @@ public class Room {
 
 
     @Column(name = "RoomPassword")
-    public String roompassword;
+    public Integer roompassword;
 
     public Integer getRoomid() {
         return roomid;
@@ -78,11 +78,11 @@ public class Room {
         this.playerlist = playerlist;
     }
 
-    public String getRoompassword() {
+    public Integer getRoompassword() {
         return roompassword;
     }
 
-    public void setRoompassword(String roompassword) {
+    public void setRoompassword(Integer roompassword) {
         this.roompassword = roompassword;
     }
 }
