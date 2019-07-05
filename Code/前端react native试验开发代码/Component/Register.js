@@ -7,7 +7,9 @@ import {
     Text,
     ImageBackground
 } from 'react-native';
-
+import base from '../src/style/base';
+import header from '../src/style/header';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from 'axios';
 
 /* 组件 : CheckOut
@@ -162,19 +164,27 @@ export default class Register extends Component {
     render() {
 
         return (
-            <ImageBackground style={styles.background}
+            <ImageBackground style={base.background}
                 source={require('../src/img/bg1.png')}>
                 <TouchableOpacity
                     activeOpacity={1.0}  //设置背景被点击时，透明度不变
-                    style={styles.container}>
-                    <View style={styles.container}>
+                    style={base.container}>
+                    <TouchableOpacity
+                        style={header.Head}>
+                        <Ionicons 
+                            name = {'md-arrow-round-back'} 
+                            size={30}
+                            onPress = {this.gobackLogin}
+                        />
+                    </TouchableOpacity>
+                    <View style={base.container}>
                         <View style={styles.container_rev}>
                             <CheckOut pw1='' pw2='' email='' phone='' />
-                            <View style={styles.container}>
+                            <View style={base.container}>
                                 <View
-                                    style={styles.inputBox}>
+                                    style={base.inputBox}>
                                     <TextInput
-                                        style={styles.input}
+                                        style={base.input}
                                         name="username"
                                         onChangeText = {this.onUsernameChanged} //-----------该属性需要保留！-------------
                                         autoCapitalize='none'  //设置首字母不自动大写
@@ -184,9 +194,9 @@ export default class Register extends Component {
                                     />
                                 </View>
                                 <View
-                                    style={styles.inputBox}>
+                                    style={base.inputBox}>
                                     <TextInput
-                                        style={styles.input}
+                                        style={base.input}
                                         name="password"
                                         onChangeText = {this.onPasswordChanged} //-----------该属性需要保留！-------------
                                         secureTextEntry={true}  //设置为密码输入框
@@ -197,9 +207,9 @@ export default class Register extends Component {
                                     />
                                 </View>
                                 <View
-                                    style={styles.inputBox}>
+                                    style={base.inputBox}>
                                     <TextInput
-                                        style={styles.input}
+                                        style={base.input}
                                         name="confirmpassword"
                                         onChangeText = {this.onConfirmPasswordChanged} //-----------该属性需要保留！-------------
                                         secureTextEntry={true}  //设置为密码输入框
@@ -210,9 +220,9 @@ export default class Register extends Component {
                                     />
                                 </View>
                                 <View
-                                    style={styles.inputBox}>
+                                    style={base.inputBox}>
                                     <TextInput
-                                        style={styles.input}
+                                        style={base.input}
                                         name="email"
                                         onChangeText = {this.onEmailChanged} //-----------该属性需要保留！-------------
                                         autoCapitalize='none'  //设置首字母不自动大写
@@ -222,9 +232,9 @@ export default class Register extends Component {
                                     />
                                 </View>
                                 <View
-                                    style={styles.inputBox}>
+                                    style={base.inputBox}>
                                     <TextInput
-                                        style={styles.input}
+                                        style={base.input}
                                         name="telephone"
                                         onChangeText = {this.onTelephoneChanged} //-----------该属性需要保留！-------------
                                         autoCapitalize='none'  //设置首字母不自动大写
@@ -238,15 +248,9 @@ export default class Register extends Component {
                         </View>
                         <TouchableOpacity
                             onPress = {this.register} //-----------该属性需要保留！-------------
-                            style={styles.button}>
+                            style={base.button}>
                             <Text
-                                style={styles.btText}>注册</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress = {this.gobackLogin} //-----------该属性需要保留！-------------
-                            style={styles.underline}>
-                            <Text
-                                style={styles.ulText}>返回登录</Text>
+                                style={base.btText}>注册</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
@@ -257,58 +261,11 @@ export default class Register extends Component {
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        //backgroundColor: '#F5FCFF',
-    },
     container_rev: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-end',
-    },
-    background: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        height: null,
-        width: null,
-        zIndex: -1,
-    },
-    input: {
-        width: 180,
-        height: 50,
-        fontSize: 18,
-        color: '#000',//输入框输入的文本为黑色
-    },
-    inputBox: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 180,
-        height: 40,
-        borderRadius: 8,
-        backgroundColor: '#FFFFF0',
-        marginBottom: 8,
-    },
-    button: {
-        height: 40,
-        width: 100,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 8,
-        backgroundColor: '#FF4500',
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    btText: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
     },
     CheckOut: {
         flexDirection: 'row',
@@ -324,16 +281,5 @@ const styles = StyleSheet.create({
         color: '#FF4500',
         fontSize: 15,
         //marginBottom: 4,
-    },
-    underline: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    ulText: {
-        textDecorationLine:'underline',
-        color: '#0000CD',
-        fontWeight: 'bold',
-        fontSize: 18,
     }
 });
