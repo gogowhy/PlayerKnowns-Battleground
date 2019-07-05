@@ -7,10 +7,9 @@ import {
     Text,
     ImageBackground
 } from 'react-native';
+import base from '../src/style/base';
 
 import axios from 'axios';
-
-
 
 /* 组件 : Login
 -- 作用 : 收集用户登录信息，并提交至后端
@@ -103,16 +102,16 @@ export default class Login extends Component {
     render() {
 
         return (
-            <ImageBackground style={styles.background}
+            <ImageBackground style={base.background}
                 source={require('../src/img/bg1.png')}>
                 <TouchableOpacity
                     activeOpacity={1.0}  //设置背景被点击时，透明度不变
-                    style={styles.container}>
-                    <View style={styles.container}>
+                    style={base.container}>
+                    <View style={base.container}>
                         <View
-                            style={styles.inputBox}>
+                            style={base.inputBox}>
                             <TextInput
-                                style={styles.input}
+                                style={base.input}
                                 name="username"
                                 onChangeText = {this.onUsernameChanged} //-----------该属性需要保留！-------------
                                 autoCapitalize='none'  //设置首字母不自动大写
@@ -122,9 +121,9 @@ export default class Login extends Component {
                             />
                         </View>
                         <View
-                            style={styles.inputBox}>
+                            style={base.inputBox}>
                             <TextInput
-                                style={styles.input}
+                                style={base.input}
                                 name="password"
                                 onChangeText = {this.onPasswordChanged} //-----------该属性需要保留！-------------
                                 secureTextEntry={true}  //设置为密码输入框
@@ -136,22 +135,22 @@ export default class Login extends Component {
                         </View>
                         <TouchableOpacity
                             onPress = {this.login} //-----------该属性需要保留！-------------
-                            style={styles.button}>
+                            style={base.button}>
                             <Text
-                                style={styles.btText}>登录</Text>
+                                style={base.btText}>登录</Text>
                         </TouchableOpacity>
-                        <View style={styles.underline}>
+                        <View style={base.underline}>
                             <TouchableOpacity
                                 onPress = {this.forgetPW} //-----------该属性需要保留！-------------
                                 >
                                 <Text
-                                    style={styles.ulText}>忘记密码</Text>
+                                    style={base.ulText}>忘记密码</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress = {this.gotoRegister} //-----------该属性需要保留！-------------
                                 >
                                 <Text
-                                    style={styles.ulText}>没有账号?去注册</Text>
+                                    style={base.ulText}>没有账号?去注册</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -162,65 +161,3 @@ export default class Login extends Component {
 
 
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        //backgroundColor: '#F5FCFF',
-    },
-    background: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        height: null,
-        width: null,
-        zIndex: -1,
-    },
-    input: {
-        width: 180,
-        height: 50,
-        fontSize: 18,
-        color: '#000',//输入框输入的文本为黑色
-    },
-    inputBox: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 180,
-        height: 40,
-        borderRadius: 8,
-        backgroundColor: '#FFFFF0',
-        marginBottom: 8,
-    },
-    button: {
-        height: 40,
-        width: 100,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 8,
-        backgroundColor: '#FF4500',
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    btText: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    underline: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    ulText: {
-        textDecorationLine:'underline',
-        color: '#0000CD',
-        fontWeight: 'bold',
-        fontSize: 18,
-        marginBottom: 8,
-    }
-});

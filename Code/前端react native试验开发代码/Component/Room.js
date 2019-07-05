@@ -4,8 +4,12 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    Alert
+    Alert,
+    ImageBackground
 } from 'react-native';
+import base from '../src/style/base';
+import header from '../src/style/header';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from 'axios';
 
 export default class Room extends Component {
@@ -19,90 +23,58 @@ export default class Room extends Component {
             id : this.props.navigation.state.params.id , 
             password : this.props.navigation.state.params.password
         }
-        
+        this.gobackMainPage = this.gobackMainPage.bind(this);
     }
 
+    /* 返回游戏主页界面 */
+    gobackMainPage(){
+        const { goBack } = this.props.navigation ;
+        goBack();
+    }
 
     render() {
         return (
-            <View
-                style={styles.container}>
+            <ImageBackground style={base.background}
+                source={require('../src/img/bg1.png')}>
                 <TouchableOpacity
-                    
-                    style={styles.button}>
-                    <Text
-                        style={styles.btText}>{this.state.id}</Text>
+                    activeOpacity={1.0}  //设置背景被点击时，透明度不变
+                    style={base.container}>
+                    <View 
+                        style={header.Head}>
+                        <Ionicons 
+                            name = {'md-arrow-round-back'} 
+                            size={30}
+                            onPress = {this.gobackMainPage}
+                        />
+                    </View>
+                    <View>
+                        <View 
+                            style={base.containerTop}>
+                            <Text
+                                style={styles.Text}>
+                                房间号：{this.state.id}
+                            </Text>
+                            <Text
+                                style={styles.Text}>
+                                房间密码：{this.state.password}
+                            </Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    
-                    style={styles.button}>
-                    <Text
-                        style={styles.btText}>{this.state.password}</Text>
-                </TouchableOpacity>
-            </View>
+            </ImageBackground>
         );
     }
-
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        //backgroundColor: '#F5FCFF',
-    },
-    background: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        height: null,
-        width: null,
-        zIndex: -1,
-    },
-    input: {
-        width: 180,
-        height: 50,
-        fontSize: 18,
-        color: '#000',//输入框输入的文本为黑色
-    },
-    inputBox: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 180,
-        height: 40,
-        borderRadius: 8,
-        backgroundColor: '#FFFFF0',
-        marginBottom: 8,
-    },
-    button: {
-        height: 40,
-        width: 100,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 8,
-        backgroundColor: '#FF4500',
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    btText: {
-        color: '#fff',
+    Text: {
+        color: '#000',
+        fontWeight: 'bold',
         fontSize: 20,
-        fontWeight: 'bold',
     },
-    underline: {
-        justifyContent: 'center',
+    RoomTitle:{
+        flex: 1,
+        justifyContent: 'space-around',
         alignItems: 'center',
-        marginBottom: 10,
-    },
-    ulText: {
-        textDecorationLine:'underline',
-        color: '#0000CD',
-        fontWeight: 'bold',
-        fontSize: 18,
-        marginBottom: 8,
     }
 });

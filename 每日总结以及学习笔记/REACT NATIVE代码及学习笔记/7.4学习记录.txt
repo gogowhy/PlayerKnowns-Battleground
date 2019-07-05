@@ -1,0 +1,22 @@
+react-native-vector-icons是一个React Native 项目使用最广泛的矢量图标图标库，使用简单，内容丰富。
+
+安装：
+// 添加依赖
+npm install --save react-native-vector-icons
+
+// 链接原生库
+react-native link react-native-vector-icons
+
+使用：
+这里注意并不是引入之后就可以用直接用所有的icon图标 要根据图标所在的范围进行不同的修改， / 后面那个单词是一个范围
+如图：被圈起来的就是链接/后面要写的单词
+
+import AntDesign from "react-native-vector-icons/AntDesign";
+
+<AntDesign name = {'stepforward'} />;
+
+
+可能用到的：
+/Entypo:home help-with-circle shop
+/FontAwesome5:warehouse
+/Ionicons:md-exit md-arrow-round-back

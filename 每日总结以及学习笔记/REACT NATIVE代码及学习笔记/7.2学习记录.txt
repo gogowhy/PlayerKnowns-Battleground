@@ -1,0 +1,19 @@
+横屏：
+	1.npm install react-native-orientation --save
+	2.react-native link react-native-orientation
+	
+
+	引入：
+	import Orientation from 'react-native-orientation';
+
+	在进去这个页面的时候强制横屏
+	componentWillMount() {
+	       Orientation.lockToLandscape();
+	}
+	在退出当前页面的时候强制竖屏
+	componentWillUnmount() {
+	       Orientation.lockToPortrait();
+	}
+
+
+
