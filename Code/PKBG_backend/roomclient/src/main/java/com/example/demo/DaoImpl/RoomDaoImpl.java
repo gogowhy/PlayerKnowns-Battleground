@@ -49,6 +49,11 @@ public class RoomDaoImpl implements RoomDao {
         Integer rmPassword = Integer.parseInt(roomPassword);
         room.setRoompassword(rmPassword);
 
+        Player player = new Player();
+        player.setRoomnumber(rmNumber);
+        player.setPlayername(hostname);
+        playerRepository.save(player);
+
         room.setGamestatus(0);
 
         roomRepository.save(room);
