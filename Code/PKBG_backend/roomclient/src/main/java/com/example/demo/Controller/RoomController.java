@@ -39,4 +39,11 @@ public class RoomController {
         return roomService.dismiss(request);
     }
 
+    @RequestMapping("/join")
+    @ResponseBody
+    public String join(HttpServletRequest request)
+    {
+        return roomService.join(request);
+    }
+
 }

@@ -74,7 +74,35 @@ public class RoomDaoImpl implements RoomDao {
 
     }
 
+    @Override
+    public String join(HttpServletRequest request){
+        String roomnumber = request.getParameter("roomnumber");
+        Integer rmnumber = Integer.valueOf(roomnumber).intValue();
+        Room room = new Room();
+        room = roomRepository.findByRoomnumber(rmnumber);
+        if (room == null)
+        {
+            return "Cannot Find Target Room!";
+        }
+        if (room.getGamestatus() == 1)
+        {
+            return "Target Room Has Started Game!";
+        }
+        if (room.getPlayernumber() == 16)
+        {
+            return "Target Room Is Full!";
+        }
+        Integer newnumber = room.getPlayernumber()+1;
+        room.setPlayernumber(newnumber);
+        roomRepository.save(room);
 
+        String username = request.getParameter("username");
+        Player player = new Player();
+        player.setRoomnumber(rmnumber);
+        player.setPlayername(username);
+        playerRepository.save(player);
+        return "Join Room Successfully!";
+    }
 
 
 }
