@@ -26,7 +26,7 @@ public class RoomDaoImpl implements RoomDao {
     public PlayerRepository playerRepository;
 
     @Override
-    public String create(HttpServletRequest request) {
+    public String create(HttpServletRequest request) {//need establish socket [×]
         String hostname = request.getParameter("hostname");
         Room room = new Room();
         room.setHostname(hostname);
@@ -88,13 +88,20 @@ public class RoomDaoImpl implements RoomDao {
     public String join(HttpServletRequest request){
         String roomnumber = request.getParameter("roomnumber");
         String username = request.getParameter("username");
+        String password = request.getParameter("password");
         Integer rmnumber = Integer.valueOf(roomnumber).intValue();
+        Integer psword = Integer.valueOf(password).intValue();
         Room room = new Room();
         room = roomRepository.findByRoomnumber(rmnumber);
         if (room == null)
         {
             return "Cannot Find Target Room!";
         }
+        if (room.getRoompassword() != null)
+            if (!psword.equals(room.getRoompassword()))
+            {
+                return "Wrong Password!";
+            }
         if (room.getGamestatus() == 1)
         {
             return "Target Room Has Started Game!";
@@ -124,5 +131,50 @@ public class RoomDaoImpl implements RoomDao {
         return "Join Room Successfully!";
     }
 
+    @Override
+    public String quit(HttpServletRequest request)
+    {
+        String roomnumber = request.getParameter("roomnumber");
+        String username = request.getParameter("username");
+        Integer rmnumber = Integer.valueOf(roomnumber).intValue();
+        Room room = roomRepository.findByRoomnumber(rmnumber);
+        Player player = playerRepository.findByPlayername(username);
+        String hostname = room.getHostname();
+        MyHandler myHandler = new MyHandler();
+        if (hostname.equals(username))
+        {
+            Integer newnumber = room.getPlayernumber()-1;
+            if (newnumber == 0) {
+                roomRepository.delete(room);
+                return "Room Dismissed!";
+            }
+            else room.setPlayernumber(newnumber);
+            playerRepository.delete(player);
+
+            List<Player> players =playerRepository.findByRoomnumber(rmnumber);
+            Player player_newhost=players.get(1);
+            String newhost = player_newhost.getPlayername();
+            room.setHostname(newhost);
+            for(int i=0;i<players.size();i++)
+            {
+                Player player_temp=players.get(i);
+                String playername = player_temp.getPlayername();
+                myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username+"Newhost"+newhost));
+            }
+        }
+        else {
+            Integer newnumber = room.getPlayernumber()-1;
+            room.setPlayernumber(newnumber);
+            playerRepository.delete(player);
+            List<Player> players =playerRepository.findByRoomnumber(rmnumber);
+            for(int i=0;i<players.size();i++)
+            {
+                Player player_temp=players.get(i);
+                String playername = player_temp.getPlayername();
+                myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username));
+            }
+        }
+        return "";
+    }
 
 }

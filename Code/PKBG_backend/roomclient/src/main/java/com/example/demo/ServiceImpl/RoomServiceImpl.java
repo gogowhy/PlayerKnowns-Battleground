@@ -30,4 +30,10 @@ public class RoomServiceImpl implements RoomService {
     {
         return roomDao.join(request);
     }
+
+    @Override
+    public String quit(HttpServletRequest request)
+    {
+        return roomDao.quit(request);
+    }
 }

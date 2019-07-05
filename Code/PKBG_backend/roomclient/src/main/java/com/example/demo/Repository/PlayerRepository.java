@@ -10,4 +10,5 @@ import java.util.List;
 @Service
 public interface PlayerRepository extends JpaRepository<Player,Integer> {
     public List<Player> findByRoomnumber(Integer roomnumber);
+    public Player findByPlayername(String playername);
 }

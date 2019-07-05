@@ -46,4 +46,11 @@ public class RoomController {
         return roomService.join(request);
     }
 
+    @RequestMapping("/quit")
+    @ResponseBody
+    public String quit(HttpServletRequest request)
+    {
+        return roomService.quit(request);
+    }
+
 }
