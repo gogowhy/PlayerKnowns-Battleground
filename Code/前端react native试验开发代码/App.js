@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import Orientation from 'react-native-orientation';
 import Home from './Component/Home.js';
-import RootStack from './Navigator/StackNavigator.js'
+import RootStack from './Navigator/StackNavigator.js';
 
 export default class App extends Component {
 

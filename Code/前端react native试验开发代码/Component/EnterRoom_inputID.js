@@ -12,10 +12,12 @@ import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from 'axios';
 
+const const_Room = {ID : 114514 , password : 4396}
 
+const url = "http://localhost:8080/EnterRoom";
 
-/* 组件 : Login
--- 作用 : 收集用户登录信息，并提交至后端
+/* 组件 : EnterRoom_inputID
+-- 作用 : 收集用户加入某房间的ID及Password，使其加入房间
 */
 export default class EnterRoom_inputID extends Component {
     constructor(props){
@@ -46,21 +48,21 @@ export default class EnterRoom_inputID extends Component {
 
     /* 登录 ： 向后端发送房间ID和密码 */
     enterRoom(){
-        const { navigate } = this.props.navigation ; 
-        navigate('Room',{ id : this.state.RoomID , password : this.state.password });
-        /*
+        
         const _this = this;
 
-        const url = "http://local:8080/Login";
-
-        data = {
-            RoomID : _this.state.RoomID,
-            userpassword : _this.state.password,
+        let data = {
+            RoomID : this.state.RoomID , 
+            password : this.state.password
         }
+
+        let flag = 0;
+
         axios.post( url , data )
             .then(function (response) {
                 // handle success
                 console.log(response);
+                flag = response.data;
             })
             .catch(function (error) {
                 // handle error
@@ -69,7 +71,26 @@ export default class EnterRoom_inputID extends Component {
             .then(function () {
                 // always executed
             });
-        */
+        
+        if(flag)
+        {
+            const { navigate } = this.props.navigation ; 
+            navigate('Room',{ id : this.state.RoomID , password : this.state.password , host : false });
+        }
+        
+        if(this.state.RoomID == const_Room.ID)
+            if(this.state.password == const_Room.password)
+            {
+                const { navigate } = this.props.navigation ; 
+                navigate('Room',{ id : this.state.RoomID , password : this.state.password , host : false });
+            }
+            else {
+                alert("密码错误！")
+            }
+        else{
+            alert("房间号不存在！")
+        }
+        
     }
 
     gobackMainPage(){
@@ -93,6 +114,21 @@ export default class EnterRoom_inputID extends Component {
                             onPress = {this.gobackMainPage}
                         />
                     </TouchableOpacity>
+
+                    <View>
+                        <View 
+                            >
+                            <Text
+                                >
+                                预设房间号：{const_Room.ID}
+                            </Text>
+                            <Text
+                                >
+                                预设房间密码：{const_Room.password}
+                            </Text>
+                        </View>
+                    </View>
+
                     <TouchableOpacity
                         style={base.container}>
                         <View
@@ -107,6 +143,7 @@ export default class EnterRoom_inputID extends Component {
                                 placeholder={'房间ID'}  //设置占位符
                             />
                         </View>
+
                         <View
                             style={base.inputBox}>
                             <TextInput
@@ -120,12 +157,14 @@ export default class EnterRoom_inputID extends Component {
                                 placeholder={'密码'}  //设置占位符
                             />
                         </View>
+
                         <TouchableOpacity
                             onPress = {this.enterRoom} //-----------该属性需要保留！-------------
                             style={base.button}>
                             <Text
                                 style={base.btText}>进入房间</Text>
                         </TouchableOpacity>
+                        
                     </TouchableOpacity>
                 </TouchableOpacity>
             </ImageBackground>

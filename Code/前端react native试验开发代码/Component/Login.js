@@ -77,7 +77,7 @@ export default class Login extends Component {
 
         const url = "http://local:8080/forgetPassword";
 
-        data = {
+        let data = {
             username : _this.state.username,
         }
         axios.post( url , data )

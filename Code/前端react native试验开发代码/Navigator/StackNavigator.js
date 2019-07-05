@@ -26,6 +26,7 @@ import Register from '../Component/Register';
 import MainPage from '../Component/MainPage';
 import Room from '../Component/Room';
 import EnterRoom_inputID from '../Component/EnterRoom_inputID';
+import Gaming from '../Component/Gaming';
 
 const RootStack1 = createStackNavigator({
   Home: {
@@ -54,6 +55,12 @@ const RootStack1 = createStackNavigator({
   },
   Room: {
     screen: Room,
+    navigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
+      header: null,  //隐藏导航栏标题
+    }
+  },
+  Gaming: {
+    screen: Gaming,
     navigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
       header: null,  //隐藏导航栏标题
     }

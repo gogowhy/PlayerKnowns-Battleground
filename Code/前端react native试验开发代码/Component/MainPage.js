@@ -52,7 +52,7 @@ export default class MainPage extends Component {
         */
         const { navigate } = this.props.navigation;
 
-        navigate('Room',{id :"777",password : "123"});
+        navigate('Room',{id :"777" , password : "123" , host : true });
     }
 
     /* 退出登录 */

@@ -5,7 +5,7 @@ import {
     StyleSheet
 } from 'react-native';
 
-export default class End extends Component {
+export default class Gaming extends Component {
 
     /**
      * 成功登陆界面
