@@ -2,12 +2,15 @@ package com.example.demo.DaoImpl;
 
 
 import com.example.demo.Dao.RoomDao;
+import com.example.demo.Entity.Player;
 import com.example.demo.Entity.Room;
+import com.example.demo.Repository.PlayerRepository;
 import com.example.demo.Repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -16,6 +19,9 @@ public class RoomDaoImpl implements RoomDao {
     @Autowired
     public RoomRepository roomRepository;
 
+
+    @Autowired
+    public PlayerRepository playerRepository;
 
     @Override
     public String create(HttpServletRequest request) {
@@ -54,9 +60,17 @@ public class RoomDaoImpl implements RoomDao {
     {
         String  if_hostname=request.getParameter("hostname");
         Room room=roomRepository.findByHostname(if_hostname);
-        Integer roonmnumber=room.getRoomnumber();
+        Integer roomnumber=room.getRoomnumber();
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
 
-       return null;
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            playerRepository.delete(player_temp);
+        }
+
+        roomRepository.delete(room);
+        return "房间"+roomnumber+"解散成功！";
 
     }
 
