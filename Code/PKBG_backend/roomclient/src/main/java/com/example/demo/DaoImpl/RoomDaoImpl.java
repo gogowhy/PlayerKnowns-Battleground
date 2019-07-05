@@ -5,10 +5,10 @@ import com.example.demo.Dao.RoomDao;
 import com.example.demo.Entity.Room;
 import com.example.demo.Repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Random;
 
 @Repository
@@ -43,8 +43,24 @@ public class RoomDaoImpl implements RoomDao {
         Integer rmPassword = Integer.parseInt(roomPassword);
         room.setRoompassword(rmPassword);
 
+        room.setGamestatus(0);
+
         roomRepository.save(room);
         return "Room Created Successfully!";
     }
+
+    @Override
+    public String dismiss(HttpServletRequest request)
+    {
+        String  if_hostname=request.getParameter("hostname");
+        Room room=roomRepository.findByHostname(if_hostname);
+        Integer roonmnumber=room.getRoomnumber();
+
+       return null;
+
+    }
+
+
+
 
 }

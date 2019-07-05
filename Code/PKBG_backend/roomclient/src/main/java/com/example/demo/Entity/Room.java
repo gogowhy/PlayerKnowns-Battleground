@@ -24,8 +24,6 @@ public class Room {
     public Integer gamestatus;
 
 
-
-
     @Column(name = "RoomPassword")
     public Integer roompassword;
 

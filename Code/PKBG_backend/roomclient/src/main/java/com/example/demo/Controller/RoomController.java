@@ -31,4 +31,12 @@ public class RoomController {
         return "room-client";
     }
 
+
+    @RequestMapping("/dismiss")
+    @ResponseBody
+    public String dismiss(HttpServletRequest request)
+    {
+        return roomService.dismiss(request);
+    }
+
 }

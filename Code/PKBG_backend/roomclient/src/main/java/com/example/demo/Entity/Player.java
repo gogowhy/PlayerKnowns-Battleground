@@ -34,6 +34,8 @@ public class Player implements Serializable {
     @Column(name = "Weapon")
     public String weaponname;
 
+    @Column(name="roomnumber")
+    public Integer roomnumber;
 
     public String getPlayername() {
         return playername;
@@ -89,5 +91,13 @@ public class Player implements Serializable {
 
     public void setWeaponname(String weaponname) {
         this.weaponname = weaponname;
+    }
+
+    public Integer getRoomnumber() {
+        return roomnumber;
+    }
+
+    public void setRoomnumber(Integer roomnumber) {
+        this.roomnumber = roomnumber;
     }
 }

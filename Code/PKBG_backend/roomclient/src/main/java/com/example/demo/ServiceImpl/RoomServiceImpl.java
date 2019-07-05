@@ -18,4 +18,10 @@ public class RoomServiceImpl implements RoomService {
         return roomDao.create(request);
     }
 
+
+    @Override
+    public  String dismiss(HttpServletRequest request)
+    {
+        return roomDao.dismiss(request);
+    }
 }
