@@ -8,4 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 @Repository
 public interface RoomDao {
     public String create(HttpServletRequest request);
+    public String dismiss(HttpServletRequest request);
+    public String join(HttpServletRequest request);
 }

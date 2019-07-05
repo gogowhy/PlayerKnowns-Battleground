@@ -31,4 +31,19 @@ public class RoomController {
         return "room-client";
     }
 
+
+    @RequestMapping("/dismiss")
+    @ResponseBody
+    public String dismiss(HttpServletRequest request)
+    {
+        return roomService.dismiss(request);
+    }
+
+    @RequestMapping("/join")
+    @ResponseBody
+    public String join(HttpServletRequest request)
+    {
+        return roomService.join(request);
+    }
+
 }
