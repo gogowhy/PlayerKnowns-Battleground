@@ -6,11 +6,12 @@ import {
     TouchableOpacity,
     Alert,
     ImageBackground,
-    SectionList
 } from 'react-native';
 import base from '../src/style/base';
 import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import SectionView from './SectionView';
 
 /**
  * 该常量初步定义了一个players应该具有、并在render中有所体现的属性
@@ -332,25 +333,31 @@ export default class Room extends Component {
         }
     }
 
-
     render() {
         
         if(this.state.socketState !== WebSocket.OPEN)
             return (
-                <Text>正在建立连接...</Text>
+                <View style={base.container}>
+                    <AntDesign
+                        style={{marginBottom: 20}}
+                        name = {'loading1'} 
+                        size={30}
+                    />
+                    <Text style={styles.waiting}>正在建立连接...</Text>
+                </View>
             )
 
-        const teamA_name = [];
-        const teamB_name = [];
-
+        // const teamA_name = [];
+        // const teamB_name = [];
+    
         const T = this.state.team ? "B->A" : "A->B" ; //更换队伍按钮的文字说明
 
-        players.forEach((player) =>{
-            if(player.team === 'A') teamA_name.push(player.name);
-            if(player.team === 'B') teamB_name.push(player.name);
-        }
-        )
-        
+        // players.forEach((player) =>{
+        //     if(player.team === 'A') teamA_name.push(player.name);
+        //     if(player.team === 'B') teamB_name.push(player.name);
+        // }
+        // )
+
         const ReadyOrNot = !this.state.isReady ? <TouchableOpacity
                                                     onPress = {this.ready} //-----------该属性需要保留！-------------
                                                     style={base.button}>
@@ -396,38 +403,30 @@ export default class Room extends Component {
                             </Text>
                             <Text
                                 style={styles.Text}>
-                                房间密码：{this.state.password}
+                               {'  '}房间密码：{this.state.password}
                             </Text>
                         </View>
                     </View>
-                    
-                    {StartOrReady}
-                    
-                    <TouchableOpacity
-                        onPress = {this.changeTeam} //-----------该属性需要保留！-------------
-                        style={base.button}>
-                        <Text
-                            style={base.btText}>{T}</Text>
-                    </TouchableOpacity> 
 
-                    <TouchableOpacity
-                        onPress = {this.exitRoom} //-----------该属性需要保留！-------------
-                        style={base.button}>
-                        <Text
-                            style={base.btText}>退出房间</Text>
-                    </TouchableOpacity> 
-                                                
-                    <View >
-                    <SectionList
-                        sections={[
-                            {title: 'A', data: teamA_name},
-                            {title: 'B', data: teamB_name},
-                        ]}
-                        renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
-                        renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-                        keyExtractor={(item, index) => index}
-                    />
+                    <View style={base.containerTop}>
+                        {StartOrReady}
+                    
+                        <TouchableOpacity
+                            onPress = {this.changeTeam} //-----------该属性需要保留！-------------
+                            style={base.button}>
+                            <Text
+                                style={base.btText}>{T}</Text>
+                        </TouchableOpacity> 
+
+                        <TouchableOpacity
+                            onPress = {this.exitRoom} //-----------该属性需要保留！-------------
+                            style={base.button}>
+                            <Text
+                                style={base.btText}>退出房间</Text>
+                        </TouchableOpacity> 
                     </View>
+                                                
+                    <SectionView></SectionView>
 
                 </TouchableOpacity>
             </ImageBackground>
@@ -445,5 +444,16 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-around',
         alignItems: 'center',
+    },
+    Table: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waiting: {
+        color: '#000',
+        fontSize: 18,
+        textAlignVertical: 'center', 
+        textAlign: 'center', 
     }
 });
