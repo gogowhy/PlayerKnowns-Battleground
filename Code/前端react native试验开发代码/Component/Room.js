@@ -11,25 +11,27 @@ import {
 import base from '../src/style/base';
 import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
-import axios from 'axios';
-import WebSocket from 'react-native-websocket';
 
 /**
  * 该常量初步定义了一个players应该具有、并在render中有所体现的属性
  * 
- * 属性 ： group \  name  \  isReady
+ * 属性 ： team \  name  \  isReady
  * 属性 ： 组别  、 用户名 、 是否准备
  */
 const players = [
-    {group : 'A' , name : 'wang haoyu' , isReady : true},
-    {group : 'B' , name : 'zhou yifan' , isReady : true},
-    {group : 'B' , name : 'qi peng' , isReady : true},
-    {group : 'A' , name : 'xie yihan' , isReady : true}
+    {team : 'A' , name : 'wang haoyu' , isReady : true},
+    {team : 'B' , name : 'zhou yifan' , isReady : true},
+    {team : 'B' , name : 'qi peng' , isReady : true},
+    {team : 'A' , name : 'xie yihan' , isReady : true}
 ]
 
 /** 定义了同后端传递和接收指令的 Code 用来处理不同种类的消息 */
-const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 ;
-const RELOAD = 0 , DISMISS = 1 , KICK = 2 , START = 3;
+const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 , CHANGE_TEAM_TO_A = 5 , CHANGE_TEAM_TO_B = 6 ;
+const RELOAD = 90 , DISMISS = 91 , KICK = 92 , START = 93;
+
+/** 定义了队伍常量 */
+const TEAM_A = 0 , TEAM_B = 1;
+
 
 export default class Room extends Component {
 
@@ -42,9 +44,13 @@ export default class Room extends Component {
             isReady : this.props.navigation.state.params.host , //是否准备
             username : this.props.navigation.state.params.username , //用户名
             players : [], //房间所有玩家
-            ws : null //websocket接口
+            socketState : WebSocket.CLOSED, //socket的连接状态
+            team : TEAM_A, //玩家所处队伍
         }
 
+        /** 测试连接用公用wss地址 实际需要替换 */
+        //this.ws = new WebSocket("ws://127.0.0.1:2003/myHandler/username="+this.state.username);
+        this.ws = new WebSocket('wss://echo.websocket.org/');
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.gobackMainPage = this.gobackMainPage.bind(this);
         this.startGame = this.startGame.bind(this);
@@ -52,6 +58,7 @@ export default class Room extends Component {
         this.unready = this.unready.bind(this);
         this.exitRoom = this.exitRoom.bind(this);
         this.enterGame = this.enterGame.bind(this);
+        this.changeTeam = this.changeTeam.bind(this);
     }
     
     componentDidMount(){
@@ -72,21 +79,25 @@ export default class Room extends Component {
     ConnectWebSocket(){
         
         /** 定义了同后端连接的 url 并建立连接 */
-        const wsUrl = "ws://127.0.0.1:2003/myHandler/username="+this.state.username;
-        const ws = new WebSocket(wsUrl);
-
-        ws.onopen = () => {
+        
+        this.ws.onopen = () => {
             // connection opened
-            ws.send('something'); // send a message
+            //this.ws.send('something'); // send a message
+            this.setState(
+                {
+                    socketState : WebSocket.OPEN
+                }
+            )
         };
         
-        ws.onmessage = (e) => {
+        this.ws.onmessage = (e) => {
         // a message was received
         console.log(e.data);
-        switch(e.data.code) {
+        let res = JSON.parse(e.data);
+        switch(res.code) {
             // RELOAD即重新加载玩家，在该文件 Room.js 顶部已定义
             case RELOAD : this.setState(
-                            { players : e.data.players}
+                            { players : res.players }
                           );break;
             // DISMISS即强制解散房间，在该文件 Room.js 顶部已定义
             case DISMISS : alert("该房间已被强制解散！");
@@ -95,23 +106,21 @@ export default class Room extends Component {
             case KICK : alert("您已被移出该房间！");
                         this.gobackMainPage();break;
             // START即进入游戏，在该文件 Room.js 顶部已定义
-            case START : this.enterGame();break;
+            case START : alert("正在进入游戏！");
+                        this.enterGame();break;
         }
         };
         
-        ws.onerror = (e) => {
+        this.ws.onerror = (e) => {
         // an error occurred
         console.log(e.message);
         };
         
-        ws.onclose = (e) => {
+        this.ws.onclose = (e) => {
         // connection closed
         console.log(e.code, e.reason);
         };
 
-        ws.onopen("ss");
-
-        this.setState({ws : ws});
     }
 
     /** 返回上一个界面 */
@@ -150,8 +159,10 @@ export default class Room extends Component {
                 roomID : this.state.roomID
             }
 
-            this.state.ws.send(data);
-
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
         }
         
 
@@ -179,7 +190,10 @@ export default class Room extends Component {
             username : this.state.username
         }
 
-        this.state.ws.send(data);
+        if(this.ws.readyState ==  WebSocket.OPEN){
+            this.ws.send(JSON.stringify(data));
+            alert(JSON.stringify(data)); //将send传递的字符串显示出来
+        }
 
         this.setState(
             {
@@ -210,7 +224,10 @@ export default class Room extends Component {
             username : this.state.username
         }
 
-        this.state.ws.send(data);
+        if(this.ws.readyState ==  WebSocket.OPEN){
+            this.ws.send(JSON.stringify(data));
+            alert(JSON.stringify(data)); //将send传递的字符串显示出来
+        }
 
         this.setState(
             {
@@ -219,6 +236,46 @@ export default class Room extends Component {
         )
         }
     }
+
+    changeTeam(){
+
+        if(this.state.team)
+        {
+            let data ={
+                code : CHANGE_TEAM_TO_A ,
+                username : this.state.username
+            }
+    
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
+    
+            this.setState(
+                {
+                    team : TEAM_A
+                }
+            )            
+        }
+        else{
+            let data ={
+                code : CHANGE_TEAM_TO_B ,
+                username : this.state.username
+            }
+    
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
+    
+            this.setState(
+                {
+                    team : TEAM_B
+                }
+            )
+        }
+    }
+
 
     /**
      * 功能 : 退出房间
@@ -238,10 +295,13 @@ export default class Room extends Component {
 
             let data = {
                 code : EXIT_BY_USER,
-                username : this.username
+                username : this.state.username
             }
             
-            this.state.ws.send(data);
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
 
             this.gobackMainPage();
         }
@@ -258,8 +318,11 @@ export default class Room extends Component {
                 username : this.state.username
             }
     
-            this.state.ws.send(data);
-
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
+                    
             this.setState(
                 {
                     host : false
@@ -271,13 +334,20 @@ export default class Room extends Component {
 
 
     render() {
-    
-        const groupA_name = [];
-        const groupB_name = [];
+        
+        if(this.state.socketState !== WebSocket.OPEN)
+            return (
+                <Text>正在建立连接...</Text>
+            )
+
+        const teamA_name = [];
+        const teamB_name = [];
+
+        const T = this.state.team ? "B->A" : "A->B" ; //更换队伍按钮的文字说明
 
         players.forEach((player) =>{
-            if(player.group === 'A') groupA_name.push(player.name);
-            if(player.group === 'B') groupB_name.push(player.name);
+            if(player.team === 'A') teamA_name.push(player.name);
+            if(player.team === 'B') teamB_name.push(player.name);
         }
         )
         
@@ -334,6 +404,13 @@ export default class Room extends Component {
                     {StartOrReady}
                     
                     <TouchableOpacity
+                        onPress = {this.changeTeam} //-----------该属性需要保留！-------------
+                        style={base.button}>
+                        <Text
+                            style={base.btText}>{T}</Text>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity
                         onPress = {this.exitRoom} //-----------该属性需要保留！-------------
                         style={base.button}>
                         <Text
@@ -343,8 +420,8 @@ export default class Room extends Component {
                     <View >
                     <SectionList
                         sections={[
-                            {title: 'A', data: groupA_name},
-                            {title: 'B', data: groupB_name},
+                            {title: 'A', data: teamA_name},
+                            {title: 'B', data: teamB_name},
                         ]}
                         renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
                         renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
