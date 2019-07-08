@@ -10,9 +10,9 @@ import com.example.demo.Repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -26,8 +26,10 @@ public class RoomDaoImpl implements RoomDao {
     public PlayerRepository playerRepository;
 
     @Override
-    public String create(HttpServletRequest request) {//need establish socket [×]
-        String hostname = request.getParameter("hostname");
+    public String create(WebSocketSession session) throws IOException {
+        MyHandler myHandler = new MyHandler();
+        myHandler.afterConnectionEstablished(session);
+        String hostname = session.getUri().toString().split("ID=")[1];
         Room room = new Room();
         room.setHostname(hostname);
 
@@ -63,9 +65,9 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public String dismiss(HttpServletRequest request)
+    public String dismiss(WebSocketSession session)
     {
-        String  if_hostname=request.getParameter("hostname");
+        String  if_hostname = session.getUri().toString().split("ID=")[1];
         Room room=roomRepository.findByHostname(if_hostname);
         Integer roomnumber=room.getRoomnumber();
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
@@ -85,10 +87,12 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public String join(HttpServletRequest request){
-        String roomnumber = request.getParameter("roomnumber");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+    public String join(WebSocketSession session) throws IOException {
+        MyHandler myHandler = new MyHandler();
+        myHandler.afterConnectionEstablished(session);
+        String roomnumber = session.getUri().toString().split("roomnumber=")[1];
+        String username = session.getUri().toString().split("username=")[1];
+        String password = session.getUri().toString().split("password=")[1];
         Integer rmnumber = Integer.valueOf(roomnumber).intValue();
         Integer psword = Integer.valueOf(password).intValue();
         Room room = new Room();
@@ -111,7 +115,6 @@ public class RoomDaoImpl implements RoomDao {
             return "Target Room Is Full!";
         }
 
-        MyHandler myHandler = new MyHandler();
         List<Player> players =playerRepository.findByRoomnumber(rmnumber);
         for(int i=0;i<players.size();i++)
         {
@@ -132,10 +135,10 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public String quit(HttpServletRequest request)
+    public String quit(WebSocketSession session)
     {
-        String roomnumber = request.getParameter("roomnumber");
-        String username = request.getParameter("username");
+        String roomnumber = session.getUri().toString().split("roomnumber=")[1];
+        String username = session.getUri().toString().split("username=")[1];
         Integer rmnumber = Integer.valueOf(roomnumber).intValue();
         Room room = roomRepository.findByRoomnumber(rmnumber);
         Player player = playerRepository.findByPlayername(username);
