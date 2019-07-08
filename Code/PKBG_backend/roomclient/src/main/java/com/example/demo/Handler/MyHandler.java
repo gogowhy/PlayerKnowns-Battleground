@@ -45,6 +45,10 @@ public class MyHandler implements WebSocketHandler {
         System.out.println("成功建立连接");
         String ID = session.getUri().toString().split("ID=")[1];
         System.out.println(ID);
+
+        //if 1/2 create & join
+
+
         if (ID != null) {
             users.put(ID, session);
             session.sendMessage(new TextMessage("成功建立socket连接"));

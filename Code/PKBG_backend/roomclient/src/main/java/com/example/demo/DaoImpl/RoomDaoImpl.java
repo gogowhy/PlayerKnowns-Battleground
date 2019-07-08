@@ -75,7 +75,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage("Dismissed"));
+            String message = player_temp.toJSON(90);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
             playerRepository.delete(player_temp);
         }
 
@@ -97,7 +98,8 @@ public class RoomDaoImpl implements RoomDao {
             {
                 Player player_temp=players.get(i);
                 String playername = player_temp.getPlayername();
-                myHandler.sendMessageToUser(playername, new TextMessage("Kicked Out "+username));
+                String message = player_temp.toJSON(91);
+                myHandler.sendMessageToUser(playername, new TextMessage(message));
             }
         }
         else return "No Such Player In Room! ";
@@ -144,7 +146,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage("Joined"+username));
+            String message = player_temp.toJSON(7);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
 
         Integer newnumber = room.getPlayernumber()+1;
@@ -173,7 +176,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username));
+            String message = player_temp.toJSON(4);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return null;
     }
@@ -201,7 +205,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username+"Newhost"+newhost));
+            String message = player_temp.toJSON2(3, newhost);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         roomRepository.save(room);
         return null;
@@ -214,7 +219,7 @@ public class RoomDaoImpl implements RoomDao {
         Integer team = player.getPlayerteam();
         if (team==1)//Already In Team A
         {
-            return "";
+            return "Already In Team A!";
         }
         Integer roomnumber = player.getRoomnumber();
 
@@ -240,7 +245,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage(""));
+            String message = player_temp.toJSON(5);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return null;
     }
@@ -252,7 +258,7 @@ public class RoomDaoImpl implements RoomDao {
         Integer team = player.getPlayerteam();
         if (team==2)//Already In Team B
         {
-            return "";
+            return "Already In Team B!";
         }
         Integer roomnumber = player.getRoomnumber();
 
@@ -278,7 +284,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage(""));
+            String message = player_temp.toJSON(6);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "";
     }
@@ -301,7 +308,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage(""));
+            String message = player_temp.toJSON(1);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return null;
     }
@@ -324,7 +332,8 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage(""));
+            String message = player_temp.toJSON(2);
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return null;
     }
