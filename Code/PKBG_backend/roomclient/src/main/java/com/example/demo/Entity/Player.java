@@ -26,8 +26,6 @@ public class Player implements Serializable {
     @Column(name="Latitude")
     public double latitude;
 
-
-
     @Column(name = "Team")
     public Integer playerteam;
 
@@ -99,5 +97,14 @@ public class Player implements Serializable {
 
     public void setRoomnumber(Integer roomnumber) {
         this.roomnumber = roomnumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Player [Playername=" + playername + ", HP=" + HP + ", PlayerStatus=" + playerstatus + ", Longtitude=" + longtitude + ", Latitude=" + latitude + ", Team=" + playerteam + ", Weapon=" + weaponname + ", roomnumber=" + roomnumber + "]";
+    }
+
+    public String toJSON(Integer code) {
+        return "Player [code=" + code + ", Playername=" +playername + "]";
     }
 }

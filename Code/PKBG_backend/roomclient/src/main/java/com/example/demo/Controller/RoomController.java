@@ -20,9 +20,9 @@ public class RoomController {
 
     @RequestMapping("/create")
     @ResponseBody
-    public String create(WebSocketSession session) throws IOException
+    public String create(String hostname) throws IOException
     {
-        return roomService.create(session);
+        return roomService.create(hostname);
     }
 
 
@@ -36,23 +36,18 @@ public class RoomController {
 
     @RequestMapping("/dismiss")
     @ResponseBody
-    public String dismiss(WebSocketSession session)
+    public String dismiss(String if_hostname)
     {
-        return roomService.dismiss(session);
+        return roomService.dismiss(if_hostname);
     }
 
     @RequestMapping("/join")
     @ResponseBody
-    public String join(WebSocketSession session)
+    public String join(Integer roomnumber, String username, Integer password) throws IOException
     {
-        return roomService.join(session);
+        return roomService.join(roomnumber, username, password);
     }
 
-    @RequestMapping("/quit")
-    @ResponseBody
-    public String quit(WebSocketSession session)
-    {
-        return roomService.quit(session);
-    }
+
 
 }
