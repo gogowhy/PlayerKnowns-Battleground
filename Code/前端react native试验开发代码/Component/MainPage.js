@@ -17,7 +17,7 @@ export default class MainPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            username : this.props.username
+            username : this.props.navigation.state.params.username
         }
         this.createRoom = this.createRoom.bind(this);
         this.enterRoom = this.enterRoom.bind(this);

@@ -11,9 +11,6 @@ import {
 import base from '../src/style/base';
 import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
-import axios from 'axios';
-import WebSocket from 'react-native-websocket';
-
 /**
  * 该常量初步定义了一个players应该具有、并在render中有所体现的属性
  * 
@@ -42,9 +39,12 @@ export default class Room extends Component {
             isReady : this.props.navigation.state.params.host , //是否准备
             username : this.props.navigation.state.params.username , //用户名
             players : [], //房间所有玩家
-            ws : null //websocket接口
+            socketState : WebSocket.CLOSED //socket的连接状态
         }
 
+        /** 测试连接用公用wss地址 实际需要替换 */
+        //this.ws = new WebSocket("ws://127.0.0.1:2003/myHandler/username="+this.state.username);
+        this.ws = new WebSocket('wss://echo.websocket.org/');
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.gobackMainPage = this.gobackMainPage.bind(this);
         this.startGame = this.startGame.bind(this);
@@ -72,21 +72,25 @@ export default class Room extends Component {
     ConnectWebSocket(){
         
         /** 定义了同后端连接的 url 并建立连接 */
-        const wsUrl = "ws://127.0.0.1:2003/myHandler/username="+this.state.username;
-        const ws = new WebSocket(wsUrl);
-
-        ws.onopen = () => {
+        
+        this.ws.onopen = () => {
             // connection opened
-            ws.send('something'); // send a message
+            //this.ws.send('something'); // send a message
+            this.setState(
+                {
+                    socketState : WebSocket.OPEN
+                }
+            )
         };
         
-        ws.onmessage = (e) => {
+        this.ws.onmessage = (e) => {
         // a message was received
         console.log(e.data);
-        switch(e.data.code) {
+        let res = JSON.parse(e.data);
+        switch(res.code) {
             // RELOAD即重新加载玩家，在该文件 Room.js 顶部已定义
             case RELOAD : this.setState(
-                            { players : e.data.players}
+                            { players : res.players}
                           );break;
             // DISMISS即强制解散房间，在该文件 Room.js 顶部已定义
             case DISMISS : alert("该房间已被强制解散！");
@@ -95,23 +99,21 @@ export default class Room extends Component {
             case KICK : alert("您已被移出该房间！");
                         this.gobackMainPage();break;
             // START即进入游戏，在该文件 Room.js 顶部已定义
-            case START : this.enterGame();break;
+            case START : alert("正在进入游戏！");
+                        this.enterGame();break;
         }
         };
         
-        ws.onerror = (e) => {
+        this.ws.onerror = (e) => {
         // an error occurred
         console.log(e.message);
         };
         
-        ws.onclose = (e) => {
+        this.ws.onclose = (e) => {
         // connection closed
         console.log(e.code, e.reason);
         };
 
-        ws.onopen("ss");
-
-        this.setState({ws : ws});
     }
 
     /** 返回上一个界面 */
@@ -150,8 +152,10 @@ export default class Room extends Component {
                 roomID : this.state.roomID
             }
 
-            this.state.ws.send(data);
-
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
         }
         
 
@@ -179,7 +183,10 @@ export default class Room extends Component {
             username : this.state.username
         }
 
-        this.state.ws.send(data);
+        if(this.ws.readyState ==  WebSocket.OPEN){
+            this.ws.send(JSON.stringify(data));
+            alert(JSON.stringify(data)); //将send传递的字符串显示出来
+        }
 
         this.setState(
             {
@@ -210,7 +217,10 @@ export default class Room extends Component {
             username : this.state.username
         }
 
-        this.state.ws.send(data);
+        if(this.ws.readyState ==  WebSocket.OPEN){
+            this.ws.send(JSON.stringify(data));
+            alert(JSON.stringify(data)); //将send传递的字符串显示出来
+        }
 
         this.setState(
             {
@@ -238,10 +248,13 @@ export default class Room extends Component {
 
             let data = {
                 code : EXIT_BY_USER,
-                username : this.username
+                username : this.state.username
             }
             
-            this.state.ws.send(data);
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
 
             this.gobackMainPage();
         }
@@ -258,8 +271,11 @@ export default class Room extends Component {
                 username : this.state.username
             }
     
-            this.state.ws.send(data);
-
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
+                    
             this.setState(
                 {
                     host : false
@@ -271,7 +287,12 @@ export default class Room extends Component {
 
 
     render() {
-    
+        
+        if(this.state.socketState !== WebSocket.OPEN)
+            return (
+                <Text>正在建立连接...</Text>
+            )
+
         const groupA_name = [];
         const groupB_name = [];
 
