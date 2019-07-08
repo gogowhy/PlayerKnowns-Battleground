@@ -11,22 +11,27 @@ import {
 import base from '../src/style/base';
 import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
+
 /**
  * 该常量初步定义了一个players应该具有、并在render中有所体现的属性
  * 
- * 属性 ： group \  name  \  isReady
+ * 属性 ： team \  name  \  isReady
  * 属性 ： 组别  、 用户名 、 是否准备
  */
 const players = [
-    {group : 'A' , name : 'wang haoyu' , isReady : true},
-    {group : 'B' , name : 'zhou yifan' , isReady : true},
-    {group : 'B' , name : 'qi peng' , isReady : true},
-    {group : 'A' , name : 'xie yihan' , isReady : true}
+    {team : 'A' , name : 'wang haoyu' , isReady : true},
+    {team : 'B' , name : 'zhou yifan' , isReady : true},
+    {team : 'B' , name : 'qi peng' , isReady : true},
+    {team : 'A' , name : 'xie yihan' , isReady : true}
 ]
 
 /** 定义了同后端传递和接收指令的 Code 用来处理不同种类的消息 */
-const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 ;
-const RELOAD = 0 , DISMISS = 1 , KICK = 2 , START = 3;
+const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 , CHANGE_TEAM_TO_A = 5 , CHANGE_TEAM_TO_B = 6 ;
+const RELOAD = 90 , DISMISS = 91 , KICK = 92 , START = 93;
+
+/** 定义了队伍常量 */
+const TEAM_A = 0 , TEAM_B = 1;
+
 
 export default class Room extends Component {
 
@@ -39,7 +44,8 @@ export default class Room extends Component {
             isReady : this.props.navigation.state.params.host , //是否准备
             username : this.props.navigation.state.params.username , //用户名
             players : [], //房间所有玩家
-            socketState : WebSocket.CLOSED //socket的连接状态
+            socketState : WebSocket.CLOSED, //socket的连接状态
+            team : TEAM_A, //玩家所处队伍
         }
 
         /** 测试连接用公用wss地址 实际需要替换 */
@@ -52,6 +58,7 @@ export default class Room extends Component {
         this.unready = this.unready.bind(this);
         this.exitRoom = this.exitRoom.bind(this);
         this.enterGame = this.enterGame.bind(this);
+        this.changeTeam = this.changeTeam.bind(this);
     }
     
     componentDidMount(){
@@ -90,7 +97,7 @@ export default class Room extends Component {
         switch(res.code) {
             // RELOAD即重新加载玩家，在该文件 Room.js 顶部已定义
             case RELOAD : this.setState(
-                            { players : res.players}
+                            { players : res.players }
                           );break;
             // DISMISS即强制解散房间，在该文件 Room.js 顶部已定义
             case DISMISS : alert("该房间已被强制解散！");
@@ -230,6 +237,46 @@ export default class Room extends Component {
         }
     }
 
+    changeTeam(){
+
+        if(this.state.team)
+        {
+            let data ={
+                code : CHANGE_TEAM_TO_A ,
+                username : this.state.username
+            }
+    
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
+    
+            this.setState(
+                {
+                    team : TEAM_A
+                }
+            )            
+        }
+        else{
+            let data ={
+                code : CHANGE_TEAM_TO_B ,
+                username : this.state.username
+            }
+    
+            if(this.ws.readyState ==  WebSocket.OPEN){
+                this.ws.send(JSON.stringify(data));
+                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            }
+    
+            this.setState(
+                {
+                    team : TEAM_B
+                }
+            )
+        }
+    }
+
+
     /**
      * 功能 : 退出房间
      * 触发 ： 点击退出房间按钮
@@ -293,12 +340,14 @@ export default class Room extends Component {
                 <Text>正在建立连接...</Text>
             )
 
-        const groupA_name = [];
-        const groupB_name = [];
+        const teamA_name = [];
+        const teamB_name = [];
+
+        const T = this.state.team ? "B->A" : "A->B" ; //更换队伍按钮的文字说明
 
         players.forEach((player) =>{
-            if(player.group === 'A') groupA_name.push(player.name);
-            if(player.group === 'B') groupB_name.push(player.name);
+            if(player.team === 'A') teamA_name.push(player.name);
+            if(player.team === 'B') teamB_name.push(player.name);
         }
         )
         
@@ -355,6 +404,13 @@ export default class Room extends Component {
                     {StartOrReady}
                     
                     <TouchableOpacity
+                        onPress = {this.changeTeam} //-----------该属性需要保留！-------------
+                        style={base.button}>
+                        <Text
+                            style={base.btText}>{T}</Text>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity
                         onPress = {this.exitRoom} //-----------该属性需要保留！-------------
                         style={base.button}>
                         <Text
@@ -364,8 +420,8 @@ export default class Room extends Component {
                     <View >
                     <SectionList
                         sections={[
-                            {title: 'A', data: groupA_name},
-                            {title: 'B', data: groupB_name},
+                            {title: 'A', data: teamA_name},
+                            {title: 'B', data: teamB_name},
                         ]}
                         renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
                         renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
