@@ -19,6 +19,7 @@ export default class Home extends Component {
      * 跳转到登陆界面
      */
     ToLogin() {
+        
         const { navigate } = this.props.navigation;  //获取navigation的navigate方法
         navigate('Login');  //跳转到注册过的Login界面
     }

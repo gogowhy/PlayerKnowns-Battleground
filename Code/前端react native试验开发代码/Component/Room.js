@@ -26,9 +26,9 @@ const players = [
 ]
 
 /** 定义了同后端传递和接收指令的 Code 用来处理不同种类的消息 */
-const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 , CHANGE_TEAM_TO_A = 5 , CHANGE_TEAM_TO_B = 6 ;
-const RELOAD = 90 , DISMISS = 91 , KICK = 92 , START = 93;
+const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 , CHANGE_TEAM_TO_A = 5 , CHANGE_TEAM_TO_B = 6 , NEW_PLAYER = 7 , INITIALIZE = 8;
 
+const DISMISS = 90 ,KICK = 91;
 /** 定义了队伍常量 */
 const TEAM_A = 0 , TEAM_B = 1;
 
@@ -92,22 +92,170 @@ export default class Room extends Component {
         
         this.ws.onmessage = (e) => {
         // a message was received
+        if(this.setState.ws !== WebSocket.OPEN) return;
         console.log(e.data);
         let res = JSON.parse(e.data);
         switch(res.code) {
-            // RELOAD即重新加载玩家，在该文件 Room.js 顶部已定义
-            case RELOAD : this.setState(
-                            { players : res.players }
-                          );break;
-            // DISMISS即强制解散房间，在该文件 Room.js 顶部已定义
-            case DISMISS : alert("该房间已被强制解散！");
-                           this.gobackMainPage();break;
-            // KICK即被房主强制移除，在该文件 Room.js 顶部已定义
-            case KICK : alert("您已被移出该房间！");
-                        this.gobackMainPage();break;
-            // START即进入游戏，在该文件 Room.js 顶部已定义
-            case START : alert("正在进入游戏！");
-                        this.enterGame();break;
+            // 进入游戏
+            case START_GAME : {
+                alert("正在进入游戏！");
+                this.enterGame();break;
+            }
+            // 设置某玩家准备
+            case READY : {
+                const username = res.username;
+                var newplayers = this.state.players;
+                newplayers.forEach( (player) => {
+                    if(player.username == username){
+                        player.playerstatus = 1 ;
+                        return;
+                    }
+                }
+                )
+
+                this.setState(
+                    { players : newplayers }
+                )
+                break;
+            } 
+            // 设置某玩家取消准备
+            case UNREADY : {
+                const username = res.username;
+                var newplayers = this.state.players;
+                newplayers.forEach( (player) => {
+                    if(player.username == username){
+                        player.playerstatus = 0 ;
+                        return;
+                    }
+                }
+                )
+
+                this.setState(
+                    { players : newplayers }
+                )
+                break;
+            }
+            // 房主退出了房间
+            case EXIT_BY_HOST : {
+                const username = res.username;
+                const newhostname = res.hostname;
+                var newplayers = this.state.players;
+
+                
+                for(var i = 0 ;i < newplayers.length ; i++){
+                    if(newplayers[i].username == username)
+                    {
+                        newplayers.splice(i,1);
+                        break;
+                    }
+                }
+                this.setState(
+                    {
+                        players : newplayers,
+                        hontname : newhostname
+                    }
+                )
+                break;
+            }
+            // 非房主退出了房间
+            case EXIT_BY_USER : {
+                const username = res.username;
+                var newplayers = this.state.players;
+
+                for(var i = 0 ;i < newplayers.length ; i++){
+                    if(newplayers[i].username == username)
+                    {
+                        newplayers.splice(i,1);
+                        break;
+                    }
+                }
+                this.setState(
+                    {
+                        players : newplayers,
+                    }
+                )
+                break;
+            }
+            // 设置某玩家更换为A队
+            case CHANGE_TEAM_TO_A : {
+                const username = res.username;
+                var newplayers = this.state.players;
+                newplayers.forEach( (player) => {
+                    if(player.username == username){
+                        player.playerteam = TEAM_A ;
+                        return;
+                    }
+                }
+                )
+
+                this.setState(
+                    { players : newplayers }
+                )
+                break;
+            }
+            // 设置某玩家更换为B队
+            case CHANGE_TEAM_TO_B : {
+                const username = res.username;
+                var newplayers = this.state.players;
+                newplayers.forEach( (player) => {
+                    if(player.username == username){
+                        player.playerteam = TEAM_B ;
+                        return;
+                    }
+                }
+                )
+
+                this.setState(
+                    { players : newplayers }
+                )
+                break;
+            }
+            //  新玩家加入房间
+            case NEW_PLAYER : {
+                let newplayer = {
+                    username : res.username,
+                    playerstatus : false,
+                    playerteam : res.playerteam,
+                }
+                var newplayers = this.state.players;
+                newplayers.push(newplayer);
+
+                this.setState(
+                    { players : newplayers }
+                )
+                break;
+            }
+            // 获取初始值
+            case INITIALIZE : {
+
+                var newplayers = res.players;
+                
+                this.setState(
+                    {
+                        isReady : false,
+                        team : res.playerteam == 1 ? TEAM_A : TEAM_B,
+                        players : newplayers
+                    }
+                )
+                break;
+            }
+            // 房间被强制解散
+            case DISMISS : {
+                alert("该房间被强制解散！");
+                this.gobackMainPage();
+                break;
+            }
+            // 自己被踢出房间
+            case KICK : {
+                alert("你已被强制请出房间！");
+                this.gobackMainPage();
+                break;
+            }
+            // 报错
+            case -1 : {
+                alert("发生了一个意料之外的错误。请稍后重试。");
+                break;
+            }
         }
         };
         
@@ -125,12 +273,20 @@ export default class Room extends Component {
 
     /** 返回上一个界面 */
     gobackMainPage(){
+        this.ws.close();
+        this.setState({
+            ws : this.ws.readyState
+        });
         const { goBack } = this.props.navigation ;
         goBack();
     }
 
     /** 进入游戏 */
     enterGame(){
+        this.ws.close();
+        this.setState({
+            ws : this.ws.readyState
+        });
         const { navigate } = this.props.navigation ;
         navigate('Gaming');
     }
