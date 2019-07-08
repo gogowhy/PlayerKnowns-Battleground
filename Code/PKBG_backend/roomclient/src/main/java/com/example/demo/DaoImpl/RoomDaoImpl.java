@@ -21,15 +21,12 @@ public class RoomDaoImpl implements RoomDao {
     @Autowired
     public RoomRepository roomRepository;
 
-
     @Autowired
     public PlayerRepository playerRepository;
 
     @Override
-    public String create(WebSocketSession session) throws IOException {
+    public String create(String hostname) throws IOException {
         MyHandler myHandler = new MyHandler();
-        myHandler.afterConnectionEstablished(session);
-        String hostname = session.getUri().toString().split("ID=")[1];
         Room room = new Room();
         room.setHostname(hostname);
 
@@ -53,26 +50,27 @@ public class RoomDaoImpl implements RoomDao {
         Integer rmPassword = Integer.parseInt(roomPassword);
         room.setRoompassword(rmPassword);
 
-        Player player = new Player();
+        Player player = new Player();//original player status
         player.setRoomnumber(rmNumber);
         player.setPlayername(hostname);
+        player.setPlayerteam(1);
+        player.setPlayerstatus(0);
         playerRepository.save(player);
 
         room.setGamestatus(0);
 
         roomRepository.save(room);
-        return "Room Created Successfully!";
+        return null;
     }
 
     @Override
-    public String dismiss(WebSocketSession session)
+    public String dismiss(String if_hostname)
     {
-        String  if_hostname = session.getUri().toString().split("ID=")[1];
+        MyHandler myHandler = new MyHandler();
         Room room=roomRepository.findByHostname(if_hostname);
         Integer roomnumber=room.getRoomnumber();
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
 
-        MyHandler myHandler = new MyHandler();
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
@@ -82,27 +80,41 @@ public class RoomDaoImpl implements RoomDao {
         }
 
         roomRepository.delete(room);
-        return "房间"+roomnumber+"解散成功！";
+        return null;
 
     }
 
     @Override
-    public String join(WebSocketSession session) throws IOException {
+    public String kick(Integer roomnumber, String username)
+    {
         MyHandler myHandler = new MyHandler();
-        myHandler.afterConnectionEstablished(session);
-        String roomnumber = session.getUri().toString().split("roomnumber=")[1];
-        String username = session.getUri().toString().split("username=")[1];
-        String password = session.getUri().toString().split("password=")[1];
-        Integer rmnumber = Integer.valueOf(roomnumber).intValue();
-        Integer psword = Integer.valueOf(password).intValue();
+        Player player = playerRepository.findByPlayername(username);
+        if (roomnumber.equals(player.roomnumber))
+        {
+            playerRepository.delete(player);
+            List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+            for(int i=0;i<players.size();i++)
+            {
+                Player player_temp=players.get(i);
+                String playername = player_temp.getPlayername();
+                myHandler.sendMessageToUser(playername, new TextMessage("Kicked Out "+username));
+            }
+        }
+        else return "No Such Player In Room! ";
+        return null;
+    }
+
+    @Override
+    public String join(Integer roomnumber, String username, Integer password) throws IOException {
+        MyHandler myHandler = new MyHandler();
         Room room = new Room();
-        room = roomRepository.findByRoomnumber(rmnumber);
+        room = roomRepository.findByRoomnumber(roomnumber);
         if (room == null)
         {
             return "Cannot Find Target Room!";
         }
         if (room.getRoompassword() != null)
-            if (!psword.equals(room.getRoompassword()))
+            if (!password.equals(room.getRoompassword()))
             {
                 return "Wrong Password!";
             }
@@ -115,7 +127,19 @@ public class RoomDaoImpl implements RoomDao {
             return "Target Room Is Full!";
         }
 
-        List<Player> players =playerRepository.findByRoomnumber(rmnumber);
+        Player player = new Player();
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        Integer a=new Integer(0);
+        Integer b=new Integer(0);
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            Integer team_temp = player_temp.getPlayerteam();
+            if (team_temp==1) a++;
+            else b++;
+        }
+        if (a>b) player.setPlayerteam(2);
+            else player.setPlayerteam(1);
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
@@ -127,57 +151,209 @@ public class RoomDaoImpl implements RoomDao {
         room.setPlayernumber(newnumber);
         roomRepository.save(room);
 
-        Player player = new Player();
-        player.setRoomnumber(rmnumber);
+        player.setRoomnumber(roomnumber);
         player.setPlayername(username);
         playerRepository.save(player);
-        return "Join Room Successfully!";
+        return null;
     }
 
     @Override
-    public String quit(WebSocketSession session)
+    public String quit(String username)
     {
-        String roomnumber = session.getUri().toString().split("roomnumber=")[1];
-        String username = session.getUri().toString().split("username=")[1];
-        Integer rmnumber = Integer.valueOf(roomnumber).intValue();
-        Room room = roomRepository.findByRoomnumber(rmnumber);
         Player player = playerRepository.findByPlayername(username);
-        String hostname = room.getHostname();
+        Integer roomnumber = player.getRoomnumber();
+        Room room = roomRepository.findByRoomnumber(roomnumber);
         MyHandler myHandler = new MyHandler();
-        if (hostname.equals(username))
+        Integer newnumber = room.getPlayernumber()-1;
+        room.setPlayernumber(newnumber);
+        roomRepository.save(room);
+        playerRepository.delete(player);
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        for(int i=0;i<players.size();i++)
         {
-            Integer newnumber = room.getPlayernumber()-1;
-            if (newnumber == 0) {
-                roomRepository.delete(room);
-                return "Room Dismissed!";
-            }
-            else room.setPlayernumber(newnumber);
-            playerRepository.delete(player);
-
-            List<Player> players =playerRepository.findByRoomnumber(rmnumber);
-            Player player_newhost=players.get(1);
-            String newhost = player_newhost.getPlayername();
-            room.setHostname(newhost);
-            for(int i=0;i<players.size();i++)
-            {
-                Player player_temp=players.get(i);
-                String playername = player_temp.getPlayername();
-                myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username+"Newhost"+newhost));
-            }
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username));
         }
-        else {
-            Integer newnumber = room.getPlayernumber()-1;
-            room.setPlayernumber(newnumber);
-            playerRepository.delete(player);
-            List<Player> players =playerRepository.findByRoomnumber(rmnumber);
-            for(int i=0;i<players.size();i++)
-            {
-                Player player_temp=players.get(i);
-                String playername = player_temp.getPlayername();
-                myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username));
-            }
+        return null;
+    }
+
+    @Override
+    public String hostquit(String username)
+    {
+        Player player = playerRepository.findByPlayername(username);
+        Integer roomnumber = player.getRoomnumber();
+        Room room = roomRepository.findByRoomnumber(roomnumber);
+        MyHandler myHandler = new MyHandler();
+        Integer newnumber = room.getPlayernumber()-1;
+        if (newnumber == 0) {
+            roomRepository.delete(room);
+            return "Room Dismissed!";
+        }
+        else room.setPlayernumber(newnumber);
+        playerRepository.delete(player);
+
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        Player player_newhost=players.get(1);
+        String newhost = player_newhost.getPlayername();
+        room.setHostname(newhost);
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            myHandler.sendMessageToUser(playername, new TextMessage("Quited"+username+"Newhost"+newhost));
+        }
+        roomRepository.save(room);
+        return null;
+    }
+
+    @Override
+    public String changeToA(String username)
+    {
+        Player player = playerRepository.findByPlayername(username);
+        Integer team = player.getPlayerteam();
+        if (team==1)//Already In Team A
+        {
+            return "";
+        }
+        Integer roomnumber = player.getRoomnumber();
+
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        Integer a=new Integer(0);
+        Integer b=new Integer(0);
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            Integer team_temp = player_temp.getPlayerteam();
+            if (team_temp==1) a++;
+                else b++;
+        }
+        if (a==players.size()/2)//Team A Full
+        {
+            return "Team A Is Full!";
+        }
+
+        player.setPlayerteam(1);
+        playerRepository.save(player);
+        MyHandler myHandler = new MyHandler();
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            myHandler.sendMessageToUser(playername, new TextMessage(""));
+        }
+        return null;
+    }
+
+    @Override
+    public String changeToB(String username)
+    {
+        Player player = playerRepository.findByPlayername(username);
+        Integer team = player.getPlayerteam();
+        if (team==2)//Already In Team B
+        {
+            return "";
+        }
+        Integer roomnumber = player.getRoomnumber();
+
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        Integer a=new Integer(0);
+        Integer b=new Integer(0);
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            Integer team_temp = player_temp.getPlayerteam();
+            if (team_temp==1) a++;
+            else b++;
+        }
+        if (b==players.size()/2)//Team B Full
+        {
+            return "";
+        }
+
+        player.setPlayerteam(2);
+        playerRepository.save(player);
+        MyHandler myHandler = new MyHandler();
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            myHandler.sendMessageToUser(playername, new TextMessage(""));
         }
         return "";
     }
 
+    @Override
+    public String ready(String username)
+    {
+        Player player = playerRepository.findByPlayername(username);
+        Integer status = player.getPlayerstatus();
+        if (status == 1)//Already Ready
+        {
+            return "Already Ready!";
+        }
+        player.setPlayerstatus(1);
+        playerRepository.save(player);
+        MyHandler myHandler = new MyHandler();
+        Integer roomnumber = player.getRoomnumber();
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            myHandler.sendMessageToUser(playername, new TextMessage(""));
+        }
+        return null;
+    }
+
+    @Override
+    public String cancel(String username)
+    {
+        Player player = playerRepository.findByPlayername(username);
+        Integer status = player.getPlayerstatus();
+        if (status == 2)//Already Cancel
+        {
+            return "Already Canceled!";
+        }
+        player.setPlayerstatus(2);
+        playerRepository.save(player);
+        MyHandler myHandler = new MyHandler();
+        Integer roomnumber = player.getRoomnumber();
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            myHandler.sendMessageToUser(playername, new TextMessage(""));
+        }
+        return null;
+    }
+
+    @Override
+    public String start(Integer roomnumber)
+    {
+        Room room = roomRepository.findByRoomnumber(roomnumber);
+        Integer status = room.getGamestatus();
+        if (status == 1) return "Already Started!";
+
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            Integer isReady = player_temp.getPlayerstatus();
+            if (isReady==0) return "Not All Ready!";
+        }
+
+        room.setGamestatus(1);
+        roomRepository.save(room);
+
+        MyHandler myHandler = new MyHandler();
+        for(int i=0;i<players.size();i++)
+        {
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            myHandler.sendMessageToUser(playername, new TextMessage("0"));
+        }
+        return null;
+    }
 }
