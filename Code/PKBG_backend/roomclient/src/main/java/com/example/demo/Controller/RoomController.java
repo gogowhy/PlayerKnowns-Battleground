@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/room")
@@ -18,9 +20,9 @@ public class RoomController {
 
     @RequestMapping("/create")
     @ResponseBody
-    public String create(HttpServletRequest request)
+    public String create(WebSocketSession session) throws IOException
     {
-        return roomService.create(request);
+        return roomService.create(session);
     }
 
 
@@ -34,23 +36,23 @@ public class RoomController {
 
     @RequestMapping("/dismiss")
     @ResponseBody
-    public String dismiss(HttpServletRequest request)
+    public String dismiss(WebSocketSession session)
     {
-        return roomService.dismiss(request);
+        return roomService.dismiss(session);
     }
 
     @RequestMapping("/join")
     @ResponseBody
-    public String join(HttpServletRequest request)
+    public String join(WebSocketSession session)
     {
-        return roomService.join(request);
+        return roomService.join(session);
     }
 
     @RequestMapping("/quit")
     @ResponseBody
-    public String quit(HttpServletRequest request)
+    public String quit(WebSocketSession session)
     {
-        return roomService.quit(request);
+        return roomService.quit(session);
     }
 
 }

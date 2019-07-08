@@ -26,7 +26,7 @@ public class MyHandler implements WebSocketHandler {
     }
     //新增socket
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         System.out.println("成功建立连接");
         String ID = session.getUri().toString().split("ID=")[1];
         System.out.println(ID);
