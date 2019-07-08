@@ -14,9 +14,6 @@ import axios from 'axios';
 
 export default class MainPage extends Component {
 
-    /**
-     * 成功登陆界面
-     */
     constructor(props){
         super(props);
         this.state = {
@@ -27,12 +24,28 @@ export default class MainPage extends Component {
         this.exit = this.exit.bind(this);
     }
 
+    
+    /* 退出登录 */
+    exit(){
+        const { goBack } = this.props.navigation ;
+        goBack();
+    }
 
+    /**
+     * 功能 ：创建房间
+     * 触发 ：点击“创建房间”按钮
+     * 
+     * 系统会自动创建一个包含明文房间ID和密码的房间，并将 roomID 和 password 返回至前端
+     * 随后跳转至房间
+     */
     createRoom(){
-        /*
+        
         const _this = this;
          
         const url = "http://local:8080/createRoom";
+
+        let roomID = "";
+        let password = "";
 
         data = {
             username : _this.state.username,
@@ -40,6 +53,8 @@ export default class MainPage extends Component {
         axios.post( url , data )
             .then(function (response) {
                 // handle success
+                roomID = response.data.roomID;
+                password = response.data.password;
                 console.log(response);
             })
             .catch(function (error) {
@@ -49,21 +64,24 @@ export default class MainPage extends Component {
             .then(function () {
                 // always executed
             });
-        */
+        
         const { navigate } = this.props.navigation;
 
-        navigate('Room',{id :"777" , password : "123" , host : true });
+        //被注释掉的这句是实际上从后端获取信息后跳转的语句 未被注释掉的是测试语句
+        //navigate('Room',{roomID : roomID , password : password , host : true , username :this.state.username });
+        navigate('Room',{roomID :"114514" , password : "4396" , host : true , username :this.state.username });
     }
 
-    /* 退出登录 */
-    exit(){
-        const { goBack } = this.props.navigation ;
-        goBack();
-    }
-
+    /** 
+     * 功能 ：加入房间
+     * 触发 ：点击“加入房间”按钮
+     * 
+     * 跳转到一个输入 房间ID 和 密码 的页面（EnterRoom_inputID.js)
+     * 
+     */
     enterRoom(){
         const { navigate } = this.props.navigation ;
-        navigate('EnterRoom_inputID');  
+        navigate('EnterRoom_inputID',{username : this.state.username});  
     }
 
     render() {

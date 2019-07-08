@@ -8,7 +8,10 @@ import {
 export default class End extends Component {
 
     /**
-     * 成功登陆界面
+     * 这是一个我也不知道用在了哪里的界面 好像它根本没有作用
+     * 
+     * 但是我懒得删了
+     * 
      */
 
     render() {

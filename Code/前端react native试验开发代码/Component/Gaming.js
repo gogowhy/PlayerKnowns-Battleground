@@ -8,7 +8,12 @@ import {
 export default class Gaming extends Component {
 
     /**
-     * 成功登陆界面
+     * 该页面为游戏界面，目前暂未开发
+     * 
+     * 更多内容敬请期待
+     * 
+     * ……
+     * 
      */
 
     render() {

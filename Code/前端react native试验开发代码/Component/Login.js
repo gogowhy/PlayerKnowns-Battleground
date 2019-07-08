@@ -11,6 +11,9 @@ import base from '../src/style/base';
 
 import axios from 'axios';
 
+/** 定义了同后端传递和接收指令的 Code 用来处理不同种类的 登录的响应状态 */
+const USERNAME = -1 , PASSWORD = 0;
+
 /* 组件 : Login
 -- 作用 : 收集用户登录信息，并提交至后端
 */
@@ -42,22 +45,35 @@ export default class Login extends Component {
     }
     /* 以上是修改state(用户名、密码等) */
 
-    /* 登录 ： 向后端发送用户名和密码 */
+    /** 跳转到注册界面 */
+    gotoRegister(){
+        const { navigate } = this.props.navigation ;
+        navigate('Register');
+    }
+
+    /**
+     * 功能 ：登录
+     * 触发 ：点击“登录”按钮
+     * 
+     * 向后端发送 用户名 和 密码 ，并接收是否成功登录的指令 ，然后决定是否进行跳转
+     */
     login(){
-        const { navigate } = this.props.navigation ; 
-        navigate('MainPage');
-        /*
+        
+        
         const _this = this;
 
         const url = "http://local:8080/Login";
 
-        data = {
+        var code = USERNAME;
+
+        let data = {
             username : _this.state.username,
             userpassword : _this.state.password,
         }
         axios.post( url , data )
             .then(function (response) {
                 // handle success
+                code = response.data;
                 console.log(response);
             })
             .catch(function (error) {
@@ -67,12 +83,35 @@ export default class Login extends Component {
             .then(function () {
                 // always executed
             });
+        /**
+        switch(code){
+            //成功登录，跳转页面
+            case 1 : const { navigate } = this.props.navigation ; 
+                    navigate('MainPage' , {username : this.state.username});break;
+            // USERNAME即用户名不存在，在该文件 Login.js 顶部已定义
+            case USERNAME : alert("用户名不存在！");break;
+            // PASSWORD即密码错误，在该文件 Login.js 顶部已定义
+            case PASSWORD : alert("密码错误！");break;
+        }
         */
+
+       /* 以下为测试用代码 */
+       const { navigate } = this.props.navigation ; 
+       navigate('MainPage' , {username : this.state.username});
+       /* 以上为测试用代码 */
     }
 
 
-    /* 忘记密码 ： 向后端发送用户名，根据此用户名绑定的邮箱账号发送邮件重置密码 */
+    /**
+     *  功能 ：忘记密码
+     *  触发 ：点击“忘记密码”按钮
+     * 
+     *  向后端发送用户名，根据此用户名绑定的邮箱账号发送邮件重置密码 
+     * 
+     */
     forgetPW(){
+
+        alert("我们将发送一封邮件到您用户名绑定的邮箱中，请根据邮件中的提示完成找回密码的功能。")
         const _this = this;
 
         const url = "http://local:8080/forgetPassword";
@@ -92,11 +131,6 @@ export default class Login extends Component {
             .then(function () {
                 // always executed
             });
-    }
-
-    gotoRegister(){
-        const { navigate } = this.props.navigation ;
-        navigate('Register');
     }
 
     render() {

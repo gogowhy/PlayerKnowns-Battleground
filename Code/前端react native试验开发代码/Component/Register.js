@@ -40,10 +40,11 @@ class CheckOut extends Component {
     }
     */
     render(){
-
+        /** 定义了合法email和phone的正则表达式 用于输入合法性的检测 */
         var expr_email = /^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})$/;
         var expr_phone = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0-9]{1})|(15[0-3]{1})|(15[4-9]{1})|(18[0-9]{1})|(199))+\d{8})$/;
         
+        /** 检测密码、邮箱、手机号 */
         var pw = !this.props.pw1.indexOf(this.props.pw2); //密码检测 ， true则表示格式正确 、不显示在屏幕上 ， 下同
         var em = expr_email.test(this.props.email) || (this.props.email === ""); //邮箱检测
         var ph = expr_phone.test(this.props.phone) || (this.props.phone === ""); //手机号检测
@@ -75,6 +76,7 @@ class CheckOut extends Component {
 
     }
 }
+
 /* 组件 : Register
 -- 作用 : 收集用户信息，并提交至后端
 */
@@ -96,7 +98,7 @@ export default class Register extends Component {
         this.register = this.register.bind(this);
         this.gobackLogin = this.gobackLogin.bind(this);
     }
-
+    /** 收集文本框内输入的用户信息 更改state 下同 */
     onUsernameChanged( n ){
         this.setState(
             { username : n }
@@ -128,7 +130,12 @@ export default class Register extends Component {
     }
     /* 以上是修改state(用户名、密码等) */
 
-    /* 注册 ： 向后端发送注册信息 */
+    /**
+     * 功能 ： 注册
+     * 触发 ： 点击“注册”按钮
+     * 
+     * 注册一个帐户
+     */
     register(){
         const _this = this;
 
@@ -154,7 +161,7 @@ export default class Register extends Component {
             });
     }
 
-    /* 返回登录界面 */
+    /** 返回上一个页面（登录页面） */
     gobackLogin(){
         const { goBack } = this.props.navigation ;
         goBack();
