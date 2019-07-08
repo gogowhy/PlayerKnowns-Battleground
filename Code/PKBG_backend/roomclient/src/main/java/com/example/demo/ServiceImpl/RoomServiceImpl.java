@@ -15,27 +15,69 @@ public class RoomServiceImpl implements RoomService {
     public RoomDao roomDao;
 
     @Override
-    public String create(WebSocketSession session) throws IOException
+    public String create(String hostname) throws IOException
     {
-        return roomDao.create(session);
+        return roomDao.create(hostname);
     }
 
 
     @Override
-    public  String dismiss(WebSocketSession session)
+    public  String dismiss(String if_hostname)
     {
-        return roomDao.dismiss(session);
+        return roomDao.dismiss(if_hostname);
     }
 
     @Override
-    public String join(WebSocketSession session)throws IOException
+    public String join(Integer roomnumber, String username, Integer password) throws IOException
     {
-        return roomDao.join(session);
+        return roomDao.join(roomnumber, username, password);
     }
 
     @Override
-    public String quit(WebSocketSession session)
+    public String quit(String username)
     {
-        return roomDao.quit(session);
+        return roomDao.quit(username);
+    }
+
+    @Override
+    public String hostquit(String username)
+    {
+        return roomDao.hostquit(username);
+    }
+
+    @Override
+    public String kick(Integer roomnumber, String username)
+    {
+        return roomDao.kick(roomnumber, username);
+    }
+
+    @Override
+    public String changeToA(String username)
+    {
+        return roomDao.changeToA(username);
+    }
+
+    @Override
+    public String changeToB(String username)
+    {
+        return roomDao.changeToB(username);
+    }
+
+    @Override
+    public String ready(String username)
+    {
+        return roomDao.ready(username);
+    }
+
+    @Override
+    public String cancel(String username)
+    {
+        return roomDao.cancel(username);
+    }
+
+    @Override
+    public String start(Integer roomnumber)
+    {
+        return roomDao.start(roomnumber);
     }
 }
