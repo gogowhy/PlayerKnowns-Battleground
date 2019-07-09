@@ -138,7 +138,8 @@ public class MyHandler implements WebSocketHandler {
                 case 91://KICK
                     Player player = playerRepository.findByPlayername(username);
                     Integer roomnumber91 = player.roomnumber;
-                    String Result91 = roomService.kick(roomnumber91, username);
+                    String username91 = new String((String) jsonobject.get("username"));
+                    String Result91 = roomService.kick(username,roomnumber91, username91);
                     if (!Result91.equals(null)) sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result91));
                     break;
             }

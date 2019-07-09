@@ -14,7 +14,7 @@ public interface RoomDao {
     public String join(Integer roomnumber, String username, Integer password) throws IOException ;
     public String quit(String username);
     public String hostquit(String username);
-    public String kick(Integer roomnumber, String username);
+    public String kick(String if_hostname, Integer roomnumber, String username);
     public String changeToA(String username);
     public String changeToB(String username);
     public String ready(String username);

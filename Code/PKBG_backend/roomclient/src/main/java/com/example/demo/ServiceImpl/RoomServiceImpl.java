@@ -46,9 +46,9 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String kick(Integer roomnumber, String username)
+    public String kick(String if_hostname, Integer roomnumber, String username)
     {
-        return roomDao.kick(roomnumber, username);
+        return roomDao.kick(if_hostname, roomnumber, username);
     }
 
     @Override
