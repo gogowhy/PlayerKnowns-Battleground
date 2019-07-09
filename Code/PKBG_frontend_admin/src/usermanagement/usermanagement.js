@@ -165,7 +165,7 @@ class usermanagement extends React.Component {
                             style={{cursor: 'pointer'}}
                         />
                     </span> {/*这里实现的是点击左右拉扯的动画*/}
-                    <span style={{color:'#fff', paddingLeft:'2%', fontSize:'1.4em'}}>EBOOK SYSTEM</span>
+                    <span style={{color:'#fff', paddingLeft:'2%', fontSize:'1.4em'}}>PKBG ADMINISTRATOR</span>
                     <span style={{color:'#fff', float:'right', paddingRight:'1%'}}>
                         <img src={logo} className="App-logo" alt="logo" />
                     </span>{/*这里实现右侧旋转logo*/}
@@ -195,7 +195,7 @@ class usermanagement extends React.Component {
                     </div>
                 </Content>{/*这里是面包屑导航*/}
                 <Footer style={{ textAlign: 'center' }}>
-                    EBOOK SYSTEM ©2019 Created by gogowhy
+                    PKBG ©2019 Created by The PKBG Teamwork
                 </Footer>
             </Layout>
         </Layout>
