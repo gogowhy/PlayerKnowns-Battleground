@@ -46,8 +46,25 @@ public class MyHandler implements WebSocketHandler {
         String ID = session.getUri().toString().split("ID=")[1];
         System.out.println(ID);
 
-        //if 1/2 create & join
-
+        String operation = session.getUri().toString().split("code=")[1];
+        Integer code = Integer.valueOf(operation);
+        switch (code)
+        {
+            case 1:
+                String Result1 = roomService.create(ID);
+                if (!Result1.equals(null))
+                    sendMessageToUser(ID+"",new TextMessage("-1"+Result1));
+                break;
+            case 2:
+                String room = session.getUri().toString().split("roomnumber=")[1];
+                String pass = session.getUri().toString().split("password=")[1];
+                Integer roomnumber = Integer.valueOf(room);
+                Integer password = Integer.valueOf(pass);
+                String Result2 = roomService.join(roomnumber,ID,password);
+                if (!Result2.equals(null))
+                    sendMessageToUser(ID+"",new TextMessage("-1"+Result2));
+                break;
+        }
 
         if (ID != null) {
             users.put(ID, session);

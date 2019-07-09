@@ -59,6 +59,9 @@ public class RoomDaoImpl implements RoomDao {
 
         room.setGamestatus(0);
 
+        String message = player.toJSON(7);
+        myHandler.sendMessageToUser(hostname, new TextMessage(message));
+
         roomRepository.save(room);
         return null;
     }
@@ -192,7 +195,8 @@ public class RoomDaoImpl implements RoomDao {
         Integer newnumber = room.getPlayernumber()-1;
         if (newnumber == 0) {
             roomRepository.delete(room);
-            return "Room Dismissed!";
+            String message = player.toJSON(90);
+            myHandler.sendMessageToUser(username, new TextMessage(message));
         }
         else room.setPlayernumber(newnumber);
         playerRepository.delete(player);
