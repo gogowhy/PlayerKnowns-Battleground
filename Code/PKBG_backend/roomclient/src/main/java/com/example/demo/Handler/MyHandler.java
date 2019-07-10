@@ -52,7 +52,7 @@ public class MyHandler implements WebSocketHandler {
         {
             case 1:
                 String Result1 = roomService.create(ID);
-                if (!Result1.equals(null))
+                if (!Result1.equals("Success!"))
                     sendMessageToUser(ID+"",new TextMessage("-1"+Result1));
                 break;
             case 2:
@@ -61,7 +61,7 @@ public class MyHandler implements WebSocketHandler {
                 Integer roomnumber = Integer.valueOf(room);
                 Integer password = Integer.valueOf(pass);
                 String Result2 = roomService.join(roomnumber,ID,password);
-                if (!Result2.equals(null))
+                if (!Result2.equals("Success!"))
                     sendMessageToUser(ID+"",new TextMessage("-1"+Result2));
                 break;
         }
@@ -90,49 +90,49 @@ public class MyHandler implements WebSocketHandler {
                 case 0://START GAME
                     Integer roomnumber0 = new Integer((Integer) jsonobject.get("roomnumber"));
                     String Result0 = roomService.start(roomnumber0);
-                    if (!Result0.equals(null))
+                    if (!Result0.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result0));
                     break;
                 case 1://READY
                     String Result1 = roomService.ready(username);
-                    if (!Result1.equals(null))
+                    if (!Result1.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result1));
                     break;
                 case 2://CANCEL READY
                     String Result2 = roomService.cancel(username);
-                    if (!Result2.equals(null))
+                    if (!Result2.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result2));
                     break;
                 case 3://HOST QUIT
                     String Result3 = roomService.hostquit(username);
-                    if (!Result3.equals(null))
+                    if (!Result3.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result3));
                     break;
                 case 4://PLAYER QUIT
                     String Result4 = roomService.quit(username);
-                    if (!Result4.equals(null))
+                    if (!Result4.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result4));
                     break;
                 case 5://CHANGE TO A
                     String Result5 = roomService.changeToA(username);
-                    if (!Result5.equals(null))
+                    if (!Result5.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result5));
                     break;
                 case 6://CHANGE TO B
                     String Result6 = roomService.changeToB(username);
-                    if (!Result6.equals(null))
+                    if (!Result6.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result6));
                     break;
                 case 7://JOIN
                     Integer roomnumber7 = new Integer((Integer) jsonobject.get("roomnumber"));
                     Integer password7 = new Integer((Integer) jsonobject.get("password"));
                     String Result7 = roomService.join(roomnumber7, username, password7);
-                    if (!Result7.equals(null))
+                    if (!Result7.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result7));
                     break;
                 case 90://DISMISS
                     String Result90 = roomService.dismiss(username);
-                    if (!Result90.equals(null))
+                    if (!Result90.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result90));
                     break;
                 case 91://KICK
@@ -140,7 +140,7 @@ public class MyHandler implements WebSocketHandler {
                     Integer roomnumber91 = player.roomnumber;
                     String username91 = new String((String) jsonobject.get("username"));
                     String Result91 = roomService.kick(username,roomnumber91, username91);
-                    if (!Result91.equals(null)) sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result91));
+                    if (!Result91.equals("Success!")) sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result91));
                     break;
             }
 
