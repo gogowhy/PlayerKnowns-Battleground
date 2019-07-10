@@ -63,7 +63,7 @@ public class RoomDaoImpl implements RoomDao {
         myHandler.sendMessageToUser(hostname, new TextMessage(message));
 
         roomRepository.save(room);
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -89,7 +89,7 @@ public class RoomDaoImpl implements RoomDao {
         }
 
         roomRepository.delete(room);
-        return null;
+        return "Success!";
 
     }
 
@@ -125,7 +125,7 @@ public class RoomDaoImpl implements RoomDao {
             }
         }
         else return "No Such Player In Room!";
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -179,7 +179,7 @@ public class RoomDaoImpl implements RoomDao {
         player.setRoomnumber(roomnumber);
         player.setPlayername(username);
         playerRepository.save(player);
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -201,7 +201,7 @@ public class RoomDaoImpl implements RoomDao {
             String message = player_temp.toJSON(4);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -232,7 +232,7 @@ public class RoomDaoImpl implements RoomDao {
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         roomRepository.save(room);
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -271,7 +271,7 @@ public class RoomDaoImpl implements RoomDao {
             String message = player_temp.toJSON(5);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -310,7 +310,7 @@ public class RoomDaoImpl implements RoomDao {
             String message = player_temp.toJSON(6);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
-        return "";
+        return "Success!";
     }
 
     @Override
@@ -334,7 +334,7 @@ public class RoomDaoImpl implements RoomDao {
             String message = player_temp.toJSON(1);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -358,7 +358,7 @@ public class RoomDaoImpl implements RoomDao {
             String message = player_temp.toJSON(2);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
-        return null;
+        return "Success!";
     }
 
     @Override
@@ -386,6 +386,6 @@ public class RoomDaoImpl implements RoomDao {
             String playername = player_temp.getPlayername();
             myHandler.sendMessageToUser(playername, new TextMessage("0"));
         }
-        return null;
+        return "Success!";
     }
 }
