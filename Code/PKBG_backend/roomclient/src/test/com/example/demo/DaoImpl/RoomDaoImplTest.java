@@ -1,9 +1,14 @@
 package com.example.demo.DaoImpl;
 
+import javafx.application.Application;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before; 
-import org.junit.After; 
+import org.junit.After;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /** 
 * RoomDaoImpl Tester. 
@@ -11,8 +16,11 @@ import org.junit.After;
 * @author <Authors name> 
 * @since <pre>七月 9, 2019</pre> 
 * @version 1.0 
-*/ 
-public class RoomDaoImplTest { 
+*/
+@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringBootTest(classes= Application.class)
+@ContextConfiguration("**/applicationContext.xml")
+public class RoomDaoImplTest {
 
 @Before
 public void before() throws Exception { 
@@ -25,9 +33,10 @@ public void after() throws Exception {
 /*
 Test Data
 ①
-host:user1
 roomnumber:1234
+host:user1
 player:user2,user4,user7
+user1&user4&user7:Ready
 gamestatus:0
 password:5678
 
@@ -40,8 +49,16 @@ password:5678
 ③
 roomnumber:6789
 host:user6
+player:user8-user22
 playernumber:16
 password:5678
+user6,user8-user14:TeamA
+user15-user22:TeamB
+All user:Not Ready
+
+④
+roomnumber:1111
+host:user23
  */
 
 /** 
@@ -53,7 +70,7 @@ password:5678
 public void testCreate() throws Exception {
     RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
     String result = roomDaoImpl.create("user100");
-    Assert.assertEquals("Judge Wrong", null, result);
+    Assert.assertEquals("Judge Wrong", "Success!", result);
 } 
 
 /** 
@@ -64,8 +81,8 @@ public void testCreate() throws Exception {
 @Test
 public void testDismiss() throws Exception {
     RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
-    String result = roomDaoImpl.dismiss("user1");
-    Assert.assertEquals("Judge Wrong", null, result);
+    String result = roomDaoImpl.dismiss("user23");
+    Assert.assertEquals("Judge Wrong", "Success!", result);
     result = roomDaoImpl.dismiss("user2");
     Assert.assertEquals("Judge Wrong", "Not Host!", result);
 } 
@@ -79,7 +96,7 @@ public void testDismiss() throws Exception {
 public void testKick() throws Exception {
     RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
     String result = roomDaoImpl.kick("user1",1234,"user2");
-    Assert.assertEquals("Judge Wrong", null, result);
+    Assert.assertEquals("Judge Wrong", "Success!", result);
     result = roomDaoImpl.kick("user1",3456,"user2");
     Assert.assertEquals("Judge Wrong", "Not In This Room!", result);
     result = roomDaoImpl.kick("user4",1234,"user1");
@@ -97,7 +114,7 @@ public void testKick() throws Exception {
 public void testJoin() throws Exception {
     RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
     String result = roomDaoImpl.join(1234,"user3",5678);
-    Assert.assertEquals("Judge Wrong", null, result);
+    Assert.assertEquals("Judge Wrong", "Success!", result);
     result = roomDaoImpl.join(9999,"user3",5678);
     Assert.assertEquals("Judge Wrong", "Cannot Find Target Room!", result);
     result = roomDaoImpl.join(1234,"user3",6544);
@@ -115,8 +132,10 @@ public void testJoin() throws Exception {
 * 
 */ 
 @Test
-public void testQuit() throws Exception { 
-//TODO: Test goes here... 
+public void testQuit() throws Exception {
+    RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
+    String result = roomDaoImpl.quit("user7");
+    Assert.assertEquals("Judge Wrong", "Success!", result);
 } 
 
 /** 
@@ -125,8 +144,10 @@ public void testQuit() throws Exception {
 * 
 */ 
 @Test
-public void testHostquit() throws Exception { 
-//TODO: Test goes here... 
+public void testHostquit() throws Exception {
+    RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
+    String result = roomDaoImpl.hostquit("user6");
+    Assert.assertEquals("Judge Wrong", "Success!", result);
 } 
 
 /** 
@@ -135,8 +156,15 @@ public void testHostquit() throws Exception {
 * 
 */ 
 @Test
-public void testChangeToA() throws Exception { 
-//TODO: Test goes here... 
+public void testChangeToA() throws Exception {
+
+    RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
+    String result = roomDaoImpl.changeToA("user15");
+    Assert.assertEquals("Judge Wrong", "Success!", result);
+    result = roomDaoImpl.changeToA("user15");
+    Assert.assertEquals("Judge Wrong", "Already In Team A!", result);
+    result = roomDaoImpl.changeToA("user16");
+    Assert.assertEquals("Judge Wrong", "Team A Is Full!", result);
 } 
 
 /** 
@@ -145,8 +173,14 @@ public void testChangeToA() throws Exception {
 * 
 */ 
 @Test
-public void testChangeToB() throws Exception { 
-//TODO: Test goes here... 
+public void testChangeToB() throws Exception {
+    RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
+    String result = roomDaoImpl.changeToB("user15");
+    Assert.assertEquals("Judge Wrong", "Success!", result);
+    result = roomDaoImpl.changeToB("user15");
+    Assert.assertEquals("Judge Wrong", "Already In Team B!", result);
+    result = roomDaoImpl.changeToB("user16");
+    Assert.assertEquals("Judge Wrong", "Team B Is Full!", result);
 } 
 
 /** 
@@ -155,8 +189,12 @@ public void testChangeToB() throws Exception {
 * 
 */ 
 @Test
-public void testReady() throws Exception { 
-//TODO: Test goes here... 
+public void testReady() throws Exception {
+    RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
+    String result = roomDaoImpl.ready("user15");
+    Assert.assertEquals("Judge Wrong", "Success!", result);
+    result = roomDaoImpl.ready("user15");
+    Assert.assertEquals("Judge Wrong", "Already Ready!", result);
 } 
 
 /** 
@@ -165,8 +203,12 @@ public void testReady() throws Exception {
 * 
 */ 
 @Test
-public void testCancel() throws Exception { 
-//TODO: Test goes here... 
+public void testCancel() throws Exception {
+    RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
+    String result = roomDaoImpl.cancel("user15");
+    Assert.assertEquals("Judge Wrong", "Success!", result);
+    result = roomDaoImpl.cancel("user15");
+    Assert.assertEquals("Judge Wrong", "Already Canceled!", result);
 } 
 
 /** 
@@ -175,8 +217,14 @@ public void testCancel() throws Exception {
 * 
 */ 
 @Test
-public void testStart() throws Exception { 
-//TODO: Test goes here... 
+public void testStart() throws Exception {
+    RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
+    String result = roomDaoImpl.start(1234);
+    Assert.assertEquals("Judge Wrong", "Success!", result);
+    result = roomDaoImpl.start(1234);
+    Assert.assertEquals("Judge Wrong", "Already Started!", result);
+    result = roomDaoImpl.start(6789);
+    Assert.assertEquals("Judge Wrong", "Not All Ready!", result);
 } 
 
 
