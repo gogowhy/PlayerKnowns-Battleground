@@ -1,0 +1,38 @@
+React-Native使用第三方字体库：
+Step1 在项目根目录创建文件夹assets/fonts.
+Step2
+ 在根目录的Package.json 配置字体
+	
+"rnpm": {
+
+		"assets": [
+
+			"./assets/fonts/"
+
+		]
+  
+	}
+
+
+Step3
+ react-native link
+	Android不需要在进行copy字体.
+		check一下android/app/src/main/assets/fonts/目录下就ok
+
+	iOS 需要在info.plist文件中添加字体
+
+		<key>UIAppFonts</key>
+		<array>
+   			<string>Iam a font.ttf</string>
+		<array>
+
+Step 4
+大功告成,使用fontFamily设置字体名称
+
+下载的字体名称：
+英文：  Rosewood_std_R
+	Bangers
+	KustWoff
+	WC_ROUGHTRAD_Bta
+	AR JULIAN
+

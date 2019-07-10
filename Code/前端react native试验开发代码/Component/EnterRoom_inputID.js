@@ -10,6 +10,7 @@ import {
 import base from '../src/style/base';
 import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Entypo from "react-native-vector-icons/Entypo";
 import axios from 'axios';
 
 /** 测试用房间ID和房间密码 */
@@ -58,7 +59,7 @@ export default class EnterRoom_inputID extends Component {
     enterRoom(){
         
         const _this = this;
-        
+
         const url = "http://localhost:8080/EnterRoom";
 
         let data = {
@@ -92,7 +93,7 @@ export default class EnterRoom_inputID extends Component {
                 case PASSWORD : alert("密码错误！");break;
             }
         */
-       
+        
         /** 以下为测试语句 */
         if(this.state.roomID == const_Room.ID)
             if(this.state.password == const_Room.password)
@@ -123,14 +124,24 @@ export default class EnterRoom_inputID extends Component {
                 <TouchableOpacity
                     activeOpacity={1.0}  //设置背景被点击时，透明度不变
                     style={base.container}>
-                    <TouchableOpacity 
-                        style={header.Head}>
-                        <Ionicons 
-                            name = {'md-arrow-round-back'} 
-                            size={30}
-                            onPress = {this.gobackMainPage}
-                        />
-                    </TouchableOpacity>
+                    <View style={header.container}>
+                        <View style={header.header}>
+                            <View style={header.Head}>
+                                <Ionicons
+                                    name = {'md-exit'} 
+                                    size = {30}
+                                    onPress = {this.exit}
+                                />
+                            </View>
+                            <View style={header.End}>
+                                <Entypo
+                                    name = {'help-with-circle'}
+                                    size = {28}
+                                    onPress = {this.help}
+                                />
+                            </View>
+                        </View>
+                    </View>
 
                     <View>
                         <View 
@@ -181,7 +192,7 @@ export default class EnterRoom_inputID extends Component {
                             <Text
                                 style={base.btText}>进入房间</Text>
                         </TouchableOpacity>
-                        
+
                     </TouchableOpacity>
                 </TouchableOpacity>
             </ImageBackground>

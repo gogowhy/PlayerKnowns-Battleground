@@ -15,10 +15,10 @@ export default class SectionView extends Component {
         this.state = {
             refreshing: false,  //是否刷新,通过更改此属性来控制是否刷新
             sections:[   //数据源
-                {team:'Team A', data:[
+                {team:'A', data:[
                     {name : 'xie yihan' , isReady : true},
                     {name : 'wang haoyu' , isReady : false}]},
-                {team:'Team B', data:[
+                {team:'B', data:[
                     {name : 'qi peng' , isReady : true},
                     {name : 'zhou yifan' , isReady : true}]}
             ]
@@ -37,6 +37,7 @@ export default class SectionView extends Component {
                     ItemSeparatorComponent={() => <View style={{backgroundColor:'white',height:1}}></View>}  //分割线
                     stickySectionHeadersEnabled={false}  //设置区头是否悬浮在屏幕顶部,默认是true
                     initialNumToRender = {2} //指定一开始渲染的元素数量，最好刚刚够填满一个屏幕，这样保证了用最短的时间给用户呈现可见的内容
+                    keyExtractor = {this._extraUniqueKey}
                     setVerticalScrollBarEnabled = {false}
                     setFastScrollEnabled = {false}
               />
@@ -55,25 +56,48 @@ export default class SectionView extends Component {
         }
         return (
             <View style={styles.playerCell}>
-                <Text style={styles.cellText}>{txt1}</Text>
-                <Text style={styles.cellText}>{txt2}</Text>
+                <View style={styles.name}>
+                    <Text style={styles.cellText}>{txt1}</Text>
+                </View>
+                <View style={styles.isReady}>
+                    <Text style={styles.cellText}>{txt2}</Text>
+                </View>
             </View>
             )
     }
 
     _sectionComp = (info) => {
-        var txt = ' '+info.section.team;
-        return <Text style={styles.SectionHeader}>{txt}</Text>
+        var txt = ' Team '+info.section.team;
+        return (
+            <View style={{flex: 1, height: 25, backgroundColor: '#11ffff', justifyContent: 'center'}}>
+                <Text style={styles.SectionHeader}>{txt}</Text>
+            </View>
+        )
     }
+
+    _extraUniqueKey =(item)=> {
+        return "index"+item;
+    };
 }
 
 const styles = StyleSheet.create({
     playerCell: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#607B8B', 
+    },
+    name: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    isReady: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     cellText: {
         height: 30,

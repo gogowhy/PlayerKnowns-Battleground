@@ -11,6 +11,7 @@ import base from '../src/style/base';
 import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import Entypo from "react-native-vector-icons/Entypo";
 import SectionView from './SectionView';
 
 /**
@@ -136,6 +137,7 @@ export default class Room extends Component {
                 )
                 break;
             }
+
             // 房主退出了房间
             case EXIT_BY_HOST : {
                 const username = res.username;
@@ -269,7 +271,7 @@ export default class Room extends Component {
         // connection closed
         console.log(e.code, e.reason);
         };
-
+    
     }
 
     /** 返回上一个界面 */
@@ -541,28 +543,37 @@ export default class Room extends Component {
                 <TouchableOpacity
                     activeOpacity={1.0}  //设置背景被点击时，透明度不变
                     style={base.container}>
-                    <View 
-                        style={header.Head}>
-                        <Ionicons 
-                            name = {'md-arrow-round-back'} 
-                            size={30}
-                            onPress = {this.gobackMainPage}
-                        />
-                    </View>
-
-                    <View>
-                        <View 
-                            style={base.containerTop}>
-                            <Text
-                                style={styles.Text}>
-                                房间号：{this.state.roomID}
-                            </Text>
-                            <Text
-                                style={styles.Text}>
-                               {'  '}房间密码：{this.state.password}
-                            </Text>
+                    <View style={header.container}>
+                        <View style={header.header}>
+                            <View style={header.Head}>
+                                <Ionicons
+                                    name = {'md-exit'} 
+                                    size = {30}
+                                    onPress = {this.exitRoom}
+                                />
+                            </View>
+                            <View style={header.End}>
+                                <Entypo
+                                    name = {'help-with-circle'}
+                                    size = {28}
+                                    onPress = {this.help}
+                                />
+                            </View>
                         </View>
                     </View>
+
+                    <View 
+                        style={base.containerTop}>
+                        <Text
+                            style={styles.Text}>
+                            房间号：{this.state.roomID}
+                        </Text>
+                        <Text
+                            style={styles.Text}>
+                            {'  '}房间密码：{this.state.password}
+                        </Text>
+                    </View>
+
 
                     <View style={base.containerTop}>
                         {StartOrReady}

@@ -9,17 +9,16 @@ const base = StyleSheet.create({
         alignItems: 'center',
     },
     containerTop: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
     },
     content: {
-        fontFamily: 'Calibri',
-        fontSize: 40,
+        fontFamily: 'KustWoff',
+        fontSize: 50,
         color: '#000',
-        fontWeight: 'bold',
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 25,
+        //marginBottom: 10,
     },
     background: {
         position: 'absolute',
@@ -33,13 +32,15 @@ const base = StyleSheet.create({
     },
     button: {
         height: 40,
-        width: 100,
+        width: 150,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
         backgroundColor: '#FF4500',
         marginTop: 10,
         marginBottom: 10,
+        marginLeft: 10,
+        marginRight: 10,
     },
     buttonBig:{
         width: 150,
@@ -48,8 +49,8 @@ const base = StyleSheet.create({
     },
     btText: {
         color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 20,
+        fontFamily: 'zhenhunshoushu',
+        fontSize: 30,
     },
     input: {
         width: 180,

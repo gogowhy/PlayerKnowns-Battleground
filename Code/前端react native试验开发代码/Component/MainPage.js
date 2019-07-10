@@ -8,7 +8,10 @@ import {
 } from 'react-native';
 import base from '../src/style/base';
 import header from '../src/style/header';
+
 import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Entypo from "react-native-vector-icons/Entypo";
 
 import axios from 'axios';
 
@@ -22,15 +25,16 @@ export default class MainPage extends Component {
         this.createRoom = this.createRoom.bind(this);
         this.enterRoom = this.enterRoom.bind(this);
         this.exit = this.exit.bind(this);
+        this.warehouse = this.warehouse.bind(this);
+        this.shop = this.shop.bind(this);
     }
 
-    
     /* 退出登录 */
     exit(){
         const { goBack } = this.props.navigation ;
         goBack();
     }
-
+    
     /**
      * 功能 ：创建房间
      * 触发 ：点击“创建房间”按钮
@@ -44,17 +48,12 @@ export default class MainPage extends Component {
          
         const url = "http://local:8080/createRoom";
 
-        let roomID = "";
-        let password = "";
-
         data = {
             username : _this.state.username,
         }
         axios.post( url , data )
             .then(function (response) {
                 // handle success
-                roomID = response.data.roomID;
-                password = response.data.password;
                 console.log(response);
             })
             .catch(function (error) {
@@ -84,36 +83,88 @@ export default class MainPage extends Component {
         navigate('EnterRoom_inputID',{username : this.state.username});  
     }
 
+    /** 
+     * 功能 ：进入仓库
+     * 触发 ：点击“warehouse”图标
+     * 
+     * 跳转到仓库页面（...js)
+     * 
+     */
+    warehouse(){
+
+    }
+
+    /** 
+     * 功能 ：进入商店
+     * 触发 ：点击“shop”图标
+     * 
+     * 跳转到商店页面（...js)
+     * 
+     */
+    shop(){
+
+    }
+
     render() {
         return (
             <ImageBackground style={base.background}
                 source={require('../src/img/bg1.png')}>
                 <TouchableOpacity
-                    activeOpacity={1.0}  //设置背景被点击时，透明度不变
-                    style={base.container}>
-                    <View 
-                        style={header.Head}>
-                        <Ionicons 
-                            name = {'md-exit'} 
-                            size={30}
-                            onPress = {this.exit}
-                        />
+                    style={{flex:1}}>
+                    <View style={header.container}>
+                        <View style={header.header}>
+                            <View style={header.Head}>
+                                <Ionicons
+                                    name = {'md-exit'} 
+                                    size = {30}
+                                    onPress = {this.exit}
+                                />
+                            </View>
+                            <View style={header.End}>
+                                <Entypo
+                                    name = {'help-with-circle'}
+                                    size = {28}
+                                    onPress = {this.help}
+                                />
+                            </View>
+                        </View>
                     </View>
+                    
                     <TouchableOpacity
-                        style={base.container}>
-                        <TouchableOpacity
-                            onPress = {this.createRoom} //-----------该属性需要保留！-------------
-                            style={base.button}>
-                            <Text
-                                style={base.btText}>创建房间</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress = {this.enterRoom} //-----------该属性需要保留！-------------
-                            style={base.button}>
-                            <Text
-                                style={base.btText}>加入房间</Text>
-                        </TouchableOpacity>
+                        style={styles.container}>
+                        <View style={styles.containerRow}>
+                            <FontAwesome5
+                                style={{marginRight:10}}
+                                name = {'warehouse'}
+                                size = {40}
+                                onPress = {this.warehouse}
+                                color = {'#00008B'}
+                            />
+                            <TouchableOpacity
+                                onPress = {this.createRoom} //-----------该属性需要保留！-------------
+                                style={styles.button}>
+                                <Text
+                                    style={styles.btText}>  创 建 房 间</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.containerRow}>
+                            <Entypo
+                                style={{marginRight:8}}
+                                name = {'shop'}
+                                size = {55}
+                                onPress = {this.shop}
+                                color = {'#00008B'}
+                            />
+                            <TouchableOpacity
+                                onPress = {this.enterRoom} //-----------该属性需要保留！-------------
+                                style={styles.button}>
+                                <Text
+                                    style={styles.btText}>  加 入 房 间</Text>
+                            </TouchableOpacity>
+                        </View>
                     </TouchableOpacity>
+
                 </TouchableOpacity>
             </ImageBackground>
         );
@@ -121,3 +172,32 @@ export default class MainPage extends Component {
 
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+    },
+    containerRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    button: {
+        height: 70,
+        width: 240,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        borderRadius: 8,
+        backgroundColor: '#FF4500',
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: 10,
+        marginRight: 20,
+    },
+    btText: {
+        color: '#fff',
+        fontFamily: 'zhenhunshoushu',
+        fontSize: 40,
+    },
+});
