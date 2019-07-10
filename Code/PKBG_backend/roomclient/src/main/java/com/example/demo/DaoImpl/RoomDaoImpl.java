@@ -71,6 +71,11 @@ public class RoomDaoImpl implements RoomDao {
     {
         MyHandler myHandler = new MyHandler();
         Room room=roomRepository.findByHostname(if_hostname);
+        if (room.equals(null))
+        {
+            return "Not Host!";
+        }
+
         Integer roomnumber=room.getRoomnumber();
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
 
@@ -89,9 +94,23 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public String kick(Integer roomnumber, String username)
+    public String kick(String if_hostname, Integer roomnumber, String username)
     {
         MyHandler myHandler = new MyHandler();
+        Room room=roomRepository.findByHostname(if_hostname);
+        if (room.equals(null))
+        {
+            return "Not Host!";
+        }
+        if (room.getRoomnumber() != roomnumber)
+        {
+            return "Not In This Room!";
+        }
+        if (if_hostname.equals(username))
+        {
+            return "Cannot Kick Yourself!";
+        }
+
         Player player = playerRepository.findByPlayername(username);
         if (roomnumber.equals(player.roomnumber))
         {
@@ -105,7 +124,7 @@ public class RoomDaoImpl implements RoomDao {
                 myHandler.sendMessageToUser(playername, new TextMessage(message));
             }
         }
-        else return "No Such Player In Room! ";
+        else return "No Such Player In Room!";
         return null;
     }
 

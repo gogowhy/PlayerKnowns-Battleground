@@ -68,7 +68,7 @@ class SiderDemo extends Component {
                                 style={{cursor: 'pointer'}}
                             />
                         </span>
-                        <span style={{color:'#fff', paddingLeft:'2%', fontSize:'1.4em'}}>EBOOK SYSTEM</span>
+                        <span style={{color:'#fff', paddingLeft:'2%', fontSize:'1.4em'}}>PKBG ADMINISTRATOR</span>
                         <span style={{color:'#fff', float:'right', paddingRight:'1%'}}>
                             <img src={logo} className="App-logo" alt="logo" />
                         </span>
@@ -84,7 +84,7 @@ class SiderDemo extends Component {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        EBOOK SYSTEM ©2019 Created by gogowhy
+                        PKBG ©2019 Created by The PKBG Teanwork
                     </Footer>
                 </Layout>
             </Layout>
