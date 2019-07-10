@@ -20,7 +20,7 @@ public class Player implements Serializable {
     public Integer playerstatus;
 
     @Column(name="Longtitude")
-    public Integer longtitude;
+    public double longtitude;
 
 
     @Column(name="Latitude")
@@ -59,11 +59,11 @@ public class Player implements Serializable {
         this.playerstatus = playerstatus;
     }
 
-    public Integer getLongtitude() {
+    public double getLongtitude() {
         return longtitude;
     }
 
-    public void setLongtitude(Integer longtitude) {
+    public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
     }
 
