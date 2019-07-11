@@ -18,7 +18,7 @@ public interface UserClient {
     @RequestMapping("/user/resetPass")
     String resetPass(HttpServletRequest request);
 
-    @RequestMapping("user/test")
+    @RequestMapping("/user/test")
     String test();
 
     @RequestMapping("/user/banUser")
