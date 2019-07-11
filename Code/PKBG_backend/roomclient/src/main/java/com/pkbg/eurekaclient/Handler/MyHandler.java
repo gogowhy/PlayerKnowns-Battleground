@@ -28,9 +28,11 @@ public class MyHandler implements WebSocketHandler {
     @Autowired
     public RoomService roomService;
 
-    RoomRepository roomRepository = new RoomRepository();
+   @Autowired
+           public RoomRepository roomRepository;
 
-    PlayerRepository playerRepository = new PlayerRepository();
+   @Autowired
+     public PlayerRepository playerRepository;
 
     //新增socket
     @Override

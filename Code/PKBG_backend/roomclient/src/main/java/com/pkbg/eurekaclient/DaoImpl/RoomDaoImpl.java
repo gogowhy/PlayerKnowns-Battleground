@@ -17,9 +17,11 @@ import java.util.Random;
 @Repository
 public class RoomDaoImpl implements RoomDao {
 
-    RoomRepository roomRepository = new RoomRepository();
+    @Autowired
+    public RoomRepository roomRepository ;
 
-    PlayerRepository playerRepository = new PlayerRepository();
+    @Autowired
+    public PlayerRepository playerRepository;
 
     @Override
     public String create(String hostname) throws IOException {

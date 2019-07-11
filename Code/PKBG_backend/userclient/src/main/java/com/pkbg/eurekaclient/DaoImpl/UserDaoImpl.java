@@ -13,7 +13,8 @@ import java.util.Random;
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    UserRepository userRepository = new UserRepository();
+    @Autowired
+    public UserRepository userRepository;
 
     @Override
     public String register(HttpServletRequest request) {

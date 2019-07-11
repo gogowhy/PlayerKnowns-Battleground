@@ -6,33 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public class RoomRepository {
+public interface RoomRepository extends MongoRepository<Room,Integer> {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
-    public Room findByRoomnumber(Integer roomnumber)
-    {
-        Query query=new Query(Criteria.where("roomnumber").is(roomnumber));
-        Room room =  mongoTemplate.findOne(query , Room.class);
-        return room;
-    }
-
-    public void save(Room room)
-    {
-        mongoTemplate.save(room);
-    }
-
-    public  Room findByHostname(String hostname)
-    {
-        Query query=new Query(Criteria.where("hostname").is(hostname));
-        Room room =  mongoTemplate.findOne(query , Room.class);
-        return room;
-    }
-
-    public void delete(Room room)
-    {
-        mongoTemplate.remove(room);
-    }
+    public Room findByRoomnumber(Integer roomnumber);
+    public  Room findByHostname(String hostname);
 }
