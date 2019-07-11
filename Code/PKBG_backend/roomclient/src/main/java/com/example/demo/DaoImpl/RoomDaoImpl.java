@@ -25,11 +25,14 @@ public class RoomDaoImpl implements RoomDao {
     public PlayerRepository playerRepository;
 
     @Override
-    public String create(String hostname) throws IOException {
-        MyHandler myHandler = new MyHandler();
-        Room room = new Room();
-        room.setHostname(hostname);
+    public String create(String hostname) throws IOException
+            //创建房间功能
+    {
+        MyHandler myHandler = new MyHandler();//新建myhandler
+        Room room = new Room();//新建room实体
+        room.setHostname(hostname);//hostname是传来的username参数
 
+        //随机房间号
         String str="0123456789";
         Random random = new Random();
         StringBuffer rroomNumber=new StringBuffer();
@@ -43,21 +46,29 @@ public class RoomDaoImpl implements RoomDao {
             int number=random.nextInt(10);
             rroomPassword.append(str.charAt(number));
         }
+
+
+        //随机房间密码
         String roomPassword=new String(rroomPassword);
 
+        //设置房间号
         Integer rmNumber = Integer.parseInt(roomNumber);
         room.setRoomnumber(rmNumber);
         Integer rmPassword = Integer.parseInt(roomPassword);
         room.setRoompassword(rmPassword);
 
+        //新建player
         Player player = new Player();//original player status
         player.setRoomnumber(rmNumber);
         player.setPlayername(hostname);
+        //设置成host在1中
         player.setPlayerteam(1);
         player.setPlayerstatus(0);
         playerRepository.save(player);
 
+        //房间的比赛状态：0
         room.setGamestatus(0);
+
 
         String message = player.toJSON(7);
         myHandler.sendMessageToUser(hostname, new TextMessage(message));
@@ -68,6 +79,7 @@ public class RoomDaoImpl implements RoomDao {
 
     @Override
     public String dismiss(String if_hostname)
+            //解散房间
     {
         MyHandler myHandler = new MyHandler();
         Room room=roomRepository.findByHostname(if_hostname);
@@ -83,6 +95,7 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
+            //给前端发送消息
             String message = player_temp.toJSON(90);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
             playerRepository.delete(player_temp);
@@ -150,9 +163,10 @@ public class RoomDaoImpl implements RoomDao {
         {
             return "Target Room Is Full!";
         }
-
+       //新建一个玩家
         Player player = new Player();
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        //a代表房间中A队伍的玩家数量，b代表B队伍的玩家数量
         Integer a=new Integer(0);
         Integer b=new Integer(0);
         for(int i=0;i<players.size();i++)
@@ -162,6 +176,7 @@ public class RoomDaoImpl implements RoomDao {
             if (team_temp==1) a++;
             else b++;
         }
+        //如果a比b大就设置成a
         if (a>b) player.setPlayerteam(2);
             else player.setPlayerteam(1);
         for(int i=0;i<players.size();i++)
@@ -171,11 +186,11 @@ public class RoomDaoImpl implements RoomDao {
             String message = player_temp.toJSON(7);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
-
+        //在room和player中加入新的player
         Integer newnumber = room.getPlayernumber()+1;
         room.setPlayernumber(newnumber);
         roomRepository.save(room);
-
+        player.setPlayerstatus(0);
         player.setRoomnumber(roomnumber);
         player.setPlayername(username);
         playerRepository.save(player);

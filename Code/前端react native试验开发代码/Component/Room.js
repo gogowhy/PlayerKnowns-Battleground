@@ -5,14 +5,17 @@ import {
     StyleSheet,
     TouchableOpacity,
     Alert,
+    SectionList,
+    FlatList,
     ImageBackground,
+    Dimensions
 } from 'react-native';
 import base from '../src/style/base';
 import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
-import SectionView from './SectionView';
+const {height,width} = Dimensions.get('window')
 
 /**
  * 该常量初步定义了一个players应该具有、并在render中有所体现的属性
@@ -21,9 +24,9 @@ import SectionView from './SectionView';
  * 属性 ： 组别  、 用户名 、 是否准备
  */
 const players = [
-    {team : 'A' , name : 'wang haoyu' , isReady : true},
+    {team : 'A' , name : 'wang haoyu' , isReady : false},
     {team : 'B' , name : 'zhou yifan' , isReady : true},
-    {team : 'B' , name : 'qi peng' , isReady : true},
+    {team : 'A' , name : 'qi peng' , isReady : true},
     {team : 'A' , name : 'xie yihan' , isReady : true}
 ]
 
@@ -445,8 +448,6 @@ export default class Room extends Component {
      */
     exitRoom(){
 
-        
-        
         if(!this.state.host){
             /**
              * 利用websocket向后端发送username表明退出房间
@@ -505,16 +506,23 @@ export default class Room extends Component {
                 </View>
             )
 
-        // const teamA_name = [];
-        // const teamB_name = [];
+        const teamA = [];
+        const teamB = [];
     
         const T = this.state.team ? "B->A" : "A->B" ; //更换队伍按钮的文字说明
 
-        // players.forEach((player) =>{
-        //     if(player.team === 'A') teamA_name.push(player.name);
-        //     if(player.team === 'B') teamB_name.push(player.name);
-        // }
-        // )
+        players.forEach((player) =>{
+            if(player.team === 'A') {
+                if(player.isReady) teamA.push([player.name,'Ready']);
+                if(!player.isReady) teamA.push([player.name,'UnReady']);
+            }
+            
+            if(player.team === 'B') {
+                if(player.isReady) teamB.push([player.name,'Ready']);
+                if(!player.isReady) teamB.push([player.name,'UnReady']);
+            }
+        }
+        )
 
         const ReadyOrNot = !this.state.isReady ? <TouchableOpacity
                                                     onPress = {this.ready} //-----------该属性需要保留！-------------
@@ -542,7 +550,7 @@ export default class Room extends Component {
                 source={require('../src/img/bg1.png')}>
                 <TouchableOpacity
                     activeOpacity={1.0}  //设置背景被点击时，透明度不变
-                    style={base.container}>
+                    style={{flex:1}}>
                     <View style={header.container}>
                         <View style={header.header}>
                             <View style={header.Head}>
@@ -562,8 +570,7 @@ export default class Room extends Component {
                         </View>
                     </View>
 
-                    <View 
-                        style={base.containerTop}>
+                    <View style={base.containerTop}>
                         <Text
                             style={styles.Text}>
                             房间号：{this.state.roomID}
@@ -592,12 +599,73 @@ export default class Room extends Component {
                                 style={base.btText}>退出房间</Text>
                         </TouchableOpacity> 
                     </View>
-                                                
-                    <SectionView></SectionView>
 
+                    <View style={styles.containerRow}>
+                        <View style={styles.list}>
+                            <SectionList 
+                                sections={[
+                                    {title: 'A', data: teamA},
+                                ]}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={this._renderSectionListItem}
+                                renderSectionHeader={this._renderSectionHeader}
+                                ItemSeparatorComponent={() => <View style={{backgroundColor:'#DEDEDE',height:2}}></View>}  //分割线
+                                numColumns={2}
+                                columnWrapperStyle={{borderWidth:3, borderColor:'#f4f4f4'}}
+                                style={{marginTop:10,marginLeft:5,marginRight:5}}
+                            />
+                            <SectionList
+                                sections={[
+                                    {title: 'B', data: teamB},
+                                ]}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={this._renderSectionListItem}
+                                renderSectionHeader={this._renderSectionHeader}
+                                ItemSeparatorComponent={() => <View style={{backgroundColor:'#DEDEDE',height:2}}></View>}  //分割线
+                                numColumns={2}
+                                columnWrapperStyle={{borderWidth:3, borderColor:'black'}}
+                                style={{marginTop:10,marginLeft:5,marginRight:5}}
+                            />
+                        </View>
+                    </View>                            
+                    
                 </TouchableOpacity>
             </ImageBackground>
         );
+    }
+
+    _keyExtractor = (item, index) => "index"+item;
+ 
+    _ItemSeparatorComponent= () => (
+        <View style={{backgroundColor:'white',height: 1}}/>
+    )
+
+    _renderSectionListItem = ({item}) => (
+        <FlatList
+          data={item}
+          numColumns={2}
+          renderItem={this._renderItem}
+          keyExtractor={this._keyExtractor}
+          ItemSeparatorComponent={this._ItemSeparatorComponent}
+        />
+    )
+
+    _renderItem = ({item}) => {
+        var txt = item;
+        return (
+            <View style={styles.cell}>
+                <Text style={styles.cellText}>{txt}</Text>
+            </View>
+        )
+    }
+
+    _renderSectionHeader = ({section}) => {
+        var txt = ' Team ' + section.title;
+        return (
+            <View style={{height: 25, backgroundColor: '#11ffff', justifyContent: 'center'}}>
+                <Text style={styles.SectionHeader}>{txt}</Text>
+            </View>
+        )
     }
 }
 
@@ -606,6 +674,12 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
         fontSize: 20,
+    },
+    containerRow: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'flex-start',
     },
     RoomTitle:{
         flex: 1,
@@ -622,5 +696,36 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlignVertical: 'center', 
         textAlign: 'center', 
-    }
+    },
+    list: {
+        height: height-170,
+        width: width-40,
+        flexDirection: 'row',
+        backgroundColor: '#DEDEDE',
+    },
+    cell: {
+        width: (width-55)/4,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#607B8B', 
+        //marginHorizontal: 3,
+    },
+    cellText: {
+        height: 30,
+        textAlign: 'center', 
+        textAlignVertical: 'center', 
+        color: '#fff', 
+        fontSize: 15,
+        marginLeft: 10,
+        marginRight: 10,
+    },
+    SectionHeader: { 
+        height: 30,
+        textAlign: 'center', 
+        textAlignVertical: 'center',
+        backgroundColor: '#473C8B',
+        color: 'white',
+        fontSize: 20
+    },
 });
