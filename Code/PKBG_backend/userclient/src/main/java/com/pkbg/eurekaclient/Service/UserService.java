@@ -1,16 +1,17 @@
 package com.pkbg.eurekaclient.Service;
 
+import com.pkbg.eurekaclient.Entity.User;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Service
 public interface UserService {
-    public String register(HttpServletRequest request);
-    public String login(HttpServletRequest request);
-    public String resetPass(HttpServletRequest request);
+    public Integer register(User user);
+    public Integer login(User user);
+    public Integer resetPass(User user);
 
-    public  String banUser(HttpServletRequest request);
-    public  String unbanUser(HttpServletRequest request);
+    public  Integer banUser(User user);
+    public  Integer unbanUser(User user);
 
 }

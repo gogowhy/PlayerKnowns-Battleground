@@ -14,5 +14,4 @@ public interface UserRepository extends MongoRepository<User, Integer> {
 
     public User findByUsername(String username);
 
-
 }

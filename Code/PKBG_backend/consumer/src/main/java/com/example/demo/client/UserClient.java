@@ -10,20 +10,20 @@ import javax.servlet.http.HttpServletRequest;
 @FeignClient("user-client")
 public interface UserClient {
     @RequestMapping("/user/register")
-    String register(HttpServletRequest request);
+    Integer register(HttpServletRequest request);
 
     @RequestMapping("/user/login")
-    String login(HttpServletRequest request);
+    Integer login(HttpServletRequest request);
 
     @RequestMapping("/user/resetPass")
-    String resetPass(HttpServletRequest request);
+    Integer resetPass(HttpServletRequest request);
 
     @RequestMapping("/user/test")
     String test();
 
     @RequestMapping("/user/banUser")
-    String banUser(HttpServletRequest request);
+    Integer banUser(HttpServletRequest request);
 
     @RequestMapping("/user/unbanUser")
-    String unbanUser(HttpServletRequest request);
+    Integer unbanUser(HttpServletRequest request);
 }

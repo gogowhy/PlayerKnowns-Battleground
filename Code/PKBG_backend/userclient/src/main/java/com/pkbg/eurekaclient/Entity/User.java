@@ -3,13 +3,15 @@ package com.pkbg.eurekaclient.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.io.Serializable;
 
 
 @Document(collection = "PKBG")
 public class User implements Serializable {
 
-    @Id
+
     public String username;
 
     public String userpassword;

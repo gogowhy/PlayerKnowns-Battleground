@@ -1,6 +1,7 @@
 package com.pkbg.eurekaclient.ServiceImpl;
 
 import com.pkbg.eurekaclient.Dao.UserDao;
+import com.pkbg.eurekaclient.Entity.User;
 import com.pkbg.eurekaclient.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,33 +14,33 @@ public class UserServiceImpl implements UserService {
     public UserDao userDao;
 
     @Override
-    public String register(HttpServletRequest request)
+    public Integer register(User user)
     {
-        return userDao.register(request);
+        return userDao.register(user);
     }
 
     @Override
-    public  String login(HttpServletRequest request)
+    public  Integer login(User user)
     {
-        return  userDao.login(request);
+        return  userDao.login(user);
     }
 
     @Override
-    public String resetPass(HttpServletRequest request)
+    public Integer resetPass(User user)
     {
-        return userDao.resetPass(request);
+        return userDao.resetPass(user);
     }
 
     @Override
-    public  String banUser(HttpServletRequest request)
+    public  Integer banUser(User user)
     {
-        return  userDao.banUser(request);
+        return  userDao.banUser(user);
     }
 
     @Override
-    public  String unbanUser(HttpServletRequest request)
+    public  Integer unbanUser(User user)
     {
-        return  userDao.unbanUser(request);
+        return  userDao.unbanUser(user);
     }
 
 

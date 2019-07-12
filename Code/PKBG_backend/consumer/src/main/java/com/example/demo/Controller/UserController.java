@@ -13,17 +13,17 @@ public class UserController {
     UserClient userClient;
 
     @RequestMapping("/register")
-    public String register(HttpServletRequest request) {
+    public Integer register(HttpServletRequest request) {
         return userClient.register(request);
     }
 
     @RequestMapping("/login")
-    public String login(HttpServletRequest request) {
+    public Integer login(HttpServletRequest request) {
         return userClient.login(request);
     }
 
     @RequestMapping("/resetPass")
-    public String resetPass(HttpServletRequest request) {
+    public Integer resetPass(HttpServletRequest request) {
         return userClient.resetPass(request);
     }
 
@@ -34,13 +34,13 @@ public class UserController {
     }
 
     @RequestMapping("/banUser")
-    public String banUser(HttpServletRequest request)
+    public Integer banUser(HttpServletRequest request)
     {
         return userClient.banUser(request);
     }
 
     @RequestMapping("/unbanUser")
-    public  String unbanUser(HttpServletRequest request)
+    public  Integer unbanUser(HttpServletRequest request)
     {
         return  userClient.unbanUser(request);
     }

@@ -6,13 +6,17 @@ import com.pkbg.eurekaclient.Entity.Room;
 import com.pkbg.eurekaclient.Handler.MyHandler;
 import com.pkbg.eurekaclient.Repository.PlayerRepository;
 import com.pkbg.eurekaclient.Repository.RoomRepository;
+import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.TextMessage;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Repository
 public class RoomDaoImpl implements RoomDao {
@@ -23,9 +27,84 @@ public class RoomDaoImpl implements RoomDao {
     @Autowired
     public PlayerRepository playerRepository;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    public void deleteroom(Room room)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("roomnumber").is(room.getRoomnumber()));
+        String collectionname = "room";
+        mongoTemplate.remove(query,Room.class,collectionname);
+    }
+
+    public void deleteplayer(Player player)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("playername").is(player.getPlayername()));
+        String collectionname = "player";
+        mongoTemplate.remove(query,Player.class,collectionname);
+    }
+
+    public void updatestatus(Room room)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("roomnumber").is(room.getRoomnumber()));
+        String collectionname = "room";
+        Update update = new Update();
+        update.set("gamestatus",room.getGamestatus());
+        mongoTemplate.updateFirst(query,update,collectionname);
+    }
+
+    public void updatehost(Room room)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("roomnumber").is(room.getRoomnumber()));
+        String collectionname = "room";
+        Update update = new Update();
+        update.set("hostname",room.getHostname());
+        mongoTemplate.updateFirst(query,update,collectionname);
+    }
+
+    public void updateteam(Player player)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("username").is(player.getPlayername()));
+        String collectionname = "player";
+        Update update = new Update();
+        update.set("playerteam",player.getPlayerteam());
+        mongoTemplate.updateFirst(query,update,collectionname);
+    }
+
+    public void updateplayerstatus(Player player)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("username").is(player.getPlayername()));
+        String collectionname = "player";
+        Update update = new Update();
+        update.set("playerstatus",player.getPlayerstatus());
+        mongoTemplate.updateFirst(query,update,collectionname);
+    }
+
+    public void updateplayernumber(Room room)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("roomnumber").is(room.getRoomnumber()));
+        String collectionname = "room";
+        Update update = new Update();
+        update.set("playernumber",room.getPlayernumber());
+        mongoTemplate.updateFirst(query,update,collectionname);
+    }
+
     @Override
-    public String create(String hostname) throws IOException {
-        MyHandler myHandler = new MyHandler();
+    public Map<String,Object> create(String hostname) throws IOException {
         Room room = new Room();
         room.setHostname(hostname);
 
@@ -48,6 +127,7 @@ public class RoomDaoImpl implements RoomDao {
         room.setRoomnumber(rmNumber);
         Integer rmPassword = Integer.parseInt(roomPassword);
         room.setRoompassword(rmPassword);
+        room.setPlayernumber(1);
 
         Player player = new Player();//original player status
         player.setRoomnumber(rmNumber);
@@ -57,12 +137,17 @@ public class RoomDaoImpl implements RoomDao {
         playerRepository.save(player);
 
         room.setGamestatus(0);
+        System.out.println("daomaple");
 
-        String message = player.toJSON(7);
-        myHandler.sendMessageToUser(hostname, new TextMessage(message));
+        List<Player> players =playerRepository.findByRoomnumber(rmNumber);
 
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("code",0);
+        map.put("roomnumber",rmNumber);
+        map.put("roompassword",rmPassword);
         roomRepository.save(room);
-        return "Success!";
+        return map;
     }
 
     @Override
@@ -84,10 +169,9 @@ public class RoomDaoImpl implements RoomDao {
             String playername = player_temp.getPlayername();
             String message = player_temp.toJSON(90);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
-            playerRepository.delete(player_temp);
+            deleteplayer(player_temp);
         }
-
-        roomRepository.delete(room);
+        deleteroom(room);
         return "Success!";
 
     }
@@ -113,7 +197,7 @@ public class RoomDaoImpl implements RoomDao {
         Player player = playerRepository.findByPlayername(username);
         if (roomnumber.equals(player.roomnumber))
         {
-            playerRepository.delete(player);
+            deleteplayer(player);
             List<Player> players =playerRepository.findByRoomnumber(roomnumber);
             for(int i=0;i<players.size();i++)
             {
@@ -128,27 +212,28 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public String join(Integer roomnumber, String username, Integer password) throws IOException {
+    public Integer join(Integer roomnumber, String username, Integer password) throws IOException {
         MyHandler myHandler = new MyHandler();
         Room room = new Room();
         room = roomRepository.findByRoomnumber(roomnumber);
         if (room == null)
         {
-            return "Cannot Find Target Room!";
+            return 1;//"Cannot Find Target Room!";
         }
         if (room.getRoompassword() != null)
             if (!password.equals(room.getRoompassword()))
             {
-                return "Wrong Password!";
+                return 2;//"Wrong Password!";
             }
         if (room.getGamestatus() == 1)
         {
-            return "Target Room Has Started Game!";
+            return 3;//"Target Room Has Started Game!";
         }
         if (room.getPlayernumber() == 16)
         {
-            return "Target Room Is Full!";
+            return 4;//"Target Room Is Full!";
         }
+
 
         Player player = new Player();
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
@@ -163,6 +248,7 @@ public class RoomDaoImpl implements RoomDao {
         }
         if (a>b) player.setPlayerteam(2);
         else player.setPlayerteam(1);
+
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
@@ -173,12 +259,20 @@ public class RoomDaoImpl implements RoomDao {
 
         Integer newnumber = room.getPlayernumber()+1;
         room.setPlayernumber(newnumber);
-        roomRepository.save(room);
+        updateplayernumber(room);
 
         player.setRoomnumber(roomnumber);
         player.setPlayername(username);
         playerRepository.save(player);
-        return "Success!";
+        List<Player> playerss =playerRepository.findByRoomnumber(roomnumber);
+
+        Map <String,Object> map = new HashMap<String,Object>();
+        map.put("code",8);
+        map.put("players",playerss);
+        JSONArray json = JSONArray.fromObject(map);
+        String message = json.toString();
+        myHandler.sendMessageToUser(username, new TextMessage(message));
+        return 0;//"Success!";
     }
 
     @Override
@@ -190,8 +284,8 @@ public class RoomDaoImpl implements RoomDao {
         MyHandler myHandler = new MyHandler();
         Integer newnumber = room.getPlayernumber()-1;
         room.setPlayernumber(newnumber);
-        roomRepository.save(room);
-        playerRepository.delete(player);
+        updateplayernumber(room);
+        deleteplayer(player);
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
         for(int i=0;i<players.size();i++)
         {
@@ -204,7 +298,7 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public String hostquit(String username)
+    public String hostquit(String username)//delete?
     {
         Player player = playerRepository.findByPlayername(username);
         Integer roomnumber = player.getRoomnumber();
@@ -212,12 +306,12 @@ public class RoomDaoImpl implements RoomDao {
         MyHandler myHandler = new MyHandler();
         Integer newnumber = room.getPlayernumber()-1;
         if (newnumber == 0) {
-            roomRepository.delete(room);
+            deleteroom(room);
             String message = player.toJSON(90);
             myHandler.sendMessageToUser(username, new TextMessage(message));
         }
         else room.setPlayernumber(newnumber);
-        playerRepository.delete(player);
+        deleteplayer(player);
 
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
         Player player_newhost=players.get(1);
@@ -230,7 +324,8 @@ public class RoomDaoImpl implements RoomDao {
             String message = player_temp.toJSON2(3, newhost);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
-        roomRepository.save(room);
+        updateplayernumber(room);
+        updatehost(room);
         return "Success!";
     }
 
@@ -261,7 +356,7 @@ public class RoomDaoImpl implements RoomDao {
         }
 
         player.setPlayerteam(1);
-        playerRepository.save(player);
+        updateteam(player);
         MyHandler myHandler = new MyHandler();
         for(int i=0;i<players.size();i++)
         {
@@ -300,7 +395,7 @@ public class RoomDaoImpl implements RoomDao {
         }
 
         player.setPlayerteam(2);
-        playerRepository.save(player);
+        updateteam(player);
         MyHandler myHandler = new MyHandler();
         for(int i=0;i<players.size();i++)
         {
@@ -322,7 +417,7 @@ public class RoomDaoImpl implements RoomDao {
             return "Already Ready!";
         }
         player.setPlayerstatus(1);
-        playerRepository.save(player);
+        updateplayerstatus(player);
         MyHandler myHandler = new MyHandler();
         Integer roomnumber = player.getRoomnumber();
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
@@ -346,7 +441,7 @@ public class RoomDaoImpl implements RoomDao {
             return "Already Canceled!";
         }
         player.setPlayerstatus(2);
-        playerRepository.save(player);
+        updateplayerstatus(player);
         MyHandler myHandler = new MyHandler();
         Integer roomnumber = player.getRoomnumber();
         List<Player> players =playerRepository.findByRoomnumber(roomnumber);
@@ -376,7 +471,7 @@ public class RoomDaoImpl implements RoomDao {
         }
 
         room.setGamestatus(1);
-        roomRepository.save(room);
+        updatestatus(room);
 
         MyHandler myHandler = new MyHandler();
         for(int i=0;i<players.size();i++)

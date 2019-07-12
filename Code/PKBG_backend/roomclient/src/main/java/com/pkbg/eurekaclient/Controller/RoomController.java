@@ -2,14 +2,18 @@ package com.pkbg.eurekaclient.Controller;
 
 import com.pkbg.eurekaclient.Entity.Player;
 import com.pkbg.eurekaclient.Entity.Room;
+import com.pkbg.eurekaclient.Handler.MyHandler;
 import com.pkbg.eurekaclient.Repository.PlayerRepository;
 import com.pkbg.eurekaclient.Repository.RoomRepository;
+import com.pkbg.eurekaclient.Service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.socket.TextMessage;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/room")
@@ -19,6 +23,12 @@ public class RoomController {
 
     @Autowired
     PlayerRepository playerRepository;
+
+    @Autowired
+    public RoomService roomService;
+
+    @Autowired
+    public MyHandler myHandler;
 
     @RequestMapping("/roomtest/{roomnumber}/{hostname}/{playernumber}/{gamestatus}/{password}")
     @ResponseBody
@@ -57,6 +67,25 @@ public class RoomController {
         return "room ok";
     }
 
+    @RequestMapping("/create")
+    @ResponseBody
+    public Map<String,Object> create(@RequestBody Map<String,Object> map) throws IOException
+    {
+        String username =map.get("username").toString();
+       return roomService.create(username);
+    }
 
+    @RequestMapping("/join")
+    @ResponseBody
+    public Integer join(@RequestBody Map<String,Object> map) throws IOException
+    {
+        String username =map.get("username").toString();
+        String room = map.get("roomID").toString();
+        String pass = map.get("password").toString();
+        Integer roomnumber = Integer.valueOf(room);
+        Integer password = Integer.valueOf(pass);
+        Integer Result2 = roomService.join(roomnumber,username,password);
+        return Result2;
+    }
 
 }
