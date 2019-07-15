@@ -3,12 +3,13 @@ package com.pkbg.eurekaclient.Service;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Service
 public interface RoomService {
-    public String create(String hostname) throws IOException;
+    public Map<String,Object> create(String hostname) throws IOException;
     public String dismiss(String if_hostname);
-    public String join(Integer roomnumber, String username, Integer password) throws IOException ;
+    public Integer join(Integer roomnumber, String username, Integer password) throws IOException ;
     public String quit(String username);
     public String hostquit(String username);
     public String kick(String if_hostname, Integer roomnumber, String username);

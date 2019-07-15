@@ -17,7 +17,7 @@ import axios from 'axios';
 const const_Room = {ID : 114514 , password : 4396}
 
 /** 定义了同后端传递和接收指令的 Code 用来处理不同种类的 登录的响应状态 */
-const ROOMID = -1 , PASSWORD = 0;
+const ROOMID = 1 , PASSWORD = 2;
 
 /* 组件 : EnterRoom_inputID
 -- 作用 : 收集用户加入某房间的ID及Password，使其加入房间
@@ -56,20 +56,21 @@ export default class EnterRoom_inputID extends Component {
      * 
      * 传递已输入的 房间ID 和 密码 ，并返回是否成功进入的状态
      */
-    enterRoom(){
+async    enterRoom(){
         
         const _this = this;
 
-        const url = "http://localhost:8080/EnterRoom";
+        const url = "http://49.234.27.75:2002/room/join";
 
         let data = {
             roomID : this.state.roomID , 
-            password : this.state.password
+            password : this.state.password ,
+            username : this.state.username
         }
 
-        let code = 0;
+        var code = -1;
 
-        axios.post( url , data )
+    await    axios.post( url , data )
             .then(function (response) {
                 // handle success
                 console.log(response);
@@ -77,24 +78,32 @@ export default class EnterRoom_inputID extends Component {
             })
             .catch(function (error) {
                 // handle error
+                code = -2;
                 console.log(error);
             })
             .then(function () {
                 // always executed
             });
-        /*
+        
             switch(code){
                 //成功登录，跳转页面
-                case 1 : const { navigate } = this.props.navigation ; 
+                case 0 : const { navigate } = this.props.navigation ; 
                 navigate('Room',{ roomID : this.state.roomID , password : this.state.password , host : false , username :this.state.username });break;
                 // ROOMID即房间号不存在，在该文件 EnterRoom_inputID.js 顶部已定义
                 case ROOMID : alert("房间号不存在！");break;
                 // PASSWORD即密码错误，在该文件 EnterRoom_inputID.js 顶部已定义
                 case PASSWORD : alert("密码错误！");break;
+
+                case 3 : alert("房间已在游戏中！");break;
+
+                case 4 : alert("房间人数已满。");break;
+                // 服务器端发生错误
+                case -2 : alert("服务器出错！");break;
+                default : alert("未连接！");break;
             }
-        */
         
-        /** 以下为测试语句 */
+        
+        /** 以下为测试语句 
         if(this.state.roomID == const_Room.ID)
             if(this.state.password == const_Room.password)
             {
@@ -130,7 +139,7 @@ export default class EnterRoom_inputID extends Component {
                                 <Ionicons
                                     name = {'md-exit'} 
                                     size = {30}
-                                    onPress = {this.exit}
+                                    onPress = {this.gobackMainPage}
                                 />
                             </View>
                             <View style={header.End}>

@@ -11,8 +11,9 @@ import base from '../src/style/base';
 
 import axios from 'axios';
 
+
 /** 定义了同后端传递和接收指令的 Code 用来处理不同种类的 登录的响应状态 */
-const USERNAME = -1 , PASSWORD = 0;
+const USERNAME = 3 , PASSWORD = 2 , BANNED = 0;
 
 /* 组件 : Login
 -- 作用 : 收集用户登录信息，并提交至后端
@@ -57,20 +58,20 @@ export default class Login extends Component {
      * 
      * 向后端发送 用户名 和 密码 ，并接收是否成功登录的指令 ，然后决定是否进行跳转
      */
-    login(){
+async    login(){
         
         
         const _this = this;
 
-        const url = "http://local:8080/Login";
+        const url = "http://49.234.27.75:2001/user/login";
 
-        var code = USERNAME;
+        var code = -1;
 
         let data = {
             username : _this.state.username,
             userpassword : _this.state.password,
         }
-        axios.post( url , data )
+    await    axios.post( url , data )
             .then(function (response) {
                 // handle success
                 code = response.data;
@@ -83,7 +84,7 @@ export default class Login extends Component {
             .then(function () {
                 // always executed
             });
-        /**
+        
         switch(code){
             //成功登录，跳转页面
             case 1 : const { navigate } = this.props.navigation ; 
@@ -92,13 +93,16 @@ export default class Login extends Component {
             case USERNAME : alert("用户名不存在！");break;
             // PASSWORD即密码错误，在该文件 Login.js 顶部已定义
             case PASSWORD : alert("密码错误！");break;
+            // BANNED 即用户被禁用，在该文件 Login.js 顶部已定义
+            case BANNED : alert("您的用户已被禁用，请联系管理员处理。");break;
+            default : alert("未响应！");break;
         }
-        */
-
-       /* 以下为测试用代码 */
+        
+       /* 以下为测试用代码 
        const { navigate } = this.props.navigation ; 
        navigate('MainPage' , {username : this.state.username});
        /* 以上为测试用代码 */
+       
     }
 
 
@@ -109,28 +113,41 @@ export default class Login extends Component {
      *  向后端发送用户名，根据此用户名绑定的邮箱账号发送邮件重置密码 
      * 
      */
-    forgetPW(){
+async    forgetPW(){
 
-        alert("我们将发送一封邮件到您用户名绑定的邮箱中，请根据邮件中的提示完成找回密码的功能。")
+        
         const _this = this;
 
-        const url = "http://local:8080/forgetPassword";
+        const url = "http://49.234.27.75:2001/user/resetPass";
 
         let data = {
             username : _this.state.username,
         }
-        axios.post( url , data )
+
+        var code = 1;
+    await    axios.post( url , data )
             .then(function (response) {
                 // handle success
+                
+                code = response.data;
                 console.log(response);
             })
             .catch(function (error) {
                 // handle error
+                code = -2;
                 console.log(error);
             })
             .then(function () {
                 // always executed
             });
+
+            switch(code){
+                case 0 :alert("我们将发送一封邮件到您用户名绑定的邮箱中，请根据邮件中的提示完成找回密码的功能。");break;
+                case 1 :alert("该用户名不存在！");break;
+                case -2 : alert("服务器异常！");break;
+                default : alert("未响应！");break;
+            }
+
     }
 
     render() {

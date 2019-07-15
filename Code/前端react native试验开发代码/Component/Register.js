@@ -18,30 +18,12 @@ import axios from 'axios';
                  2.邮箱格式
                  3.手机号格式
 */
+
 class CheckOut extends Component {
-    /*
-    constructor(props){
-        super(props);
-        this.state = {
-            pw : true, //密码提示 ， true则表示格式正确 ， 不显示在屏幕上 ， 下同
-            em : true, //邮箱提示
-            ph : true, //手机号提示
-        }
-    }
     
-    componentDidMount(){
-        var expr_email = /^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})$/;
-        var expr_phone = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0-9]{1})|(15[0-3]{1})|(15[4-9]{1})|(18[0-9]{1})|(199))+\d{8})$/;
-        this.setState({
-            pw : !this.props.pw1.indexOf(this.props.pw2), //检测密码
-            em : expr_email.test(this.props.email) || (this.props.email === ""), //检测邮箱
-            ph : expr_phone.test(this.props.phone) || (this.props.phone === "") //检测手机号
-        })
-    }
-    */
     render(){
         /** 定义了合法email和phone的正则表达式 用于输入合法性的检测 */
-        var expr_email = /^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})$/;
+        var expr_email = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;;
         var expr_phone = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0-9]{1})|(15[0-3]{1})|(15[4-9]{1})|(18[0-9]{1})|(199))+\d{8})$/;
         
         /** 检测密码、邮箱、手机号 */
@@ -136,10 +118,24 @@ export default class Register extends Component {
      * 
      * 注册一个帐户
      */
-    register(){
+async   register(){
         const _this = this;
 
-        const url = "http://local:8080/mydb/Register";
+        /** 定义了合法email和phone的正则表达式 用于输入合法性的检测 */
+        var expr_email = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;;
+        var expr_phone = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0-9]{1})|(15[0-3]{1})|(15[4-9]{1})|(18[0-9]{1})|(199))+\d{8})$/;
+        
+        /** 检测密码、邮箱、手机号 */
+        var pw = !this.state.password.indexOf(this.state.confirmpassword) && !(this.state.password ==""); //密码检测 ， true则表示格式正确 、不显示在屏幕上 ， 下同
+        var em = expr_email.test(this.state.email); //邮箱检测
+        var ph = expr_phone.test(this.state.telephone); //手机号检测
+        
+        if(!(pw && em && ph)){
+            alert("个人信息格式不对！");
+            return;
+        }
+
+        const url = "http://49.234.27.75:2001/user/register";
         
         data = {
             username : _this.state.username,
@@ -147,20 +143,53 @@ export default class Register extends Component {
             useremail : _this.state.email,
             usertele : _this.state.telephone
         }
-        axios.post( url , data )
-            .then(function (response) {
+        
+        var code = -1;
+    await    axios.post( url , data )
+            .then(function (res) {
                 // handle success
-                console.log(response);
+                code = res.data;
+                console.log(res);
             })
             .catch(function (error) {
                 // handle error
+                code = -2;
+                
                 console.log(error);
             })
             .then(function () {
                 // always executed
             });
-    }
+        
+        switch(code){
+            case 1:
+                alert("注册成功！欢迎新用户"+data.username);
+                this.gobackLogin();
+                break;
+            case 0:
+                alert("注册失败！用户名"+data.username+"重复。");
+                break;
+            case -2:
+                alert("出错了！请稍后再试。");
+                break;
+            case -1:
+                alert("未响应。");
+                break;
+        }
+        
+/*
+        var str = this.state.username;
+        fetch( "http://49.234.27.75:3101/test")
+            .then(function (response) {
+                // handle success
+                //code = res.data;
+                str = response.text();
+                console.log(response);
+            })
 
+        alert(str);
+        */
+    }
     /** 返回上一个页面（登录页面） */
     gobackLogin(){
         const { goBack } = this.props.navigation ;

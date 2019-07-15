@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -13,7 +14,7 @@ public class RoomServiceImpl implements RoomService {
     public RoomDao roomDao;
 
     @Override
-    public String create(String hostname) throws IOException
+    public Map<String,Object> create(String hostname) throws IOException
     {
         return roomDao.create(hostname);
     }
@@ -26,7 +27,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String join(Integer roomnumber, String username, Integer password) throws IOException
+    public Integer join(Integer roomnumber, String username, Integer password) throws IOException
     {
         return roomDao.join(roomnumber, username, password);
     }

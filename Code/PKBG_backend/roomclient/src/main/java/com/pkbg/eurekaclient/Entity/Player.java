@@ -96,4 +96,6 @@ public class Player implements Serializable {
     public String toJSON2(Integer code, String hostname) {
         return "Player [code=" + code + ", Playername=" + playername + ", hostname=" + hostname + "]";
     }
+
+
 }

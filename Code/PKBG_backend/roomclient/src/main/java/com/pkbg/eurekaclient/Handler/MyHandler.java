@@ -1,9 +1,11 @@
 package com.pkbg.eurekaclient.Handler;
 
 import com.pkbg.eurekaclient.Entity.Player;
+import com.pkbg.eurekaclient.Entity.Room;
 import com.pkbg.eurekaclient.Repository.PlayerRepository;
 import com.pkbg.eurekaclient.Repository.RoomRepository;
 import com.pkbg.eurekaclient.Service.RoomService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,12 @@ import org.springframework.web.socket.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.tomcat.jni.Time.sleep;
 
 @Service
 public class MyHandler implements WebSocketHandler {
@@ -41,31 +47,31 @@ public class MyHandler implements WebSocketHandler {
         String ID = session.getUri().toString().split("ID=")[1];
         System.out.println(ID);
 
-        String operation = session.getUri().toString().split("code=")[1];
-        Integer code = Integer.valueOf(operation);
-        switch (code)
+        /*try {
+            TimeUnit.SECONDS.sleep(3);
+        }catch (InterruptedException e)
         {
-            case 1:
-                String Result1 = roomService.create(ID);
-                if (!Result1.equals("Success!"))
-                    sendMessageToUser(ID+"",new TextMessage("-1"+Result1));
-                break;
-            case 2:
-                String room = session.getUri().toString().split("roomnumber=")[1];
-                String pass = session.getUri().toString().split("password=")[1];
-                Integer roomnumber = Integer.valueOf(room);
-                Integer password = Integer.valueOf(pass);
-                String Result2 = roomService.join(roomnumber,ID,password);
-                if (!Result2.equals("Success!"))
-                    sendMessageToUser(ID+"",new TextMessage("-1"+Result2));
-                break;
+
         }
+        Player player =playerRepository.findByPlayername(ID);
+        Integer roomnumber = player.getRoomnumber();
+        Room room = roomRepository.findByRoomnumber(roomnumber);
+        Integer password = room.getRoompassword();
+        Map<String,Object> map = new HashMap<>();
+        map.put("code",8);
+
+        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        map.put("players",players);
+        System.out.println(map);
+        JSONArray json = JSONArray.fromObject(map);
+        sendMessageToUser(ID+"",new TextMessage(json.toString()));*/
 
         if (ID != null) {
             users.put(ID, session);
             session.sendMessage(new TextMessage("成功建立socket连接"));
             System.out.println(ID);
             System.out.println(session);
+            sendMessageToUser(ID+"",new TextMessage("8"));
         }
         System.out.println("当前在线人数："+users.size());
     }
@@ -75,7 +81,7 @@ public class MyHandler implements WebSocketHandler {
     public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) throws Exception {
         try{
             JSONObject jsonobject = JSONObject.fromObject(webSocketMessage.getPayload());
-            String username = new String((String) jsonobject.get("id"));
+            String username = new String((String) jsonobject.get("username"));
             Integer code = new Integer((Integer) jsonobject.get("code"));
             System.out.println(jsonobject.get("id"));
 
@@ -117,13 +123,6 @@ public class MyHandler implements WebSocketHandler {
                     String Result6 = roomService.changeToB(username);
                     if (!Result6.equals("Success!"))
                         sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result6));
-                    break;
-                case 7://JOIN
-                    Integer roomnumber7 = new Integer((Integer) jsonobject.get("roomnumber"));
-                    Integer password7 = new Integer((Integer) jsonobject.get("password"));
-                    String Result7 = roomService.join(roomnumber7, username, password7);
-                    if (!Result7.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("id")+"",new TextMessage("-1"+Result7));
                     break;
                 case 90://DISMISS
                     String Result90 = roomService.dismiss(username);

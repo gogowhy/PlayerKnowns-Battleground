@@ -15,6 +15,7 @@ import header from '../src/style/header';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
+
 const {height,width} = Dimensions.get('window')
 
 /**
@@ -22,16 +23,16 @@ const {height,width} = Dimensions.get('window')
  * 
  * 属性 ： team \  name  \  isReady
  * 属性 ： 组别  、 用户名 、 是否准备
- */
+ *
 const players = [
     {team : 'A' , name : 'wang haoyu' , isReady : false},
     {team : 'B' , name : 'zhou yifan' , isReady : true},
     {team : 'A' , name : 'qi peng' , isReady : true},
     {team : 'A' , name : 'xie yihan' , isReady : true}
 ]
-
+*/
 /** 定义了同后端传递和接收指令的 Code 用来处理不同种类的消息 */
-const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 , CHANGE_TEAM_TO_A = 5 , CHANGE_TEAM_TO_B = 6 , NEW_PLAYER = 7 , INITIALIZE = 8;
+const START_GAME = 0 , READY = 1 , UNREADY = 2 , EXIT_BY_HOST = 3 , EXIT_BY_USER = 4 , CHANGE_TEAM_TO_A = 5 , CHANGE_TEAM_TO_B = 6 , NEW_PLAYER_JOIN = 7 , INITIALIZE = 8;
 
 const DISMISS = 90 ,KICK = 91;
 /** 定义了队伍常量 */
@@ -54,8 +55,8 @@ export default class Room extends Component {
         }
 
         /** 测试连接用公用wss地址 实际需要替换 */
-        //this.ws = new WebSocket("ws://127.0.0.1:2003/myHandler/username="+this.state.username);
-        this.ws = new WebSocket('wss://echo.websocket.org/');
+        this.ws = new WebSocket("ws://49.234.27.75:2002/myHandler/ID="+this.state.username);
+        //this.ws = new WebSocket('wss://echo.websocket.org/');
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.gobackMainPage = this.gobackMainPage.bind(this);
         this.startGame = this.startGame.bind(this);
@@ -87,12 +88,20 @@ export default class Room extends Component {
         
         this.ws.onopen = () => {
             // connection opened
-            //this.ws.send('something'); // send a message
-            this.setState(
-                {
-                    socketState : WebSocket.OPEN
-                }
-            )
+            
+            if(this.state.host)  //如果是房主，创建新房间的时候不会收到后端的 INITIALIZE 消息，需要自行将自己的信息 push 进 players列表里
+            {
+                var newplayers = [];
+                newplayers.push({ username : this.state.username , playerstatus : true , playerteam : TEAM_A });
+                
+                this.setState(
+                    {
+                        players : newplayers ,
+                        socketState : WebSocket.OPEN
+                    }
+                )
+                
+            }
         };
         
         this.ws.onmessage = (e) => {
@@ -100,6 +109,7 @@ export default class Room extends Component {
         if(this.setState.ws !== WebSocket.OPEN) return;
         console.log(e.data);
         let res = JSON.parse(e.data);
+        alert(res);
         switch(res.code) {
             // 进入游戏
             case START_GAME : {
@@ -217,7 +227,8 @@ export default class Room extends Component {
                 break;
             }
             //  新玩家加入房间
-            case NEW_PLAYER : {
+            case NEW_PLAYER_JOIN : {
+                
                 let newplayer = {
                     username : res.username,
                     playerstatus : false,
@@ -235,10 +246,9 @@ export default class Room extends Component {
             case INITIALIZE : {
 
                 var newplayers = res.players;
-                
+                newplayers.push({username : this.state.username , playerteam : res.playerteam , playerstatus : false }); //把自己的信息添加到列表里
                 this.setState(
                     {
-                        isReady : false,
                         team : res.playerteam == 1 ? TEAM_A : TEAM_B,
                         players : newplayers
                     }
@@ -305,7 +315,7 @@ export default class Room extends Component {
      */
     startGame(){
         var flag = 1;
-        players.forEach((player) => {
+        this.state.players.forEach((player) => {
             if(!player.isReady) {alert("还有玩家未准备"); flag = 0; return; }
         }
         )
@@ -323,7 +333,7 @@ export default class Room extends Component {
 
             if(this.ws.readyState ==  WebSocket.OPEN){
                 this.ws.send(JSON.stringify(data));
-                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+                //alert(JSON.stringify(data)); //将send传递的字符串显示出来
             }
         }
         
@@ -354,7 +364,7 @@ export default class Room extends Component {
 
         if(this.ws.readyState ==  WebSocket.OPEN){
             this.ws.send(JSON.stringify(data));
-            alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            //alert(JSON.stringify(data)); //将send传递的字符串显示出来
         }
 
         this.setState(
@@ -388,7 +398,7 @@ export default class Room extends Component {
 
         if(this.ws.readyState ==  WebSocket.OPEN){
             this.ws.send(JSON.stringify(data));
-            alert(JSON.stringify(data)); //将send传递的字符串显示出来
+            //alert(JSON.stringify(data)); //将send传递的字符串显示出来
         }
 
         this.setState(
@@ -399,6 +409,12 @@ export default class Room extends Component {
         }
     }
 
+    /**
+     * 功能 ： 更换队伍
+     * 触发 ： 玩家点击“更换队伍”按钮
+     * 
+     * 变更队伍，并向后端发送消息
+     */
     changeTeam(){
 
         if(this.state.team)
@@ -410,7 +426,7 @@ export default class Room extends Component {
     
             if(this.ws.readyState ==  WebSocket.OPEN){
                 this.ws.send(JSON.stringify(data));
-                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+                //alert(JSON.stringify(data)); //将send传递的字符串显示出来
             }
     
             this.setState(
@@ -427,7 +443,7 @@ export default class Room extends Component {
     
             if(this.ws.readyState ==  WebSocket.OPEN){
                 this.ws.send(JSON.stringify(data));
-                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+                //alert(JSON.stringify(data)); //将send传递的字符串显示出来
             }
     
             this.setState(
@@ -460,7 +476,7 @@ export default class Room extends Component {
             
             if(this.ws.readyState ==  WebSocket.OPEN){
                 this.ws.send(JSON.stringify(data));
-                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+                //alert(JSON.stringify(data)); //将send传递的字符串显示出来
             }
 
             this.gobackMainPage();
@@ -480,7 +496,7 @@ export default class Room extends Component {
     
             if(this.ws.readyState ==  WebSocket.OPEN){
                 this.ws.send(JSON.stringify(data));
-                alert(JSON.stringify(data)); //将send传递的字符串显示出来
+                //alert(JSON.stringify(data)); //将send传递的字符串显示出来
             }
                     
             this.setState(
@@ -511,15 +527,15 @@ export default class Room extends Component {
     
         const T = this.state.team ? "B->A" : "A->B" ; //更换队伍按钮的文字说明
 
-        players.forEach((player) =>{
-            if(player.team === 'A') {
-                if(player.isReady) teamA.push([player.name,'Ready']);
-                if(!player.isReady) teamA.push([player.name,'UnReady']);
+        this.state.players.forEach((player) =>{
+            if(player.playerteam == TEAM_A) {
+                if(player.playerstatus) teamA.push([player.username,'Ready']);
+                if(!player.playerstatus) teamA.push([player.username,'UnReady']);
             }
             
-            if(player.team === 'B') {
-                if(player.isReady) teamB.push([player.name,'Ready']);
-                if(!player.isReady) teamB.push([player.name,'UnReady']);
+            if(player.playerteam == TEAM_B) {
+                if(player.playerstatus) teamB.push([player.username,'Ready']);
+                if(!player.playerstatus) teamB.push([player.username,'UnReady']);
             }
         }
         )
