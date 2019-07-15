@@ -1,11 +1,13 @@
 package com.pkbg.eurekaclient.ServiceImpl;
 
 import com.pkbg.eurekaclient.Dao.RoomDao;
+import com.pkbg.eurekaclient.Entity.Player;
 import com.pkbg.eurekaclient.Service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -78,5 +80,17 @@ public class RoomServiceImpl implements RoomService {
     public String start(Integer roomnumber)
     {
         return roomDao.start(roomnumber);
+    }
+
+    @Override
+    public List<Player> queryAll()
+    {
+        return roomDao.queryAll();
+    }
+
+    @Override
+    public List<Player> query(String ID,Integer roomnumber)
+    {
+        return roomDao.query(ID,roomnumber);
     }
 }
