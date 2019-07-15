@@ -42,33 +42,49 @@ export default class MainPage extends Component {
      * 系统会自动创建一个包含明文房间ID和密码的房间，并将 roomID 和 password 返回至前端
      * 随后跳转至房间
      */
-    createRoom(){
+async    createRoom(){
         
         const _this = this;
          
-        const url = "http://local:8080/createRoom";
+        const url = "http://49.234.27.75:2002/room/create";
 
         data = {
             username : _this.state.username,
         }
-        axios.post( url , data )
+
+        var roomID;
+        var password;
+        var code = -1;
+    await    axios.post( url , data )
             .then(function (response) {
                 // handle success
+                code = response.data.code;
+                roomID = response.data.roomnumber;
+                password = response.data.roompassword;
                 console.log(response);
             })
             .catch(function (error) {
                 // handle error
+                code = -2;
                 console.log(error);
             })
             .then(function () {
                 // always executed
             });
         
-        const { navigate } = this.props.navigation;
+        switch(code){
+            case 0 : const { navigate } = this.props.navigation;
+                    navigate('Room',{roomID : roomID , password : password , host : true , username :this.state.username });
+                    break;
+            case 1 : alert("创建失败!服务器异常。");break;
+            case -2 :alert("服务器异常。");break;
+            default : alert("未响应！");break;
+        }    
+        
 
         //被注释掉的这句是实际上从后端获取信息后跳转的语句 未被注释掉的是测试语句
-        //navigate('Room',{roomID : roomID , password : password , host : true , username :this.state.username });
-        navigate('Room',{roomID :"114514" , password : "4396" , host : true , username :this.state.username });
+        
+        //navigate('Room',{roomID :"114514" , password : "4396" , host : true , username :this.state.username });
     }
 
     /** 
@@ -109,8 +125,7 @@ export default class MainPage extends Component {
         return (
             <ImageBackground style={base.background}
                 source={require('../src/img/bg1.png')}>
-                <TouchableOpacity
-                    style={{flex:1}}>
+                
                     <View style={header.container}>
                         <View style={header.header}>
                             <View style={header.Head}>
@@ -130,8 +145,7 @@ export default class MainPage extends Component {
                         </View>
                     </View>
                     
-                    <TouchableOpacity
-                        style={styles.container}>
+                    <View style={styles.container}>
                         <View style={styles.containerRow}>
                             <FontAwesome5
                                 style={{marginRight:10}}
@@ -163,9 +177,9 @@ export default class MainPage extends Component {
                                     style={styles.btText}>  加 入 房 间</Text>
                             </TouchableOpacity>
                         </View>
-                    </TouchableOpacity>
+                    </View>
 
-                </TouchableOpacity>
+                
             </ImageBackground>
         );
     }
