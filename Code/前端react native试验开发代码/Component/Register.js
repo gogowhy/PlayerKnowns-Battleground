@@ -5,7 +5,7 @@ import {
     Text,
     ImageBackground
 } from 'react-native';
-import { Form, Button, Label, Item } from 'native-base';
+import { Form, Button, Label, Item, Icon } from 'native-base';
 import Email from './InputComponents/Email';
 import Password from './InputComponents/Password';
 import PasswordRepeat from './InputComponents/PasswordRepeat';
@@ -14,75 +14,8 @@ import Telephone from './InputComponents/Telephone';
 
 import base from '../src/style/base';
 import header from '../src/style/header';
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import axios from 'axios';
-
-/* 组件 : CheckOut
--- 作用 : 在前端检测各项填写规范
-   具体检测内容 : 1.两次密码是否一致
-                 2.邮箱格式
-                 3.手机号格式
-*/
-class CheckEmail extends Component {
-
-    render() {
-
-        /** 定义了合法phone的正则表达式 用于输入合法性的检测 */
-        var expr_email = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
-
-        /** 检测邮箱 true则表示格式正确 、不显示在屏幕上  */
-        var email_line = "";
-        if (expr_email.test(this.props.email) || (this.props.email === "")) {
-            email_line = "邮箱地址不合法";
-        } else return null;
-
-        return (
-            <Item style={styles.CheckOut}>
-                <Label style={styles.CheckOutInfo}>{email_line}</Label>
-            </Item>
-        )
-    }
-}
-
-class CheckTele extends Component {
-
-    render() {
-
-        /** 定义了合法phone的正则表达式 用于输入合法性的检测 */
-        var expr_phone = /^(((13[0-9]{1})|(14[0-9]{1})|(17[0-9]{1})|(15[0-3]{1})|(15[4-9]{1})|(18[0-9]{1})|(199))+\d{8})$/;
-
-        /** 检测手机号 true则表示格式正确 、不显示在屏幕上 */
-        var phone_line = "";
-        if (expr_phone.test(this.props.phone) || (this.props.phone === "")) {
-            phone_line = "手机号格式不合法";
-        } else return null;
-
-        return (
-            <Item style={styles.CheckOut}>
-                <Label style={styles.CheckOutInfo}>{phone_line}</Label>
-            </Item>
-        )
-    }
-}
-
-class CheckPass extends Component {
-    render() {
-
-        /** 检测密码 true则表示格式正确 、不显示在屏幕上 */
-        var pass_line = "";
-        if (this.props.repeat !== this.props.pass && this.props.pass !== '') {
-            if (this.props.repeat !== '') {
-                pass_line = "两次密码不一致";
-            }
-        } else return null;
-
-        return (
-            <Item style={styles.CheckOut}>
-                <Label style={styles.CheckOutInfo}>{pass_line}</Label>
-            </Item>
-        )
-    }
-}
 
 /* 组件 : Register
 -- 作用 : 收集用户信息，并提交至后端
@@ -91,59 +24,15 @@ export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // username : '', //用户名0
-            // password : '', //密码1
-            // confirmpassword : '', //确认密码2
-            // email : '',    //电子邮件地址3
-            // telephone : '', //电话号码4
-            inputs: [],
+            inputs: [], //用户名0,密码1,确认密码2,电子邮件地址3,电话号码4
         }
-        // this.onUsernameChanged = this.onUsernameChanged.bind(this);
-        // this.onPasswordChanged = this.onPasswordChanged.bind(this);
-        // this.onConfirmPasswordChanged = this.onConfirmPasswordChanged.bind(this);
-        // this.onEmailChanged = this.onEmailChanged.bind(this);
-        // this.onTelephoneChanged = this.onTelephoneChanged.bind(this);
         this.register = this.register.bind(this);
         this.gobackLogin = this.gobackLogin.bind(this);
     }
-    /** 收集文本框内输入的用户信息 更改state 下同 */
-    // onUsernameChanged( n ){
-    //     this.setState(
-    //         { username : n }
-    //     )
-    // }
-
-    // onPasswordChanged( n ){
-    //     this.setState(
-    //         { password : n }
-    //     )
-    // }
-
-    // onConfirmPasswordChanged( n ){
-    //     this.setState(
-    //         { confirmpassword : n }
-    //     )
-    // }
-
-    // onEmailChanged( n ){
-    //     this.setState(
-    //         { email : n }
-    //     )
-    // }
-
-    // onTelephoneChanged( n ){
-    //     this.setState(
-    //         { telephone : n }
-    //     )
-    // }
-    // /* 以上是修改state(用户名、密码等) */
 
     changeInputFocus = index => () => {
         if (index < 4) {
             this.state.inputs[index + 1].state.inputRef._root.focus(); // eslint-disable-line
-            // if (index >= 1) {
-            //     this.props.scroll(index);
-            // }
         }
     };
 
@@ -259,7 +148,7 @@ export default class Register extends Component {
                     <View style={header.container}>
                         <View style={header.header}>
                             <View style={header.Head}>
-                                <Ionicons
+                                <Icon
                                     name={'md-arrow-round-back'}
                                     size={30}
                                     onPress={this.gobackLogin}
@@ -289,19 +178,18 @@ export default class Register extends Component {
                                 update={this.updateCanRegisterState}
                                 ref={(ref) => { this.state.inputs[2] = ref; }}
                             />
-                            {/* <CheckPass pass={this.state.inputs[1].state.value} repeat={this.state.inputs[2].state.value} /> */}
+
                             <Email
                                 changeFocus={this.changeInputFocus(3)}
                                 update={this.updateCanRegisterState}
                                 ref={(ref) => { this.state.inputs[3] = ref; }}
                             />
-                            {/* <CheckEmail email={this.state.inputs[3].state.value} /> */}
+
                             <Telephone
                                 changeFocus={this.changeInputFocus(4)}
                                 update={this.updateCanRegisterState}
                                 ref={(ref) => { this.state.inputs[4] = ref; }}
                             />
-                            {/* <CheckTele phone={this.state.inputs[4].state.value} /> */}
                         </Form>
 
                         <Button
@@ -321,12 +209,6 @@ export default class Register extends Component {
 
 
 const styles = StyleSheet.create({
-    // container_rev: {
-    //     flex: 1,
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    //     alignItems: 'flex-end',
-    // },
     CheckOut: {
         flexDirection: 'row',
         height: 40,
