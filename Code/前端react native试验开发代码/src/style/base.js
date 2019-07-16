@@ -35,7 +35,7 @@ const base = StyleSheet.create({
         width: 150,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 8,
+        borderRadius: 18,
         backgroundColor: '#FF4500',
         marginTop: 10,
         marginBottom: 10,
@@ -43,7 +43,8 @@ const base = StyleSheet.create({
         marginRight: 10,
     },
     buttonBig:{
-        width: 150,
+        height: 45,
+        width: 160,
         marginTop: 50,
         marginBottom: 70,
     },
@@ -53,17 +54,17 @@ const base = StyleSheet.create({
         fontSize: 30,
     },
     input: {
-        width: 180,
-        height: 50,
+        width: 50,
         fontSize: 18,
         color: '#000',//输入框输入的文本为黑色
+        marginRight: 18
     },
     inputBox: {
-        flexDirection: 'row',
+        //flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 180,
-        height: 40,
+        width: 300,
+        height: 42,
         borderRadius: 8,
         backgroundColor: '#FFFFF0',
         marginBottom: 8,
