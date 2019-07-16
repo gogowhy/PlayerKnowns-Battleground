@@ -28,7 +28,7 @@ public class RoomDaoImpl implements RoomDao {
     public PlayerRepository playerRepository;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public MongoTemplate mongoTemplate;
 
     public void deleteroom(Room room)
     {
@@ -103,6 +103,14 @@ public class RoomDaoImpl implements RoomDao {
         mongoTemplate.updateFirst(query,update,collectionname);
     }
 
+    public List<Player> findByRoomnumber(Integer roomnumber)
+    {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("roomnumber").is(roomnumber));
+        List<Player> players = mongoTemplate.find(query, Player.class);
+        return players;
+    }
+
     @Override
     public Map<String,Object> create(String hostname) throws IOException {
         Room room = new Room();
@@ -139,7 +147,7 @@ public class RoomDaoImpl implements RoomDao {
         room.setGamestatus(0);
         System.out.println("daomaple");
 
-        List<Player> players =playerRepository.findByRoomnumber(rmNumber);
+        List<Player> players =findByRoomnumber(rmNumber);
 
 
         Map<String,Object> map = new HashMap<>();
@@ -161,14 +169,13 @@ public class RoomDaoImpl implements RoomDao {
         }
 
         Integer roomnumber=room.getRoomnumber();
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players =findByRoomnumber(roomnumber);
 
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON(90);
-            myHandler.sendMessageToUser(playername, new TextMessage(message));
+            myHandler.sendMessageToUser(playername, new TextMessage("90"));
             deleteplayer(player_temp);
         }
         deleteroom(room);
@@ -198,12 +205,17 @@ public class RoomDaoImpl implements RoomDao {
         if (roomnumber.equals(player.roomnumber))
         {
             deleteplayer(player);
-            List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+            List<Player> players =findByRoomnumber(roomnumber);
+
+            Map <String,Object> map = new HashMap<String,Object>();
+            map.put("code",91);
+            map.put("username",username);
+            JSONArray json2 = JSONArray.fromObject(map);
+            String message = json2.toString();
             for(int i=0;i<players.size();i++)
             {
                 Player player_temp=players.get(i);
                 String playername = player_temp.getPlayername();
-                String message = player_temp.toJSON(91);
                 myHandler.sendMessageToUser(playername, new TextMessage(message));
             }
         }
@@ -236,7 +248,7 @@ public class RoomDaoImpl implements RoomDao {
 
 
         Player player = new Player();
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players = findByRoomnumber(roomnumber);
         Integer a=new Integer(0);
         Integer b=new Integer(0);
         for(int i=0;i<players.size();i++)
@@ -246,14 +258,28 @@ public class RoomDaoImpl implements RoomDao {
             if (team_temp==1) a++;
             else b++;
         }
-        if (a>b) player.setPlayerteam(2);
-        else player.setPlayerteam(1);
+        Integer playerteam = new Integer(0);
+        if (a>b) {
+            player.setPlayerteam(2);
+            playerteam=2;
+        }
+        else
+        {
+            player.setPlayerteam(1);
+            playerteam=1;
+        }
 
+
+        Map <String,Object> map2 = new HashMap<String,Object>();
+        map2.put("code",7);
+        map2.put("username",username);
+        map2.put("playerteam",playerteam);
+        JSONArray json2 = JSONArray.fromObject(map2);
+        String message = json2.toString();
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON(7);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
 
@@ -264,14 +290,15 @@ public class RoomDaoImpl implements RoomDao {
         player.setRoomnumber(roomnumber);
         player.setPlayername(username);
         playerRepository.save(player);
-        List<Player> playerss =playerRepository.findByRoomnumber(roomnumber);
+        /*List<Player> playerss =playerRepository.findByRoomnumber(roomnumber);
 
         Map <String,Object> map = new HashMap<String,Object>();
         map.put("code",8);
         map.put("players",playerss);
         JSONArray json = JSONArray.fromObject(map);
-        String message = json.toString();
-        myHandler.sendMessageToUser(username, new TextMessage(message));
+        String message2 = json.toString();
+        System.out.println(message2);
+        myHandler.sendMessageToUser(username, new TextMessage(message2));*/
         return 0;//"Success!";
     }
 
@@ -280,25 +307,31 @@ public class RoomDaoImpl implements RoomDao {
     {
         Player player = playerRepository.findByPlayername(username);
         Integer roomnumber = player.getRoomnumber();
+        System.out.println(roomnumber);
         Room room = roomRepository.findByRoomnumber(roomnumber);
+        System.out.println(room.playernumber);
         MyHandler myHandler = new MyHandler();
         Integer newnumber = room.getPlayernumber()-1;
         room.setPlayernumber(newnumber);
         updateplayernumber(room);
         deleteplayer(player);
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players = findByRoomnumber(roomnumber);
+        Map <String,Object> map = new HashMap<String,Object>();
+        map.put("code",4);
+        map.put("username",username);
+        JSONArray json2 = JSONArray.fromObject(map);
+        String message = json2.toString();
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON(4);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "Success!";
     }
 
     @Override
-    public String hostquit(String username)//delete?
+    public String hostquit(String username)
     {
         Player player = playerRepository.findByPlayername(username);
         Integer roomnumber = player.getRoomnumber();
@@ -306,26 +339,36 @@ public class RoomDaoImpl implements RoomDao {
         MyHandler myHandler = new MyHandler();
         Integer newnumber = room.getPlayernumber()-1;
         if (newnumber == 0) {
+            Map <String,Object> map = new HashMap<String,Object>();
+            map.put("code",90);
+            JSONArray json = JSONArray.fromObject(map);
+            String message = json.toString();
             deleteroom(room);
-            String message = player.toJSON(90);
+            deleteplayer(player);
             myHandler.sendMessageToUser(username, new TextMessage(message));
         }
-        else room.setPlayernumber(newnumber);
-        deleteplayer(player);
+        else {
+            room.setPlayernumber(newnumber);
+            deleteplayer(player);
 
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
-        Player player_newhost=players.get(1);
-        String newhost = player_newhost.getPlayername();
-        room.setHostname(newhost);
-        for(int i=0;i<players.size();i++)
-        {
-            Player player_temp=players.get(i);
-            String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON2(3, newhost);
-            myHandler.sendMessageToUser(playername, new TextMessage(message));
+            List<Player> players = findByRoomnumber(roomnumber);
+            Player player_newhost = players.get(1);
+            String newhost = player_newhost.getPlayername();
+            Map <String,Object> map = new HashMap<String,Object>();
+            map.put("code",3);
+            map.put("username",username);
+            map.put("hostname",newhost);
+            JSONArray json2 = JSONArray.fromObject(map);
+            String message = json2.toString();
+            room.setHostname(newhost);
+            for (int i = 0; i < players.size(); i++) {
+                Player player_temp = players.get(i);
+                String playername = player_temp.getPlayername();
+                myHandler.sendMessageToUser(playername, new TextMessage(message));
+            }
+            updateplayernumber(room);
+            updatehost(room);
         }
-        updateplayernumber(room);
-        updatehost(room);
         return "Success!";
     }
 
@@ -340,7 +383,7 @@ public class RoomDaoImpl implements RoomDao {
         }
         Integer roomnumber = player.getRoomnumber();
 
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players = findByRoomnumber(roomnumber);
         Integer a=new Integer(0);
         Integer b=new Integer(0);
         for(int i=0;i<players.size();i++)
@@ -358,11 +401,16 @@ public class RoomDaoImpl implements RoomDao {
         player.setPlayerteam(1);
         updateteam(player);
         MyHandler myHandler = new MyHandler();
+
+        Map <String,Object> map = new HashMap<String,Object>();
+        map.put("code",5);
+        map.put("username",username);
+        JSONArray json2 = JSONArray.fromObject(map);
+        String message = json2.toString();
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON(5);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "Success!";
@@ -379,7 +427,7 @@ public class RoomDaoImpl implements RoomDao {
         }
         Integer roomnumber = player.getRoomnumber();
 
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players = findByRoomnumber(roomnumber);
         Integer a=new Integer(0);
         Integer b=new Integer(0);
         for(int i=0;i<players.size();i++)
@@ -391,17 +439,22 @@ public class RoomDaoImpl implements RoomDao {
         }
         if (b==players.size()/2)//Team B Full
         {
-            return "";
+            return "Team B Is Full!";
         }
 
         player.setPlayerteam(2);
         updateteam(player);
         MyHandler myHandler = new MyHandler();
+
+        Map <String,Object> map = new HashMap<String,Object>();
+        map.put("code",6);
+        map.put("username",username);
+        JSONArray json2 = JSONArray.fromObject(map);
+        String message = json2.toString();
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON(6);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "Success!";
@@ -420,12 +473,17 @@ public class RoomDaoImpl implements RoomDao {
         updateplayerstatus(player);
         MyHandler myHandler = new MyHandler();
         Integer roomnumber = player.getRoomnumber();
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players = findByRoomnumber(roomnumber);
+
+        Map <String,Object> map = new HashMap<String,Object>();
+        map.put("code",1);
+        map.put("username",username);
+        JSONArray json2 = JSONArray.fromObject(map);
+        String message = json2.toString();
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON(1);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "Success!";
@@ -444,12 +502,17 @@ public class RoomDaoImpl implements RoomDao {
         updateplayerstatus(player);
         MyHandler myHandler = new MyHandler();
         Integer roomnumber = player.getRoomnumber();
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players = findByRoomnumber(roomnumber);
+
+        Map <String,Object> map = new HashMap<String,Object>();
+        map.put("code",2);
+        map.put("username",username);
+        JSONArray json2 = JSONArray.fromObject(map);
+        String message = json2.toString();
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            String message = player_temp.toJSON(2);
             myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "Success!";
@@ -462,7 +525,7 @@ public class RoomDaoImpl implements RoomDao {
         Integer status = room.getGamestatus();
         if (status == 1) return "Already Started!";
 
-        List<Player> players =playerRepository.findByRoomnumber(roomnumber);
+        List<Player> players = findByRoomnumber(roomnumber);
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
@@ -481,5 +544,30 @@ public class RoomDaoImpl implements RoomDao {
             myHandler.sendMessageToUser(playername, new TextMessage("0"));
         }
         return "Success!";
+    }
+
+    @Override
+    public List<Player> queryAll()
+    {
+        List<Player> users = new ArrayList<Player>();
+        users=playerRepository.findByRoomnumber(12329);
+        return users;
+    }
+
+    @Override
+    public List<Player> query(String ID,Integer roomnumber)
+    {
+        MyHandler myHandler = new MyHandler();
+        List<Player> playerss = new ArrayList<Player>();
+        System.out.println("123");
+        playerss = playerRepository.findByRoomnumber(roomnumber);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code", 8);
+        map.put("players", playerss);
+        JSONArray json = JSONArray.fromObject(map);
+        String message2 = json.toString();
+        System.out.println(message2);
+        myHandler.sendMessageToUser(ID, new TextMessage(message2));
+        return playerss;
     }
 }

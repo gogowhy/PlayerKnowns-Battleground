@@ -1,5 +1,8 @@
 package com.pkbg.eurekaclient.Entity;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "room")
 public class Room {
 
     public Integer roomnumber;

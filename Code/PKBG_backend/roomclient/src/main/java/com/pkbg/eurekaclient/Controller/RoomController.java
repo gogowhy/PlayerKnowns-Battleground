@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.TextMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class RoomController {
     public RoomRepository roomRepository;
 
     @Autowired
-    PlayerRepository playerRepository;
+    public PlayerRepository playerRepository;
 
     @Autowired
     public RoomService roomService;
@@ -86,6 +87,20 @@ public class RoomController {
         Integer password = Integer.valueOf(pass);
         Integer Result2 = roomService.join(roomnumber,username,password);
         return Result2;
+    }
+
+    @RequestMapping("/queryAll")
+    @ResponseBody
+    public List<Player> queryAll()
+    {
+        return roomService.queryAll();
+    }
+
+    @RequestMapping("/query/{ID}/{roomnumber}")
+    @ResponseBody
+    public List<Player> query(@PathVariable("ID") String ID,@PathVariable("roomnumber") Integer roomnumber)
+    {
+        return roomService.query(ID,roomnumber);
     }
 
 }

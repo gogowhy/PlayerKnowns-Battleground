@@ -1,7 +1,10 @@
 package com.pkbg.eurekaclient.Entity;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.io.Serializable;
 
+@Document(collection = "player")
 public class Player implements Serializable {
 
     public String playername;
