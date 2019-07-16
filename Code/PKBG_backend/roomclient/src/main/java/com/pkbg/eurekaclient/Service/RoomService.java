@@ -1,10 +1,14 @@
 package com.pkbg.eurekaclient.Service;
 
+import com.pkbg.eurekaclient.Entity.Player;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
+@Component
 @Service
 public interface RoomService {
     public Map<String,Object> create(String hostname) throws IOException;
@@ -18,4 +22,6 @@ public interface RoomService {
     public String ready(String username);
     public String cancel(String username);
     public String start(Integer roomnumber);
+    public List<Player> queryAll();
+    public List<Player> query(String ID,Integer roomnumber);
 }

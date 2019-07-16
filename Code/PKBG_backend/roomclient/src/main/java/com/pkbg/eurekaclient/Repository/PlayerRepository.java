@@ -6,13 +6,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public interface PlayerRepository extends MongoRepository<Player,Integer> {
+@Component
+public interface PlayerRepository extends MongoRepository<Player, String> {
 
-   public Player findByPlayername (String playername);
+    public Player findByPlayername (String playername);
     public List<Player> findByRoomnumber(Integer roomnumber);
 
 }
