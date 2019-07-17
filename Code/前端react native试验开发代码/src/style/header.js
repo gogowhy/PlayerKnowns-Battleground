@@ -1,26 +1,29 @@
 import {
-    StyleSheet,
-    Dimensions
+    StyleSheet
 } from 'react-native';
-const {width} = Dimensions.get('window')
+
 const header = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
+        height: 40,
     },
     header: {
         height: 30,
-        width: width-20,
-        marginTop: 8,
+        width: 680,
+        marginTop: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
     },
     Head: {
         justifyContent: 'flex-start',
+        marginLeft: 10,
     },
     End: {
+        flexDirection: 'row',
         justifyContent: 'flex-end',
+        marginRight: 10,
     }
 });
 
