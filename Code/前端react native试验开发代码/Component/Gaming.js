@@ -5,7 +5,7 @@ import {
     StyleSheet
 } from 'react-native';
 
-export default class Gaming extends Component {
+export default class End extends Component {
 
     /**
      * 该页面为游戏界面，目前暂未开发
