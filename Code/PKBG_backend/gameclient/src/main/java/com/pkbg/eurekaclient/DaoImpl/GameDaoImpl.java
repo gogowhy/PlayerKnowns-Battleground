@@ -1,4 +1,8 @@
 package com.pkbg.eurekaclient.DaoImpl;
 
-public class GameDaoImpl {
+import com.pkbg.eurekaclient.Dao.GameDao;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class GameDaoImpl implements GameDao {
 }
