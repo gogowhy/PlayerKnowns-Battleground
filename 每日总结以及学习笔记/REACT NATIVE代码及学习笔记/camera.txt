@@ -1,0 +1,35 @@
+∞≤◊∞£∫
+1°¢npm install react-native-camera --save
+2°¢react-native link react-native-camera
+
+≈‰÷√£∫
+1.android/app/build.gradle:
+android {
+  ...
+  defaultConfig {
+    ...
+    missingDimensionStrategy 'react-native-camera', 'general' <-- insert this line
+  }
+}
+2.AndroidManifest.xml:
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+3.android/build.gradle:
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+        maven { url "https://maven.google.com" }
+    }
+}
+/**
+* Project-wide gradle configuration properties for use by all modules
+*/
+ext {
+    compileSdkVersion           = 26
+    targetSdkVersion            = 26
+    buildToolsVersion           = "26.0.2"
+    googlePlayServicesVersion   = "12.0.1"
+    googlePlayServicesVisionVersion = "15.0.2"
+    supportLibVersion           = "27.1.0"
+}
