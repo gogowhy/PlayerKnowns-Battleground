@@ -13,7 +13,7 @@ public class Player implements Serializable {
 
     public Integer playerstatus;
 
-    public double longtitude;
+    public double longitude;
 
     public double latitude;
 
@@ -22,6 +22,16 @@ public class Player implements Serializable {
     public String weaponname;
 
     public Integer roomnumber;
+
+    public double direction;
+
+    public double getDirection() {
+        return direction;
+    }
+
+    public void setDirection(double direction) {
+        this.direction = direction;
+    }
 
     public String getPlayername() {
         return playername;
@@ -47,12 +57,12 @@ public class Player implements Serializable {
         this.playerstatus = playerstatus;
     }
 
-    public double getLongtitude() {
-        return longtitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLongtitude(double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongtitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public double getLatitude() {
@@ -89,7 +99,7 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return "Player [Playername=" + playername + ", HP=" + HP + ", PlayerStatus=" + playerstatus + ", Longtitude=" + longtitude + ", Latitude=" + latitude + ", Team=" + playerteam + ", Weapon=" + weaponname + ", roomnumber=" + roomnumber + "]";
+        return "Player [Playername=" + playername + ", HP=" + HP + ", PlayerStatus=" + playerstatus + ", Longtitude=" + longitude + ", Latitude=" + latitude + ", Team=" + playerteam + ", Weapon=" + weaponname + ", roomnumber=" + roomnumber + "]";
     }
 
     public String toJSON(Integer code) {

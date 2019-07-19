@@ -141,7 +141,7 @@ public class RoomDaoImpl implements RoomDao {
         player.setRoomnumber(rmNumber);
         player.setPlayername(hostname);
         player.setPlayerteam(1);
-        player.setPlayerstatus(0);
+        player.setPlayerstatus(1);
         playerRepository.save(player);
 
         room.setGamestatus(0);
@@ -315,7 +315,7 @@ public class RoomDaoImpl implements RoomDao {
         room.setPlayernumber(newnumber);
         updateplayernumber(room);
         deleteplayer(player);
-        List<Player> players = findByRoomnumber(roomnumber);
+        List<Player> players = playerRepository.findByRoomnumber(roomnumber);
         Map <String,Object> map = new HashMap<String,Object>();
         map.put("code",4);
         map.put("username",username);
@@ -384,19 +384,6 @@ public class RoomDaoImpl implements RoomDao {
         Integer roomnumber = player.getRoomnumber();
 
         List<Player> players = findByRoomnumber(roomnumber);
-        Integer a=new Integer(0);
-        Integer b=new Integer(0);
-        for(int i=0;i<players.size();i++)
-        {
-            Player player_temp=players.get(i);
-            Integer team_temp = player_temp.getPlayerteam();
-            if (team_temp==1) a++;
-            else b++;
-        }
-        if (a==players.size()/2)//Team A Full
-        {
-            return "Team A Is Full!";
-        }
 
         player.setPlayerteam(1);
         updateteam(player);
@@ -427,21 +414,6 @@ public class RoomDaoImpl implements RoomDao {
         }
         Integer roomnumber = player.getRoomnumber();
 
-        List<Player> players = findByRoomnumber(roomnumber);
-        Integer a=new Integer(0);
-        Integer b=new Integer(0);
-        for(int i=0;i<players.size();i++)
-        {
-            Player player_temp=players.get(i);
-            Integer team_temp = player_temp.getPlayerteam();
-            if (team_temp==1) a++;
-            else b++;
-        }
-        if (b==players.size()/2)//Team B Full
-        {
-            return "Team B Is Full!";
-        }
-
         player.setPlayerteam(2);
         updateteam(player);
         MyHandler myHandler = new MyHandler();
@@ -451,6 +423,7 @@ public class RoomDaoImpl implements RoomDao {
         map.put("username",username);
         JSONArray json2 = JSONArray.fromObject(map);
         String message = json2.toString();
+        List<Player> players = findByRoomnumber(roomnumber);
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
@@ -526,12 +499,19 @@ public class RoomDaoImpl implements RoomDao {
         if (status == 1) return "Already Started!";
 
         List<Player> players = findByRoomnumber(roomnumber);
+        Integer a=new Integer(0);
+        Integer b=new Integer(0);
         for(int i=0;i<players.size();i++)
         {
             Player player_temp=players.get(i);
             Integer isReady = player_temp.getPlayerstatus();
             if (isReady==0) return "Not All Ready!";
+            Integer team_temp = player_temp.getPlayerteam();
+            if (team_temp==1) a++;
+            else b++;
         }
+
+        if (Math.abs(a-b)>1) return ("Team Not Equal!");
 
         room.setGamestatus(1);
         updatestatus(room);
