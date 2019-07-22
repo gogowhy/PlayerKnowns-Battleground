@@ -1,16 +1,22 @@
 'use strict';
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View , TouchableWithoutFeedback , Dimensions, } from 'react-native';
 import { RNCamera } from 'react-native-camera';
+import { captureScreen, captureRef } from "react-native-view-shot";
 import axios from 'axios';
 import {decode as atob, encode as btoa} from 'base-64';
+
+
+import Feather from "react-native-vector-icons/Feather";
 
 export default class Camera11 extends PureComponent {
   constructor(props){
     super(props);
     this.state = {
-      shotamount : 0
-    }
+      shotamount : 0,
+      currentBlood: 100,
+    },
+    this.mainViewRef = React.createRef();
   }
 
   componentDidMount(){/*
@@ -32,9 +38,9 @@ export default class Camera11 extends PureComponent {
           */
   }
 
-  async takePicture(){
+  async capturePicture(){
     if (this.camera) {
-      const options = { quality: 1 , base64 : true , width : 1280};
+      const options = { quality: 0.5 , base64 : true , width : 1280};
       const photo = await this.camera.takePictureAsync(options);
       //console.log(photo.uri);
       //alert("h: " + photo.height +"w: " + photo.width);
@@ -142,9 +148,38 @@ export default class Camera11 extends PureComponent {
             console.log(barcodes);
           }}
         />
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> {this.state.shotamount} </Text>
+        <View style={StyleSheet.absoluteFill}>
+          <TouchableWithoutFeedback>
+            <View style={{ flex: 1 , justifyContent: 'center' , alignItems: 'center' , marginBottom : 40 }}>
+              <Feather
+                name={'crosshair'}
+                size={76}
+                color={'black'}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity style={styles.info}>
+              <Text style={{ fontSize: 20 }}>
+                {'有效击中人数：'+this.state.shotamount}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.info}>
+              <Text style={{ fontSize: 20 }}>
+                {'当前血量：'+this.state.currentBlood}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          
+          <TouchableOpacity style={styles.capture}>
+            <Feather
+              name={'target'}
+              size={36}
+              color={'black'}
+              onPress={this.capturePicture.bind(this)}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -152,6 +187,9 @@ export default class Camera11 extends PureComponent {
   }
    
 }
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
@@ -164,13 +202,26 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  capture: {
-    flex: 0,
+  info: {
     backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
-    margin: 20,
+    borderRadius: 8,
+    padding: 5,
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+    marginLeft: 15,
   },
+  capture: {
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    padding: 5,
+    justifyContent: 'flex-end',
+    alignSelf: 'flex-end',
+    marginRight: 40,
+    marginBottom: 20,
+  },
+  focus: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+  }
 });

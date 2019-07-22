@@ -4,14 +4,13 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    ImageBackground,
-    Platform,
-    BackHandler
+    ImageBackground
 } from 'react-native';
+import { Icon, Button } from 'native-base';
 import base from '../src/style/base';
 import header from '../src/style/header';
 
-import Ionicons from "react-native-vector-icons/Ionicons";
+//import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Entypo from "react-native-vector-icons/Entypo";
 
@@ -19,42 +18,26 @@ import axios from 'axios';
 
 export default class MainPage extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            username : this.props.navigation.state.params.username
+            username: this.props.navigation.state.params.username
         }
         this.createRoom = this.createRoom.bind(this);
         this.enterRoom = this.enterRoom.bind(this);
         this.exit = this.exit.bind(this);
         this.warehouse = this.warehouse.bind(this);
         this.shop = this.shop.bind(this);
-    }
-
-    /** 对物理返回键设置监听 */
-    componentWillMount() {
-        if (Platform.OS === 'android') {
-            BackHandler.addEventListener("back", this.exit);
-        }else {
-
-        }
-    }
-
-    componentWillUnmount() {
-        if (Platform.OS === 'android') {
-            BackHandler.removeEventListener("back", this.exit);
-        }else {
-            this.propstManger.addLengeData(this.props.navigator.getCurrentRoutes().length);
-        }
+        this.settings = this.settings.bind(this);
+        this.help = this.help.bind(this);
     }
 
     /* 退出登录 */
-    exit(){
-        
-        const { goBack } = this.props.navigation ;
+    exit() {
+        const { goBack } = this.props.navigation;
         goBack();
     }
-    
+
     /**
      * 功能 ：创建房间
      * 触发 ：点击“创建房间”按钮
@@ -62,20 +45,20 @@ export default class MainPage extends Component {
      * 系统会自动创建一个包含明文房间ID和密码的房间，并将 roomID 和 password 返回至前端
      * 随后跳转至房间
      */
-async    createRoom(){
-        
+    async    createRoom() {
+
         const _this = this;
-         
+
         const url = "http://49.234.27.75:2002/room/create";
 
         data = {
-            username : _this.state.username,
+            username: _this.state.username,
         }
 
         var roomID;
         var password;
         var code = -1;
-    await    axios.post( url , data )
+        await axios.post(url, data)
             .then(function (response) {
                 // handle success
                 code = response.data.code;
@@ -91,19 +74,19 @@ async    createRoom(){
             .then(function () {
                 // always executed
             });
-        
-        switch(code){
-            case 0 : const { navigate } = this.props.navigation;
-                    navigate('Room',{roomID : roomID , password : password , host : true , username :this.state.username });
-                    break;
-            case 1 : alert("创建失败!服务器异常。");break;
-            case -2 :alert("服务器异常。");break;
-            default : alert("未响应！");break;
-        }    
-        
+
+        switch (code) {
+            case 0: const { navigate } = this.props.navigation;
+                navigate('Room', { roomID: roomID, password: password, host: true, username: this.state.username });
+                break;
+            case 1: alert("创建失败!服务器异常。"); break;
+            case -2: alert("服务器异常。"); break;
+            default: alert("未响应！"); break;
+        }
+
 
         //被注释掉的这句是实际上从后端获取信息后跳转的语句 未被注释掉的是测试语句
-        
+
         //navigate('Room',{roomID :"114514" , password : "4396" , host : true , username :this.state.username });
     }
 
@@ -114,9 +97,9 @@ async    createRoom(){
      * 跳转到一个输入 房间ID 和 密码 的页面（EnterRoom_inputID.js)
      * 
      */
-    enterRoom(){
-        const { navigate } = this.props.navigation ;
-        navigate('EnterRoom_inputID',{username : this.state.username});  
+    enterRoom() {
+        const { navigate } = this.props.navigation;
+        navigate('EnterRoom_inputID', { username: this.state.username });
     }
 
     /** 
@@ -126,7 +109,7 @@ async    createRoom(){
      * 跳转到仓库页面（...js)
      * 
      */
-    warehouse(){
+    warehouse() {
 
     }
 
@@ -137,7 +120,15 @@ async    createRoom(){
      * 跳转到商店页面（...js)
      * 
      */
-    shop(){
+    shop() {
+
+    }
+
+    settings() {
+
+    }
+
+    help() {
 
     }
 
@@ -145,61 +136,70 @@ async    createRoom(){
         return (
             <ImageBackground style={base.background}
                 source={require('../src/img/bg1.png')}>
-                
+                <TouchableOpacity
+                    activeOpacity={1.0}  //设置背景被点击时，透明度不变
+                    style={{ flex: 1 }}>
                     <View style={header.container}>
                         <View style={header.header}>
                             <View style={header.Head}>
-                                <Ionicons
-                                    name = {'md-exit'} 
-                                    size = {30}
-                                    onPress = {this.exit}
+                                <Icon
+                                    name={'md-exit'}
+                                    onPress={this.exit}
                                 />
                             </View>
                             <View style={header.End}>
+                                <Icon
+                                    name={'md-settings'}
+                                    onPress={this.settings}
+                                    style={{ marginRight: 6 }}
+                                />
                                 <Entypo
-                                    name = {'help-with-circle'}
-                                    size = {28}
-                                    onPress = {this.help}
+                                    name={'help-with-circle'}
+                                    size={26}
+                                    color={'black'}
+                                    onPress={this.help}
                                 />
                             </View>
                         </View>
                     </View>
-                    
+
                     <View style={styles.container}>
                         <View style={styles.containerRow}>
                             <FontAwesome5
-                                style={{marginRight:10}}
-                                name = {'warehouse'}
-                                size = {40}
-                                onPress = {this.warehouse}
-                                color = {'#00008B'}
+                                style={{ marginRight: 10 }}
+                                name={'warehouse'}
+                                size={40}
+                                onPress={this.warehouse}
+                                color={'#00008B'}
                             />
-                            <TouchableOpacity
-                                onPress = {this.createRoom} //-----------该属性需要保留！-------------
+                            <Button
+                                activeOpacity={0.5}
+                                onPress={this.createRoom} //-----------该属性需要保留！-------------
                                 style={styles.button}>
                                 <Text
-                                    style={styles.btText}>  创 建 房 间</Text>
-                            </TouchableOpacity>
+                                    style={styles.btText}> 创 建 房 间</Text>
+                            </Button>
                         </View>
 
                         <View style={styles.containerRow}>
                             <Entypo
-                                style={{marginRight:8}}
-                                name = {'shop'}
-                                size = {55}
-                                onPress = {this.shop}
-                                color = {'#00008B'}
+                                style={{ marginRight: 8 }}
+                                name={'shop'}
+                                size={55}
+                                onPress={this.shop}
+                                color={'#00008B'}
                             />
-                            <TouchableOpacity
-                                onPress = {this.enterRoom} //-----------该属性需要保留！-------------
+                            <Button
+                                activeOpacity={0.5}
+                                onPress={this.enterRoom} //-----------该属性需要保留！-------------
                                 style={styles.button}>
                                 <Text
-                                    style={styles.btText}>  加 入 房 间</Text>
-                            </TouchableOpacity>
+                                    style={styles.btText}> 加 入 房 间</Text>
+                            </Button>
                         </View>
                     </View>
 
-                
+                </TouchableOpacity>
             </ImageBackground>
         );
     }
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
         width: 240,
         justifyContent: 'center',
         alignItems: 'flex-start',
-        borderRadius: 8,
+        borderRadius: 18,
         backgroundColor: '#FF4500',
         marginTop: 10,
         marginBottom: 10,
@@ -233,5 +233,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: 'zhenhunshoushu',
         fontSize: 40,
+        paddingTop: 6,
     },
 });

@@ -10,7 +10,7 @@ import base from '../src/style/base';
 
 export default class Home extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.ToLogin = this.ToLogin.bind(this);
     }
@@ -30,20 +30,19 @@ export default class Home extends Component {
         return (
             <ImageBackground style={base.background}
                 source={require('../src/img/bg1.png')}>
-                <TouchableOpacity
-                    activeOpacity={1.0}  //设置背景被点击时，透明度不变
-                    style={base.container}>
+                <View style={base.container}>
                     <View style={base.container}>
                         <Text style={base.content}>PlayerKnown's</Text>
                         <Text style={base.content}>BattleGround</Text>
                     </View>
                     <TouchableOpacity
+                        activeOpacity={0.5}
                         onPress={this.ToLogin}  //添加点击事件
-                        style={[base.button,base.buttonBig]}>
+                        style={[base.button, base.buttonBig]}>
                         <Text
                             style={base.btText}>开始游戏</Text>
                     </TouchableOpacity>
-                </TouchableOpacity>
+                </View>
             </ImageBackground>
         );
     }
