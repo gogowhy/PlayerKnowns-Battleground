@@ -74,7 +74,7 @@ public class RoomDaoImpl implements RoomDao {
     {
         Query query = new Query();
         Criteria criteria = new Criteria();
-        query.addCriteria(Criteria.where("username").is(player.getPlayername()));
+        query.addCriteria(Criteria.where("playername").is(player.getPlayername()));
         String collectionname = "player";
         Update update = new Update();
         update.set("playerteam",player.getPlayerteam());
@@ -85,7 +85,7 @@ public class RoomDaoImpl implements RoomDao {
     {
         Query query = new Query();
         Criteria criteria = new Criteria();
-        query.addCriteria(Criteria.where("username").is(player.getPlayername()));
+        query.addCriteria(Criteria.where("playername").is(player.getPlayername()));
         String collectionname = "player";
         Update update = new Update();
         update.set("playerstatus",player.getPlayerstatus());
@@ -287,6 +287,7 @@ public class RoomDaoImpl implements RoomDao {
         room.setPlayernumber(newnumber);
         updateplayernumber(room);
 
+        player.setPlayerstatus(0);
         player.setRoomnumber(roomnumber);
         player.setPlayername(username);
         playerRepository.save(player);
@@ -352,15 +353,16 @@ public class RoomDaoImpl implements RoomDao {
             deleteplayer(player);
 
             List<Player> players = findByRoomnumber(roomnumber);
-            Player player_newhost = players.get(1);
-            String newhost = player_newhost.getPlayername();
+            Player player_newhost = players.get(0);
+            player_newhost.setPlayerstatus(1);
+            String newhostname = player_newhost.getPlayername();
             Map <String,Object> map = new HashMap<String,Object>();
             map.put("code",3);
             map.put("username",username);
-            map.put("hostname",newhost);
+            map.put("hostname",newhostname);
             JSONArray json2 = JSONArray.fromObject(map);
             String message = json2.toString();
-            room.setHostname(newhost);
+            room.setHostname(newhostname);
             for (int i = 0; i < players.size(); i++) {
                 Player player_temp = players.get(i);
                 String playername = player_temp.getPlayername();
@@ -521,7 +523,11 @@ public class RoomDaoImpl implements RoomDao {
         {
             Player player_temp=players.get(i);
             String playername = player_temp.getPlayername();
-            myHandler.sendMessageToUser(playername, new TextMessage("0"));
+            Map <String,Object> map = new HashMap<String,Object>();
+            map.put("code",0);
+            JSONArray json2 = JSONArray.fromObject(map);
+            String message = json2.toString();
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "Success!";
     }

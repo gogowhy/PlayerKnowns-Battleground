@@ -13,15 +13,15 @@ public class GameServiceImpl implements GameService {
     public GameDao gameDao;
 
     @Override
-    public String shoot(String player, Double longitude, Double latitude)
+    public String shoot(String playername, Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
     {
-        return gameDao.shoot(player,longitude,latitude);
+        return gameDao.shoot(playername,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
     }
 
     @Override
-    public String start(Integer roomnumber)
+    public String start(String playername,Integer times, Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
     {
-        return gameDao.start(roomnumber);
+        return gameDao.start(playername,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
     }
 
     @Override

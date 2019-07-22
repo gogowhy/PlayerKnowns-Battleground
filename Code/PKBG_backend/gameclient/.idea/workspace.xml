@@ -30,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Dao/GameDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="114">
+              <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -39,8 +39,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Service/GameService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="11" column="78" selection-start-line="11" selection-start-column="78" selection-end-line="11" selection-end-column="78" />
+            <state relative-caret-position="152">
+              <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -60,14 +60,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/ServiceImpl/GameServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="597">
-              <caret line="35" column="60" selection-start-line="35" selection-start-column="60" selection-end-line="35" selection-end-column="60" />
+            <state relative-caret-position="285">
+              <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#601#602#0" expanded="true" />
-                <element signature="e#630#631#0" expanded="true" />
-                <element signature="e#725#726#0" expanded="true" />
-                <element signature="e#754#755#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -76,8 +72,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/DaoImpl/GameDaoImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="46" column="8" lean-forward="true" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
+            <state relative-caret-position="298">
+              <caret line="98" column="13" lean-forward="true" selection-start-line="98" selection-start-column="13" selection-end-line="98" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -97,12 +93,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Handler/MyHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="123" column="92" selection-start-line="123" selection-start-column="92" selection-end-line="123" selection-end-column="92" />
-              <folding>
-                <element signature="e#1704#1705#0" expanded="true" />
-                <element signature="e#1755#1756#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="323">
+              <caret line="116" column="119" selection-start-line="116" selection-start-column="49" selection-end-line="116" selection-end-column="119" />
             </state>
           </provider>
         </entry>
@@ -119,14 +111,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Entity/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="48" column="10" lean-forward="true" selection-start-line="48" selection-start-column="10" selection-end-line="48" selection-end-column="10" />
-              <folding>
-                <element signature="e#581#582#0" expanded="true" />
-                <element signature="e#613#614#0" expanded="true" />
-                <element signature="e#663#664#0" expanded="true" />
-                <element signature="e#705#706#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="488">
+              <caret line="35" column="26" lean-forward="true" selection-start-line="35" selection-start-column="26" selection-end-line="35" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -145,11 +131,11 @@
       <list>
         <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Controller/GameController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Dao/GameDao.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Service/GameService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/ServiceImpl/GameServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Handler/MyHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Entity/Player.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/ServiceImpl/GameServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Service/GameService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Dao/GameDao.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/DaoImpl/GameDaoImpl.java" />
       </list>
     </option>
@@ -161,7 +147,7 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-10" />
     <option name="y" value="-10" />
     <option name="width" value="1070" />
@@ -172,6 +158,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -297,7 +284,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -351,18 +337,19 @@
       <workItem from="1563412566439" duration="806000" />
       <workItem from="1563413382607" duration="2681000" />
       <workItem from="1563416625071" duration="265000" />
-      <workItem from="1563518027314" duration="7833000" />
+      <workItem from="1563518027314" duration="8016000" />
+      <workItem from="1563756293930" duration="18380000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12758000" />
+    <option name="totallyTimeSpent" value="31321000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2191689" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22184986" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -416,17 +403,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/DaoImpl/RoomDaoImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="20" column="35" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/DaoImpl/RoomDaoImpl.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Entity/User.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="95">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Config/WebSocketConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -437,10 +425,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Config/WebSocketConfig.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Entity/Room.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        <state relative-caret-position="95">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -454,17 +442,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Dao/GameDao.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Handler/MyHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="323">
+          <caret line="116" column="119" selection-start-line="116" selection-start-column="49" selection-end-line="116" selection-end-column="119" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Entity/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="488">
+          <caret line="35" column="26" lean-forward="true" selection-start-line="35" selection-start-column="26" selection-end-line="35" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Service/GameService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" column="78" selection-start-line="11" selection-start-column="78" selection-end-line="11" selection-end-column="78" />
+        <state relative-caret-position="152">
+          <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -473,53 +468,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/ServiceImpl/GameServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="597">
-          <caret line="35" column="60" selection-start-line="35" selection-start-column="60" selection-end-line="35" selection-end-column="60" />
+        <state relative-caret-position="285">
+          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#601#602#0" expanded="true" />
-            <element signature="e#630#631#0" expanded="true" />
-            <element signature="e#725#726#0" expanded="true" />
-            <element signature="e#754#755#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Handler/MyHandler.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Dao/GameDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="123" column="92" selection-start-line="123" selection-start-column="92" selection-end-line="123" selection-end-column="92" />
-          <folding>
-            <element signature="e#1704#1705#0" expanded="true" />
-            <element signature="e#1755#1756#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Entity/Room.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/Entity/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="48" column="10" lean-forward="true" selection-start-line="48" selection-start-column="10" selection-end-line="48" selection-end-column="10" />
-          <folding>
-            <element signature="e#581#582#0" expanded="true" />
-            <element signature="e#613#614#0" expanded="true" />
-            <element signature="e#663#664#0" expanded="true" />
-            <element signature="e#705#706#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="114">
+          <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/pkbg/eurekaclient/DaoImpl/GameDaoImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="46" column="8" lean-forward="true" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
+        <state relative-caret-position="298">
+          <caret line="98" column="13" lean-forward="true" selection-start-line="98" selection-start-column="13" selection-end-line="98" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

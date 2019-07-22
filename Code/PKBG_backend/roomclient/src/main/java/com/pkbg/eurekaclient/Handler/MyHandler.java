@@ -70,13 +70,15 @@ public class MyHandler implements WebSocketHandler {
         MyHandler.mongoTemplate = mongoTemplate;
     }
 
-    public List<Player> findByRoomnumber(Integer roomnumber)
+    public void senderror(String username,String error)
     {
-        Query query = new Query(Criteria.where("roomnumber").is(roomnumber));
-
-        // 满足所有条件的数据
-        List<Player> ans = mongoTemplate.find(query, Player.class, "player");
-        return ans;
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code", -1);
+        map.put("message",error);
+        JSONArray json = JSONArray.fromObject(map);
+        String message2 = json.toString();
+        System.out.println(message2);
+        sendMessageToUser(username, new TextMessage(message2));
     }
 
     //新增socket
@@ -151,58 +153,59 @@ public class MyHandler implements WebSocketHandler {
             //调用roomdaoimpl
             switch(code)
             {
-                case 0://START GAME
+                case 0://START GAME    error:code+message
                     Integer roomnumber0 = new Integer((Integer) jsonobject.get("roomnumber"));
                     String Result0 = roomService.start(roomnumber0);
                     if (!Result0.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result0));
+                        senderror(username,Result0);
                     break;
                 case 1://READY
                     String Result1 = roomService.ready(username);
                     if (!Result1.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result1));
+                        senderror(username,Result1);
                     break;
                 case 2://CANCEL READY
                     String Result2 = roomService.cancel(username);
                     if (!Result2.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result2));
+                        senderror(username,Result2);
                     break;
                 case 3://HOST QUIT
                     String Result3 = roomService.hostquit(username);
                     if (!Result3.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result3));
+                        senderror(username,Result3);
                     break;
                 case 4://PLAYER QUIT
                     String Result4 = roomService.quit(username);
                     if (!Result4.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result4));
+                        senderror(username,Result4);
                     break;
                 case 5://CHANGE TO A
                     String Result5 = roomService.changeToA(username);
                     if (!Result5.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result5));
+                        senderror(username,Result5);
                     break;
                 case 6://CHANGE TO B
                     String Result6 = roomService.changeToB(username);
                     if (!Result6.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result6));
+                        senderror(username,Result6);
                     break;
                 case 90://DISMISS
                     String Result90 = roomService.dismiss(username);
                     if (!Result90.equals("Success!"))
-                        sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result90));
+                        senderror(username,Result90);
                     break;
                 case 91://KICK
                     Player player = playerRepository.findByPlayername(username);
                     Integer roomnumber91 = player.roomnumber;
                     String username91 = new String((String) jsonobject.get("username"));
                     String Result91 = roomService.kick(username,roomnumber91, username91);
-                    if (!Result91.equals("Success!")) sendMessageToUser(jsonobject.get("username")+"",new TextMessage("-1"+Result91));
+                    if (!Result91.equals("Success!"))
+                        senderror(username,Result91);
                     break;
             }
 
             System.out.println(jsonobject.get("message")+":来自"+(String)webSocketSession.getAttributes().get("WEBSOCKET_USERID")+"的消息");
-            sendMessageToUser(jsonobject.get("username")+"",new TextMessage("服务器收到了，hello!"));
+            //sendMessageToUser(jsonobject.get("username")+"",new TextMessage("服务器收到了，hello!"));
         }catch(Exception e){
             e.printStackTrace();
         }

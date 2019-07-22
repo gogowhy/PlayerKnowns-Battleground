@@ -105,9 +105,16 @@ public class MyHandler implements WebSocketHandler {
             switch(code)
             {
                 case 0://start
-                    Integer roomnumber = new Integer((Integer) jsonobject.get("roomnumber"));
+                    Integer times = new Integer((Integer) jsonobject.get("times"));
+                    Double male = new Double((Double) jsonobject.get("human_body.male"));
+                    Integer upperr = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
+                    Integer upperg = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
+                    Integer upperb = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
+                    Integer lowerr = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
+                    Integer lowerg = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
+                    Integer lowerb = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
                     System.out.println(code);
-                    String Result0 = gameService.start(roomnumber);
+                    String Result0 = gameService.start(playername,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
                     break;
                 case 1://aim
                     Double direction = new Double((Double) jsonobject.get("direction"));
@@ -126,7 +133,7 @@ public class MyHandler implements WebSocketHandler {
             }
 
             System.out.println(jsonobject.get("message")+":来自"+(String)webSocketSession.getAttributes().get("WEBSOCKET_USERID")+"的消息");
-            sendMessageToUser(jsonobject.get("username")+"",new TextMessage("服务器收到了，hello!"));
+            //sendMessageToUser(jsonobject.get("username")+"",new TextMessage("服务器收到了，hello!"));
         }catch(Exception e){
             e.printStackTrace();
         }
