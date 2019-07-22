@@ -3,6 +3,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import Orientation from 'react-native-orientation';
 import Home from './Component/Home.js';
 import RootStack from './Navigator/StackNavigator.js';
+import Camera11 from "./Component/camera.js";
 
 export default class App extends Component {
 
@@ -13,7 +14,8 @@ export default class App extends Component {
 
   render() {
         return (
-            <RootStack />
+            //<RootStack />
+            <Camera11 />
         );
   }
 }
