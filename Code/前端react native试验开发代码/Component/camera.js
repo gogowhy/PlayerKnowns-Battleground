@@ -2,7 +2,6 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View , TouchableWithoutFeedback , Dimensions, } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import { captureScreen, captureRef } from "react-native-view-shot";
 import axios from 'axios';
 import {decode as atob, encode as btoa} from 'base-64';
 
@@ -15,8 +14,7 @@ export default class Camera11 extends PureComponent {
     this.state = {
       shotamount : 0,
       currentBlood: 100,
-    },
-    this.mainViewRef = React.createRef();
+    }
   }
 
   componentDidMount(){/*
@@ -187,9 +185,6 @@ export default class Camera11 extends PureComponent {
   }
    
 }
-
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {

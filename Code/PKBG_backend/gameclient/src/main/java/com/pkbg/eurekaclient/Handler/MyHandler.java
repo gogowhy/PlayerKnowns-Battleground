@@ -61,13 +61,15 @@ public class MyHandler implements WebSocketHandler {
         MyHandler.gameService = gameService;
     }
 
-    public List<Player> findByRoomnumber(Integer roomnumber)
+    public void senderror(String username,String error)
     {
-        Query query = new Query(Criteria.where("roomnumber").is(roomnumber));
-
-        // 满足所有条件的数据
-        List<Player> ans = mongoTemplate.find(query, Player.class, "player");
-        return ans;
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code", -1);
+        map.put("message",error);
+        JSONArray json = JSONArray.fromObject(map);
+        String message2 = json.toString();
+        System.out.println(message2);
+        sendMessageToUser(username, new TextMessage(message2));
     }
 
     //新增socket
@@ -121,9 +123,16 @@ public class MyHandler implements WebSocketHandler {
                     String Result1 = gameService.aim(playername,direction);
                     break;
                 case 2://shoot
-                    Double longitude = new Double((Double) jsonobject.get("longitude"));
-                    Double latitude = new Double((Double) jsonobject.get("latitude"));
-                    String Result2 = gameService.shoot(playername,longitude,latitude);
+                    Double male1 = new Double((Double) jsonobject.get("human_body.male"));
+                    Integer upperr1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
+                    Integer upperg1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
+                    Integer upperb1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
+                    Integer lowerr1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
+                    Integer lowerg1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
+                    Integer lowerb1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
+                    String Result2 = gameService.shoot(playername,male1,upperr1,upperg1,upperb1,lowerr1,lowerg1,lowerb1);
+                    if (!Result2.equals("Success!"))
+                        senderror(playername,Result2);
                     break;
                 case 3://get gps
                     Double longitude2 = new Double((Double) jsonobject.get("longitude"));
