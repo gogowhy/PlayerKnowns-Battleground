@@ -1,0 +1,274 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  accessibilityIgnoresInvertColors={true}
+  style={
+    Object {
+      "bottom": 0,
+      "height": null,
+      "left": 0,
+      "position": "absolute",
+      "right": 0,
+      "top": 0,
+      "width": null,
+      "zIndex": -1,
+    }
+  }
+>
+  <Image
+    source={
+      Object {
+        "testUri": "../../../src/img/bg1.png",
+      }
+    }
+    style={
+      Array [
+        Object {
+          "bottom": 0,
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        },
+        Object {
+          "height": null,
+          "width": null,
+        },
+        undefined,
+      ]
+    }
+  />
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "height": 30,
+          "justifyContent": "space-between",
+          "marginTop": 8,
+          "width": 730,
+        }
+      }
+    >
+      <View
+        style={
+          Object {
+            "justifyContent": "flex-start",
+          }
+        }
+      >
+        <Text
+          allowFontScaling={false}
+          onPress={[Function]}
+          style={
+            Array [
+              Object {
+                "color": undefined,
+                "fontSize": 30,
+              },
+              undefined,
+              Object {
+                "fontFamily": "Ionicons",
+                "fontStyle": "normal",
+                "fontWeight": "normal",
+              },
+              Object {},
+            ]
+          }
+        >
+          
+        </Text>
+      </View>
+      <View
+        style={
+          Object {
+            "justifyContent": "flex-end",
+          }
+        }
+      >
+        <Text
+          allowFontScaling={false}
+          style={
+            Array [
+              Object {
+                "color": undefined,
+                "fontSize": 28,
+              },
+              undefined,
+              Object {
+                "fontFamily": "Entypo",
+                "fontStyle": "normal",
+                "fontWeight": "normal",
+              },
+              Object {},
+            ]
+          }
+        >
+          
+        </Text>
+      </View>
+    </View>
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "flex-end",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "justifyContent": "center",
+        }
+      }
+    >
+      <Text
+        allowFontScaling={false}
+        onPress={[Function]}
+        style={
+          Array [
+            Object {
+              "color": "#00008B",
+              "fontSize": 40,
+            },
+            Object {
+              "marginRight": 10,
+            },
+            Object {
+              "fontFamily": "FontAwesome5Free-Solid",
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+            },
+            Object {
+              "fontWeight": "900",
+            },
+          ]
+        }
+      >
+        
+      </Text>
+      <View
+        accessible={true}
+        isTVSelectable={true}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "flex-start",
+            "backgroundColor": "#FF4500",
+            "borderRadius": 8,
+            "height": 70,
+            "justifyContent": "center",
+            "marginBottom": 10,
+            "marginLeft": 10,
+            "marginRight": 20,
+            "marginTop": 10,
+            "opacity": 1,
+            "width": 240,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#fff",
+              "fontFamily": "zhenhunshoushu",
+              "fontSize": 40,
+            }
+          }
+        >
+            创 建 房 间
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "justifyContent": "center",
+        }
+      }
+    >
+      <Text
+        allowFontScaling={false}
+        onPress={[Function]}
+        style={
+          Array [
+            Object {
+              "color": "#00008B",
+              "fontSize": 55,
+            },
+            Object {
+              "marginRight": 8,
+            },
+            Object {
+              "fontFamily": "Entypo",
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+            },
+            Object {},
+          ]
+        }
+      >
+        
+      </Text>
+      <View
+        accessible={true}
+        isTVSelectable={true}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "flex-start",
+            "backgroundColor": "#FF4500",
+            "borderRadius": 8,
+            "height": 70,
+            "justifyContent": "center",
+            "marginBottom": 10,
+            "marginLeft": 10,
+            "marginRight": 20,
+            "marginTop": 10,
+            "opacity": 1,
+            "width": 240,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#fff",
+              "fontFamily": "zhenhunshoushu",
+              "fontSize": 40,
+            }
+          }
+        >
+            加 入 房 间
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
