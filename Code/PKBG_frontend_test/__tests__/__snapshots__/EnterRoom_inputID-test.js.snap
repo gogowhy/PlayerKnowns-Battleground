@@ -1,0 +1,276 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  accessibilityIgnoresInvertColors={true}
+  style={
+    Object {
+      "bottom": 0,
+      "height": null,
+      "left": 0,
+      "position": "absolute",
+      "right": 0,
+      "top": 0,
+      "width": null,
+      "zIndex": -1,
+    }
+  }
+>
+  <Image
+    source={
+      Object {
+        "testUri": "../../../src/img/bg1.png",
+      }
+    }
+    style={
+      Array [
+        Object {
+          "bottom": 0,
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        },
+        Object {
+          "height": null,
+          "width": null,
+        },
+        undefined,
+      ]
+    }
+  />
+  <View
+    accessible={true}
+    isTVSelectable={true}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+        "opacity": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "justifyContent": "center",
+        }
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "height": 30,
+            "justifyContent": "space-between",
+            "marginTop": 8,
+            "width": 730,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "justifyContent": "flex-start",
+            }
+          }
+        >
+          <Text
+            allowFontScaling={false}
+            onPress={[Function]}
+            style={
+              Array [
+                Object {
+                  "color": undefined,
+                  "fontSize": 30,
+                },
+                undefined,
+                Object {
+                  "fontFamily": "Ionicons",
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                },
+                Object {},
+              ]
+            }
+          >
+            
+          </Text>
+        </View>
+        <View
+          style={
+            Object {
+              "justifyContent": "flex-end",
+            }
+          }
+        >
+          <Text
+            allowFontScaling={false}
+            style={
+              Array [
+                Object {
+                  "color": undefined,
+                  "fontSize": 28,
+                },
+                undefined,
+                Object {
+                  "fontFamily": "Entypo",
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                },
+                Object {},
+              ]
+            }
+          >
+            
+          </Text>
+        </View>
+      </View>
+    </View>
+    <View>
+      <View>
+        <Text>
+          预设房间号：
+          114514
+        </Text>
+        <Text>
+          预设房间密码：
+          4396
+        </Text>
+      </View>
+    </View>
+    <View
+      accessible={true}
+      isTVSelectable={true}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "alignItems": "center",
+          "flex": 1,
+          "justifyContent": "center",
+          "opacity": 1,
+        }
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#FFFFF0",
+            "borderRadius": 8,
+            "flexDirection": "row",
+            "height": 40,
+            "justifyContent": "center",
+            "marginBottom": 8,
+            "width": 180,
+          }
+        }
+      >
+        <TextInput
+          allowFontScaling={true}
+          autoCapitalize="none"
+          name="roomID"
+          onChangeText={[Function]}
+          placeholder="房间ID"
+          placeholderTextColor="#ccc"
+          rejectResponderTermination={true}
+          style={
+            Object {
+              "color": "#000",
+              "fontSize": 18,
+              "height": 50,
+              "width": 180,
+            }
+          }
+          underlineColorAndroid="transparent"
+        />
+      </View>
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#FFFFF0",
+            "borderRadius": 8,
+            "flexDirection": "row",
+            "height": 40,
+            "justifyContent": "center",
+            "marginBottom": 8,
+            "width": 180,
+          }
+        }
+      >
+        <TextInput
+          allowFontScaling={true}
+          autoCapitalize="none"
+          name="password"
+          onChangeText={[Function]}
+          placeholder="密码"
+          placeholderTextColor="#ccc"
+          rejectResponderTermination={true}
+          secureTextEntry={true}
+          style={
+            Object {
+              "color": "#000",
+              "fontSize": 18,
+              "height": 50,
+              "width": 180,
+            }
+          }
+          underlineColorAndroid="transparent"
+        />
+      </View>
+      <View
+        accessible={true}
+        isTVSelectable={true}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#FF4500",
+            "borderRadius": 8,
+            "height": 40,
+            "justifyContent": "center",
+            "marginBottom": 10,
+            "marginLeft": 10,
+            "marginRight": 10,
+            "marginTop": 10,
+            "opacity": 1,
+            "width": 150,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#fff",
+              "fontFamily": "zhenhunshoushu",
+              "fontSize": 30,
+            }
+          }
+        >
+          进入房间
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
