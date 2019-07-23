@@ -59,6 +59,7 @@ public class GameDaoImpl implements GameDao {
 
     public  String shoot(String playername,Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
     {
+        MyHandler myHandler = new MyHandler();
         Player player1 = playerRepository.findByPlayername(playername);
         Integer team1 = player1.getPlayerteam();
         Integer roomnumber = player1.getRoomnumber();
@@ -90,13 +91,54 @@ public class GameDaoImpl implements GameDao {
             }
             Integer HP = player2.getHP();
             Integer newHP = HP-30;
-            if (newHP>0)
-            {
-                player2.setHP(newHP);
-            }
-            else {
+            Map<String,Object> map1 = new HashMap<>();
+            map1.put("code",7);
+            map1.put("victim",player2.getPlayername());
+            JSONArray json1 = JSONArray.fromObject(map1);
+            String message1 = json1.toString();
+            myHandler.sendMessageToUser(playername, new TextMessage(message1));
 
+            Map<String,Object> map2 = new HashMap<>();
+            map2.put("code",8);
+            map2.put("shooter",playername);
+            JSONArray json2 = JSONArray.fromObject(map2);
+            String message2 = json2.toString();
+            myHandler.sendMessageToUser(playername, new TextMessage(message2));
+            if (newHP>0) player2.setHP(newHP);
+            else {
+                player2.setHP(0);
+                Map<String,Object> map3 = new HashMap<>();
+                map3.put("code",6);
+                map3.put("victim",player2.getPlayername());
+                JSONArray json3 = JSONArray.fromObject(map3);
+                String message3 = json3.toString();
+                Integer flag = new Integer(0);
+                for(int i=0;i<players.size();i++)
+                {
+                    Player player_temp = players.get(i);
+                    if (player_temp.getHP()>0) flag=1;
+                    myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message3));
+                }
+                if (flag==0)
+                {
+                    Map<String,Object> map4 = new HashMap<>();
+                    map4.put("code",5);
+                    JSONArray json4 = JSONArray.fromObject(map4);
+                    String message4 = json4.toString();
+                    Map<String,Object> map5 = new HashMap<>();
+                    map5.put("code",4);
+                    JSONArray json5 = JSONArray.fromObject(map5);
+                    String message5 = json5.toString();
+                    for(int i=0;i<players.size();i++)
+                    {
+                        Player player_temp = players.get(i);
+                        if (player_temp.getPlayerteam()==player2.getPlayerteam())
+                         myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message4));
+                        else myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message5));
+                    }
+                }
             }
+            return "Success!";
         }
         /*Map<String,Object> map = new HashMap<String,Object>();
         map.put("code",9);
