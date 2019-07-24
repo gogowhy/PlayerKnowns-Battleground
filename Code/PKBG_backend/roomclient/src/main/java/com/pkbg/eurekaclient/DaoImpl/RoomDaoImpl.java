@@ -142,6 +142,8 @@ public class RoomDaoImpl implements RoomDao {
         player.setPlayername(hostname);
         player.setPlayerteam(1);
         player.setPlayerstatus(1);
+        player.setMale(999.9);
+        player.setTimes(0);
         playerRepository.save(player);
 
         room.setGamestatus(0);
@@ -290,6 +292,8 @@ public class RoomDaoImpl implements RoomDao {
         player.setPlayerstatus(0);
         player.setRoomnumber(roomnumber);
         player.setPlayername(username);
+        player.setMale(999.9);
+        player.setTimes(0);
         playerRepository.save(player);
         /*List<Player> playerss =playerRepository.findByRoomnumber(roomnumber);
 
