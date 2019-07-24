@@ -39,6 +39,16 @@ public class Player implements Serializable {
 
     public Integer lowerb;
 
+    public Integer times;
+
+    public Integer getTimes() {
+        return times;
+    }
+
+    public void setTimes(Integer times) {
+        this.times = times;
+    }
+
     public Double getMale() {
         return male;
     }
