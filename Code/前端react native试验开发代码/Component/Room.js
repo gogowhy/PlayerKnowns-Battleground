@@ -148,14 +148,14 @@ export default class Room extends Component {
         this.ws.onmessage = (e) => {
             // a message was received
             if (this.ws.readyState !== WebSocket.OPEN) return;
-            alert(e.data);
+            //alert(e.data);
             let res1 = JSON.parse(e.data);
             //alert(str);
             let res = res1.pop();
             switch (res.code) {
                 // 进入游戏
                 case START_GAME: {
-                    alert("正在进入游戏！");
+                    //alert("正在进入游戏！");
                     this.enterGame(); break;
                 }
                 // 设置某玩家准备
@@ -700,10 +700,10 @@ export default class Room extends Component {
                                 keyExtractor={(item, index) => item + index}
                                 renderItem={this._renderSectionListItem}
                                 renderSectionHeader={this._renderSectionHeader}
-                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#DEDEDE', height: 2 }}></View>}  //分割线
+                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
                                 numColumns={2}
                                 columnWrapperStyle={{ borderWidth: 3, borderColor: '#f4f4f4' }}
-                                style={{ marginTop: 10, marginLeft: 5, marginRight: 5 }}
+                                style={{ marginTop: 10, marginLeft: 5}}
                             />
                             <SectionList
                                 sections={[
@@ -712,10 +712,10 @@ export default class Room extends Component {
                                 keyExtractor={(item, index) => item + index}
                                 renderItem={this._renderSectionListItem}
                                 renderSectionHeader={this._renderSectionHeader}
-                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#DEDEDE', height: 2 }}></View>}  //分割线
+                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
                                 numColumns={2}
                                 columnWrapperStyle={{ borderWidth: 3, borderColor: 'black' }}
-                                style={{ marginTop: 10, marginLeft: 5, marginRight: 5 }}
+                                style={{ marginTop: 10, marginRight: 5 }}
                             />
                         </View>
                     </View>
@@ -753,7 +753,7 @@ export default class Room extends Component {
     _renderSectionHeader = ({ section }) => {
         var txt = ' Team ' + section.title;
         return (
-            <View style={{ height: 25, backgroundColor: '#11ffff', justifyContent: 'center' }}>
+            <View style={{ height: 30, justifyContent: 'center' }}>
                 <Text style={styles.SectionHeader}>{txt}</Text>
             </View>
         )
@@ -789,18 +789,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     list: {
-        height: height - 170,
+        height: height - 150,
         width: width - 80,
         flexDirection: 'row',
         backgroundColor: '#DEDEDE',
+        marginTop: 8,
+        justifyContent: 'center',
     },
     cell: {
-        width: (width - 95) / 4,
+        width: (width - 94) / 4,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#607B8B',
-        //marginHorizontal: 3,
+        marginTop: 2,
     },
     cellText: {
         height: 30,
@@ -813,7 +815,7 @@ const styles = StyleSheet.create({
     },
     SectionHeader: {
         height: 30,
-        width: (width - 95) / 2,
+        width: (width - 94) / 2,
         textAlign: 'center',
         textAlignVertical: 'center',
         backgroundColor: '#473C8B',

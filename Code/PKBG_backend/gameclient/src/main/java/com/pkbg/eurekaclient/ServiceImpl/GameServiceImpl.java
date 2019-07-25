@@ -1,7 +1,6 @@
 package com.pkbg.eurekaclient.ServiceImpl;
 
 import com.pkbg.eurekaclient.Dao.GameDao;
-import com.pkbg.eurekaclient.DaoImpl.GameDaoImpl;
 import com.pkbg.eurekaclient.Service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

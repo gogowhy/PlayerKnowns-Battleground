@@ -25,6 +25,86 @@ public class Player implements Serializable {
 
     public double direction;
 
+    public Double male;
+
+    public Integer upperr;
+
+    public Integer upperg;
+
+    public Integer upperb;
+
+    public Integer lowerr;
+
+    public Integer lowerg;
+
+    public Integer lowerb;
+
+    public Integer times;
+
+    public Integer getTimes() {
+        return times;
+    }
+
+    public void setTimes(Integer times) {
+        this.times = times;
+    }
+
+    public Double getMale() {
+        return male;
+    }
+
+    public void setMale(Double male) {
+        this.male = male;
+    }
+
+    public Integer getUpperr() {
+        return upperr;
+    }
+
+    public void setUpperr(Integer upperr) {
+        this.upperr = upperr;
+    }
+
+    public Integer getUpperg() {
+        return upperg;
+    }
+
+    public void setUpperg(Integer upperg) {
+        this.upperg = upperg;
+    }
+
+    public Integer getUpperb() {
+        return upperb;
+    }
+
+    public void setUpperb(Integer upperb) {
+        this.upperb = upperb;
+    }
+
+    public Integer getLowerr() {
+        return lowerr;
+    }
+
+    public void setLowerr(Integer lowerr) {
+        this.lowerr = lowerr;
+    }
+
+    public Integer getLowerg() {
+        return lowerg;
+    }
+
+    public void setLowerg(Integer lowerg) {
+        this.lowerg = lowerg;
+    }
+
+    public Integer getLowerb() {
+        return lowerb;
+    }
+
+    public void setLowerb(Integer lowerb) {
+        this.lowerb = lowerb;
+    }
+
     public double getDirection() {
         return direction;
     }

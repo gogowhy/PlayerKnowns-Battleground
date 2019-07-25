@@ -27,9 +27,6 @@ public class GameDaoImpl implements GameDao {
     @Autowired
     public MongoTemplate mongoTemplate;
 
-    @Autowired
-    public MyHandler myHandler;
-
     public void updateplayer(Player player)
     {
         Query query = new Query();
@@ -55,6 +52,8 @@ public class GameDaoImpl implements GameDao {
         mongoTemplate.updateFirst(query,update,collectionname);
         update.set("weaponname",player.getWeaponname());
         mongoTemplate.updateFirst(query,update,collectionname);
+        update.set("times",player.getTimes());
+        mongoTemplate.updateFirst(query,update,collectionname);
     }
 
     public  String shoot(String playername,Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
@@ -64,12 +63,14 @@ public class GameDaoImpl implements GameDao {
         Integer team1 = player1.getPlayerteam();
         Integer roomnumber = player1.getRoomnumber();
         List<Player> players = playerRepository.findByRoomnumber(roomnumber);
-        Double minn = new Double(30);
+        Double minn = new Double(500);
         Map<Integer,String> map = new HashMap<>();
         Integer j = new Integer(0);
-        for(int i=0;i<players.size();i++)
+        for (int i=0;i<players.size();i++)
         {
             Player player_temp = players.get(i);
+            String name = player_temp.getPlayername();
+            if (name.equals(playername)) continue;
             BigDecimal tempt = new BigDecimal(player_temp.getMale()+player_temp.getUpperr()+player_temp.getUpperg()+player_temp.getUpperb()+player_temp.getLowerr()+player_temp.getLowerg()+player_temp.getLowerb());
             BigDecimal orit = new BigDecimal(male+upperr+upperg+upperb+lowerr+lowerg+lowerb);
             Double dtempt = tempt.doubleValue();
@@ -77,9 +78,12 @@ public class GameDaoImpl implements GameDao {
             Double mint = new Double(0);
             if (dtempt<dorit) mint=dorit-dtempt;
                 else mint = dtempt-dorit;
-            if (minn>mint) minn=mint;
-            map.put(j,player_temp.getPlayername());
-            j++;
+            if (minn>mint)
+            {
+                minn = mint;
+                map.put(j, player_temp.getPlayername());
+                j++;
+            }
         }
         if (j!=0)
         {
@@ -90,7 +94,7 @@ public class GameDaoImpl implements GameDao {
                 return "Hit Teammate!";
             }
             Integer HP = player2.getHP();
-            Integer newHP = HP-30;
+            Integer newHP = HP-34;
             Map<String,Object> map1 = new HashMap<>();
             map1.put("code",7);
             map1.put("victim",player2.getPlayername());
@@ -103,12 +107,19 @@ public class GameDaoImpl implements GameDao {
             map2.put("shooter",playername);
             JSONArray json2 = JSONArray.fromObject(map2);
             String message2 = json2.toString();
-            myHandler.sendMessageToUser(playername, new TextMessage(message2));
-            if (newHP>0) player2.setHP(newHP);
+            String playername2 = player2.getPlayername();
+            myHandler.sendMessageToUser(playername2, new TextMessage(message2));
+            if (newHP>0)
+            {
+                player2.setHP(newHP);
+                updateplayer(player2);
+            }
             else {
                 player2.setHP(0);
+                updateplayer(player2);
                 Map<String,Object> map3 = new HashMap<>();
                 map3.put("code",6);
+                map3.put("shooter",playername);
                 map3.put("victim",player2.getPlayername());
                 JSONArray json3 = JSONArray.fromObject(map3);
                 String message3 = json3.toString();
@@ -116,7 +127,9 @@ public class GameDaoImpl implements GameDao {
                 for(int i=0;i<players.size();i++)
                 {
                     Player player_temp = players.get(i);
-                    if (player_temp.getHP()>0) flag=1;
+                    if (player_temp.getPlayerteam()==player2.getPlayerteam())
+                        if (player_temp.getHP()>0)
+                            flag=1;
                     myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message3));
                 }
                 if (flag==0)
@@ -170,75 +183,124 @@ public class GameDaoImpl implements GameDao {
     public String start(String playername,Integer times, Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
     {
         Player player = playerRepository.findByPlayername(playername);
+        Integer roomnumber = player.getRoomnumber();
 
         player.setHP(100);
         player.setWeaponname("AK47");
 
-        switch (times)
+        if (times==1)
         {
-            case 1:
-                player.setMale(male);
-                player.setUpperr(upperr);
-                player.setUpperg(upperg);
-                player.setUpperb(upperb);
-                player.setLowerr(lowerr);
-                player.setLowerg(lowerg);
-                player.setLowerb(lowerb);
-                break;
-            case 2:
-                Double omale = new Double(player.getMale());
-                Integer oupperr = new Integer(player.getUpperr());
-                Integer oupperg = new Integer(player.getUpperg());
-                Integer oupperb = new Integer(player.getUpperb());
-                Integer olowerr = new Integer(player.getLowerr());
-                Integer olowerg = new Integer(player.getLowerg());
-                Integer olowerb = new Integer(player.getLowerb());
-                Integer flag = new Integer(0);
-                if (compared(male,omale)>0) flag++;
-                if (compare(upperr,oupperr)>0) flag++;
-                if (compare(upperg,oupperg)>0) flag++;
-                if (compare(upperb,oupperb)>0) flag++;
-                if (compare(lowerr,olowerr)>0) flag++;
-                if (compare(lowerg,olowerg)>0) flag++;
-                if (compare(lowerb,olowerb)>0) flag++;
-                if (flag>2) return "unsuitable";//unsuitable
-                player.setMale((male+omale)/2);
-                player.setUpperr((upperr+oupperr)/2);
-                player.setUpperg((upperg+oupperg)/2);
-                player.setUpperb((upperb+oupperb)/2);
-                player.setLowerr((lowerr+olowerr)/2);
-                player.setLowerg((lowerg+olowerg)/2);
-                player.setLowerb((lowerb+olowerb)/2);
-                updateplayer(player);
-                break;
-            case 3:
-                Double tmale = new Double(player.getMale());
-                Integer tupperr = new Integer(player.getUpperr());
-                Integer tupperg = new Integer(player.getUpperg());
-                Integer tupperb = new Integer(player.getUpperb());
-                Integer tlowerr = new Integer(player.getLowerr());
-                Integer tlowerg = new Integer(player.getLowerg());
-                Integer tlowerb = new Integer(player.getLowerb());
-                Integer flag2 = new Integer(0);
-                if (compared(male,tmale)>0) flag2++;
-                if (compare(upperr,tupperr)>0) flag2++;
-                if (compare(upperg,tupperg)>0) flag2++;
-                if (compare(upperb,tupperb)>0) flag2++;
-                if (compare(lowerr,tlowerr)>0) flag2++;
-                if (compare(lowerg,tlowerg)>0) flag2++;
-                if (compare(lowerb,tlowerb)>0) flag2++;
-                if (flag2>2) return "unsuitable";//unsuitable
-                player.setMale((male+tmale)/2);
-                player.setUpperr((upperr+tupperr)/2);
-                player.setUpperg((upperg+tupperg)/2);
-                player.setUpperb((upperb+tupperb)/2);
-                player.setLowerr((lowerr+tlowerr)/2);
-                player.setLowerg((lowerg+tlowerg)/2);
-                player.setLowerb((lowerb+tlowerb)/2);
-                updateplayer(player);
-                break;
+            player.setMale(male);
+            player.setUpperr(upperr);
+            player.setUpperg(upperg);
+            player.setUpperb(upperb);
+            player.setLowerr(lowerr);
+            player.setLowerg(lowerg);
+            player.setLowerb(lowerb);
+            player.setTimes(1);
+            updateplayer(player);
+            System.out.println("time1");
         }
-        return "Success";
+        if (times == 2)
+        {
+            Double omale = new Double(player.getMale());
+            Integer oupperr = new Integer(player.getUpperr());
+            Integer oupperg = new Integer(player.getUpperg());
+            Integer oupperb = new Integer(player.getUpperb());
+            Integer olowerr = new Integer(player.getLowerr());
+            Integer olowerg = new Integer(player.getLowerg());
+            Integer olowerb = new Integer(player.getLowerb());
+            Integer flag = new Integer(0);
+            if (compared(male, omale) > 0) flag++;
+            if (compare(upperr, oupperr) > 0) flag++;
+            if (compare(upperg, oupperg) > 0) flag++;
+            if (compare(upperb, oupperb) > 0) flag++;
+            if (compare(lowerr, olowerr) > 0) flag++;
+            if (compare(lowerg, olowerg) > 0) flag++;
+            if (compare(lowerb, olowerb) > 0) flag++;
+            if (flag > 2)
+            {
+                player.setTimes(0);
+                updateplayer(player);
+                return "unsuitable";//unsuitable
+            }
+            player.setMale((male + omale) / 2);
+            player.setUpperr((upperr + oupperr) / 2);
+            player.setUpperg((upperg + oupperg) / 2);
+            player.setUpperb((upperb + oupperb) / 2);
+            player.setLowerr((lowerr + olowerr) / 2);
+            player.setLowerg((lowerg + olowerg) / 2);
+            player.setLowerb((lowerb + olowerb) / 2);
+            player.setTimes(2);
+            updateplayer(player);
+            System.out.println("time2");
+        }
+        if (times == 3)
+        {
+            Double tmale = new Double(player.getMale());
+            Integer tupperr = new Integer(player.getUpperr());
+            Integer tupperg = new Integer(player.getUpperg());
+            Integer tupperb = new Integer(player.getUpperb());
+            Integer tlowerr = new Integer(player.getLowerr());
+            Integer tlowerg = new Integer(player.getLowerg());
+            Integer tlowerb = new Integer(player.getLowerb());
+            Integer flag2 = new Integer(0);
+            if (compared(male, tmale) > 0) flag2++;
+            if (compare(upperr, tupperr) > 0) flag2++;
+            if (compare(upperg, tupperg) > 0) flag2++;
+            if (compare(upperb, tupperb) > 0) flag2++;
+            if (compare(lowerr, tlowerr) > 0) flag2++;
+            if (compare(lowerg, tlowerg) > 0) flag2++;
+            if (compare(lowerb, tlowerb) > 0) flag2++;
+            if (flag2 > 2)
+            {
+                player.setTimes(0);
+                updateplayer(player);
+                return "unsuitable";//unsuitable
+            }
+            player.setMale((2 * male + tmale) / 3);
+            player.setUpperr((2 * upperr + tupperr) / 3);
+            player.setUpperg((2 * upperg + tupperg) / 3);
+            player.setUpperb((2 * upperb + tupperb) / 3);
+            player.setLowerr((2 * lowerr + tlowerr) / 3);
+            player.setLowerg((2 * lowerg + tlowerg) / 3);
+            player.setLowerb((2 * lowerb + tlowerb) / 3);
+            player.setTimes(3);
+            updateplayer(player);
+            System.out.println("time3");
+            MyHandler myHandler = new MyHandler();
+            List<Player> players = playerRepository.findByRoomnumber(roomnumber);
+            Integer flag3 = new Integer(0);
+            for (int i = 0; i < players.size(); i++) {
+                Player player_temp = players.get(i);
+                Integer times_temp = player_temp.getTimes();
+                if (times_temp != 3) {
+                    flag3 = 1;
+                    break;
+                }
+            }
+            if (flag3 == 1) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("code", 101);//One Ready
+                JSONArray json = JSONArray.fromObject(map);
+                String message2 = json.toString();
+                System.out.println(message2);
+                myHandler.sendMessageToUser(playername, new TextMessage(message2));
+            }
+            if (flag3 == 0) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("code", 103);//All Ready
+                JSONArray json = JSONArray.fromObject(map);
+                String message2 = json.toString();
+                System.out.println(message2);
+                for (int i = 0; i < players.size(); i++) {
+                    Player player_temp = players.get(i);
+                    String playername_temp = player_temp.getPlayername();
+                    myHandler.sendMessageToUser(playername_temp, new TextMessage(message2));
+                }
+            }
+        }
+        return "Success!";
     }
 
     public String aim(String player, Double direction)
@@ -250,7 +312,7 @@ public class GameDaoImpl implements GameDao {
         Update update = new Update();
         update.set("direction",direction);
         mongoTemplate.updateFirst(query,update,collectionname);
-        return "Success";
+        return "Success!";
     }
 
 
@@ -264,6 +326,6 @@ public class GameDaoImpl implements GameDao {
         update.set("longitude",longitude);
         update.set("latitude",latitude);
         mongoTemplate.updateFirst(query,update,collectionname);
-        return "Success";
+        return "Success!";
     }
 }

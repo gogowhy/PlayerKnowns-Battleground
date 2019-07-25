@@ -86,7 +86,7 @@ export default class MainPage extends Component {
 
 
         //被注释掉的这句是实际上从后端获取信息后跳转的语句 未被注释掉的是测试语句
-
+        //const { navigate } = this.props.navigation;
         //navigate('Room',{roomID :"114514" , password : "4396" , host : true , username :this.state.username });
     }
 

@@ -108,28 +108,38 @@ public class MyHandler implements WebSocketHandler {
             {
                 case 0://start
                     Integer times = new Integer((Integer) jsonobject.get("times"));
-                    Double male = new Double((Double) jsonobject.get("human_body.male"));
-                    Integer upperr = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
-                    Integer upperg = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
-                    Integer upperb = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
-                    Integer lowerr = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
-                    Integer lowerg = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
-                    Integer lowerb = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
+                    System.out.println("times:"+times);
+                    Double male = new Double((Double) jsonobject.get("male"));
+                    Integer upperr = new Integer((Integer) jsonobject.get("upper_body_cloth_color_r"));
+                    Integer upperg = new Integer((Integer) jsonobject.get("upper_body_cloth_color_g"));
+                    Integer upperb = new Integer((Integer) jsonobject.get("upper_body_cloth_color_b"));
+                    Integer lowerr = new Integer((Integer) jsonobject.get("lower_body_cloth_color_r"));
+                    Integer lowerg = new Integer((Integer) jsonobject.get("lower_body_cloth_color_g"));
+                    Integer lowerb = new Integer((Integer) jsonobject.get("lower_body_cloth_color_b"));
                     System.out.println(code);
                     String Result0 = gameService.start(playername,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
+                    if (!Result0.equals("Success!"))
+                    {
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put("code", 102);
+                        JSONArray json = JSONArray.fromObject(map);
+                        String message2 = json.toString();
+                        System.out.println(message2);
+                        sendMessageToUser(playername, new TextMessage(message2));
+                    }
                     break;
                 case 1://aim
                     Double direction = new Double((Double) jsonobject.get("direction"));
                     String Result1 = gameService.aim(playername,direction);
                     break;
                 case 2://shoot
-                    Double male1 = new Double((Double) jsonobject.get("human_body.male"));
-                    Integer upperr1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
-                    Integer upperg1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
-                    Integer upperb1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
-                    Integer lowerr1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.r"));
-                    Integer lowerg1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.g"));
-                    Integer lowerb1 = new Integer((Integer) jsonobject.get("human_body.upper_body_cloth_color_rgb.b"));
+                    Double male1 = new Double((Double) jsonobject.get("male"));
+                    Integer upperr1 = new Integer((Integer) jsonobject.get("upper_body_cloth_color_r"));
+                    Integer upperg1 = new Integer((Integer) jsonobject.get("upper_body_cloth_color_g"));
+                    Integer upperb1 = new Integer((Integer) jsonobject.get("upper_body_cloth_color_b"));
+                    Integer lowerr1 = new Integer((Integer) jsonobject.get("lower_body_cloth_color_r"));
+                    Integer lowerg1 = new Integer((Integer) jsonobject.get("lower_body_cloth_color_g"));
+                    Integer lowerb1 = new Integer((Integer) jsonobject.get("lower_body_cloth_color_b"));
                     String Result2 = gameService.shoot(playername,male1,upperr1,upperg1,upperb1,lowerr1,lowerg1,lowerb1);
                     if (!Result2.equals("Success!"))
                         senderror(playername,Result2);
