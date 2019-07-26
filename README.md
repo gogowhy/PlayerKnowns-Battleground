@@ -23,3 +23,5 @@ The summer project of a deep learning-AR FPS mobile game
  百度地图-reactnative配置文档：document-pkbg前后端联通、环境部署文档
 
  gameclient前后端联通文档：document-pkbg前后端联通、环境部署文档
+
+项目使用图片素材：document-PKBG——pictures
