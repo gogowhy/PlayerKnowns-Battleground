@@ -144,6 +144,7 @@ public class RoomDaoImpl implements RoomDao {
         player.setPlayerstatus(1);
         player.setMale(999.9);
         player.setTimes(0);
+        player.setKill(0);
         playerRepository.save(player);
 
         room.setGamestatus(0);

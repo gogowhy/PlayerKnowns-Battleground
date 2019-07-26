@@ -41,6 +41,16 @@ public class Player implements Serializable {
 
     public Integer times;
 
+    public Integer kill;
+
+    public Integer getKill() {
+        return kill;
+    }
+
+    public void setKill(Integer kill) {
+        this.kill = kill;
+    }
+
     public Integer getTimes() {
         return times;
     }

@@ -2,8 +2,10 @@ package com.pkbg.eurekaclient.DaoImpl;
 
 import com.pkbg.eurekaclient.Dao.GameDao;
 import com.pkbg.eurekaclient.Entity.Player;
+import com.pkbg.eurekaclient.Entity.User;
 import com.pkbg.eurekaclient.Handler.MyHandler;
 import com.pkbg.eurekaclient.Repository.PlayerRepository;
+import com.pkbg.eurekaclient.Repository.UserRepository;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,6 +25,9 @@ public class GameDaoImpl implements GameDao {
 
     @Autowired
     public PlayerRepository playerRepository;
+
+    @Autowired
+    public UserRepository userRepository;
 
     @Autowired
     public MongoTemplate mongoTemplate;
@@ -53,6 +58,19 @@ public class GameDaoImpl implements GameDao {
         update.set("weaponname",player.getWeaponname());
         mongoTemplate.updateFirst(query,update,collectionname);
         update.set("times",player.getTimes());
+        mongoTemplate.updateFirst(query,update,collectionname);
+        update.set("kill",player.getKill());
+        mongoTemplate.updateFirst(query,update,collectionname);
+    }
+
+    public void updateuser(User user)
+    {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("username").is(user.getUsername()));
+        String collectionname = "PKBG";
+        Update update = new Update();
+        update.set("coins",user.getCoins());
         mongoTemplate.updateFirst(query,update,collectionname);
     }
 
@@ -115,6 +133,9 @@ public class GameDaoImpl implements GameDao {
                 updateplayer(player2);
             }
             else {
+                Integer kill = player1.getKill();
+                player1.setKill(kill+1);
+                updateplayer(player1);
                 player2.setHP(0);
                 updateplayer(player2);
                 Map<String,Object> map3 = new HashMap<>();
@@ -145,9 +166,21 @@ public class GameDaoImpl implements GameDao {
                     for(int i=0;i<players.size();i++)
                     {
                         Player player_temp = players.get(i);
+                        Integer kill_temp = player_temp.getKill();
+                        User user_temp = userRepository.findByUsername(player_temp.getPlayername());
+                        Integer coins = user_temp.getCoins();
                         if (player_temp.getPlayerteam()==player2.getPlayerteam())
-                         myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message4));
-                        else myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message5));
+                        {
+                            myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message4));
+                            user_temp.setCoins(coins+50+kill_temp*20);
+                            updateuser(user_temp);
+                        }
+                        else
+                        {
+                            myHandler.sendMessageToUser(player_temp.getPlayername(), new TextMessage(message5));
+                            user_temp.setCoins(coins+100+kill_temp*20);
+                            updateuser(user_temp);
+                        }
                     }
                 }
             }
