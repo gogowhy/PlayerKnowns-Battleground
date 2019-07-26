@@ -94,7 +94,7 @@ export default class Login extends Component {
             case PASSWORD: alert("密码错误！"); break;
             // BANNED 即用户被禁用，在该文件 Login.js 顶部已定义
             case BANNED: alert("您的用户已被禁用，请联系管理员处理。"); break;
-            default: alert("请输入用户名和密码！"); break;
+            default: alert("未响应！"); break;
         }
 
         /* 以下为测试用代码 
