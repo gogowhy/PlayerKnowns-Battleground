@@ -4,7 +4,8 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    ImageBackground
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
@@ -15,6 +16,7 @@ import Feather from "react-native-vector-icons/Feather";
 import axios from 'axios';
 import base from '../src/style/base';
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { Button } from 'native-base';
 
 
 const DONE = 101, NOT_DONE = 102, ALL_DONE = 103, HIT = 7, BE_SHOT = 8, ONE_KILLED = 6, WIN = 4, LOSE = 5;
@@ -342,12 +344,19 @@ export default class Gaming extends Component {
                             console.log(barcodes);
                         }}
                     />
-                    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-                        <TouchableOpacity onPress={this.shoot} style={styles.capture}>
-                            <Text style={{ fontSize: 20 }}> {'第' + this.state.times + '次录入'} </Text>
-                        </TouchableOpacity>
+                    <ImageBackground style={[base.background, {justifyContent: 'flex-end', zIndex: 1}]}
+                        source={require('../src/img/picture.png')}>
+                        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Button
+                                rounded
+                                activeOpacity={0.5}
+                                onPress={this.shoot}
+                                style={[styles.capture,{marginRight: 30}]}>
+                                <Text style={{ fontSize: 20, fontWeight: 'bold' }}> {'第' + this.state.times + '次录入'} </Text>
+                            </Button>
+                        </View>
 
-                    </View>
+                    </ImageBackground>
                 </View>
             );
 
@@ -435,12 +444,15 @@ export default class Gaming extends Component {
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={styles.capture}>
+                        <TouchableOpacity
+                            rounded
+                            activeOpacity={0.5}
+                            style={[styles.capture, {marginRight: 40}]}
+                            onPress={this.shoot}>
                             <Feather
                                 name={'target'}
                                 size={36}
                                 color={'black'}
-                                onPress={this.shoot}
                             />
                         </TouchableOpacity>
                     </View>
@@ -499,7 +511,6 @@ const styles = StyleSheet.create({
         padding: 5,
         justifyContent: 'flex-end',
         alignSelf: 'flex-end',
-        marginRight: 40,
         marginBottom: 20,
     },
     focus: {

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
-    TouchableOpacity,
-    Text,
     ImageBackground,
     View,
+    Image,
     StyleSheet,
 } from 'react-native';
+import { Button } from 'native-base';
 import base from '../src/style/base';
 
 export default class Home extends Component {
@@ -29,22 +29,22 @@ export default class Home extends Component {
     render() {
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/bg1.png')}>
+                source={require('../src/img/ppp.png')}>
                 <View style={base.container}>
-                    <View style={base.container}>
-                        <Text style={base.content}>PlayerKnown's</Text>
-                        <Text style={base.content}>BattleGround</Text>
-                    </View>
-                    <TouchableOpacity
+                    <View style={{height: 120}}/>
+                    <Button
+                        rounded
+                        bordered
                         activeOpacity={0.5}
-                        onPress={this.ToLogin}  //添加点击事件
-                        style={[base.button, base.buttonBig]}>
-                        <Text
-                            style={base.btText}>开始游戏</Text>
-                    </TouchableOpacity>
+                        onPress={this.ToLogin} //-----------该属性需要保留！-------------
+                        style={base.button}>
+                        <Image
+                            source={require('../src/img/start2.png')}
+                            style={{height: '180%', width:'180%',}}
+                        />
+                    </Button>
                 </View>
             </ImageBackground>
         );
     }
-
 }

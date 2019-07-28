@@ -4,7 +4,8 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    ImageBackground
+    ImageBackground,
+    Image
 } from 'react-native';
 import { Icon, Button } from 'native-base';
 import base from '../src/style/base';
@@ -135,7 +136,7 @@ export default class MainPage extends Component {
     render() {
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/bg1.png')}>
+                source={require('../src/img/ppp.png')}>
                 <TouchableOpacity
                     activeOpacity={1.0}  //设置背景被点击时，透明度不变
                     style={{ flex: 1 }}>
@@ -145,18 +146,19 @@ export default class MainPage extends Component {
                                 <Icon
                                     name={'md-exit'}
                                     onPress={this.exit}
+                                    style={{color: '#8A8A8A'}}
                                 />
                             </View>
                             <View style={header.End}>
                                 <Icon
                                     name={'md-settings'}
                                     onPress={this.settings}
-                                    style={{ marginRight: 6 }}
+                                    style={{color: '#8A8A8A', marginRight: 6 }}
                                 />
                                 <Entypo
                                     name={'help-with-circle'}
                                     size={26}
-                                    color={'black'}
+                                    style={{color: '#8A8A8A'}}
                                     onPress={this.help}
                                 />
                             </View>
@@ -170,14 +172,18 @@ export default class MainPage extends Component {
                                 name={'warehouse'}
                                 size={40}
                                 onPress={this.warehouse}
-                                color={'#00008B'}
+                                color={'yellow'}
                             />
                             <Button
+                                rounded
+                                bordered
                                 activeOpacity={0.5}
                                 onPress={this.createRoom} //-----------该属性需要保留！-------------
-                                style={styles.button}>
-                                <Text
-                                    style={styles.btText}> 创 建 房 间</Text>
+                                style={[base.button,{height: 70, width: 240}]}>
+                                <Image
+                                    source={require('../src/img/create.png')}
+                                    style={{height: '180%', width:'180%',}}
+                                />
                             </Button>
                         </View>
 
@@ -187,14 +193,18 @@ export default class MainPage extends Component {
                                 name={'shop'}
                                 size={55}
                                 onPress={this.shop}
-                                color={'#00008B'}
+                                color={'yellow'}
                             />
                             <Button
+                                rounded
+                                bordered
                                 activeOpacity={0.5}
                                 onPress={this.enterRoom} //-----------该属性需要保留！-------------
-                                style={styles.button}>
-                                <Text
-                                    style={styles.btText}> 加 入 房 间</Text>
+                                style={[base.button,{height: 70, width: 240}]}>
+                                <Image
+                                    source={require('../src/img/join.png')}
+                                    style={{height: '180%', width:'180%',}}
+                                />
                             </Button>
                         </View>
                     </View>
@@ -217,22 +227,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    button: {
-        height: 70,
-        width: 240,
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        borderRadius: 18,
-        backgroundColor: '#FF4500',
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 10,
-        marginRight: 20,
-    },
-    btText: {
-        color: '#fff',
-        fontFamily: 'zhenhunshoushu',
-        fontSize: 40,
-        paddingTop: 6,
-    },
+    // button: {
+    //     height: 70,
+    //     width: 240,
+    //     justifyContent: 'center',
+    //     alignItems: 'flex-start',
+    //     borderRadius: 18,
+    //     backgroundColor: '#FF4500',
+    //     marginTop: 10,
+    //     marginBottom: 10,
+    //     marginLeft: 10,
+    //     marginRight: 20,
+    // },
+    // btText: {
+    //     color: '#fff',
+    //     fontFamily: 'zhenhunshoushu',
+    //     fontSize: 40,
+    //     paddingTop: 6,
+    // },
 });

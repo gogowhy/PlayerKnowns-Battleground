@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import { Form, Text, Button } from 'native-base';
 import Name from './InputComponents/Name';
 import Password from './InputComponents/Password';
@@ -151,7 +151,7 @@ export default class Login extends Component {
 
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/bg1.png')}>
+                source={require('../src/img/ppp.png')}>
                 <View style={base.container}>
 
                     <Form>
@@ -167,31 +167,51 @@ export default class Login extends Component {
                         />
                     </Form>
 
-                    <Button
+                    {/* <Button
                         rounded
+                        bordered    
                         activeOpacity={0.5}
                         onPress={this.login} //-----------该属性需要保留！-------------
-                        style={styles.button}
+                        style={base.button}>
+                        <Image
+                            source={require('../src/img/start2.png')}
+                            style={{height: '180%', width:'180%',}}
+                        />
+                    </Button> */}
+
+                    <Button
+                        rounded
+                        bordered
+                        activeOpacity={0.5}
+                        onPress={this.login} //-----------该属性需要保留！-------------
+                        style={base.button}
                         clear={this.clearAllInputs}>
                         <Text
                             style={base.btText}>登 录</Text>
                     </Button>
 
                     <View style={base.underline}>
-                        <TouchableOpacity
+                        <Button
+                            transparent  
                             activeOpacity={0.5}
                             onPress={this.forgetPW} //-----------该属性需要保留！-------------
-                        >
-                            <Text
-                                style={base.ulText}>忘记密码</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
+                            style={[base.text,{width: 160}]}>
+                            <Image
+                                source={require('../src/img/forget.png')}
+                                style={{height: '150%', width:'150%',}}
+                            />
+                        </Button>
+
+                        <Button
+                            transparent
                             activeOpacity={0.5}
                             onPress={this.gotoRegister} //-----------该属性需要保留！-------------
-                        >
-                            <Text
-                                style={base.ulText}>没有账号?去注册</Text>
-                        </TouchableOpacity>
+                            style={[base.text,{width: 200}]}>
+                            <Image
+                                source={require('../src/img/register.png')}
+                                style={{height: '150%', width:'150%',}}
+                            />
+                        </Button>
                     </View>
 
                 </View>

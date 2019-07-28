@@ -145,7 +145,7 @@ export default class EnterRoom_inputID extends Component {
 
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/bg1.png')}>
+                source={require('../src/img/ppp.png')}>
                 <View
                     style={base.container}>
 

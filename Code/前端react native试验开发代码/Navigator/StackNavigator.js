@@ -20,7 +20,6 @@ import Room from '../Component/Room';
 import EnterRoom_inputID from '../Component/EnterRoom_inputID';
 import Gaming from '../Component/Gaming';
 import Result from '../Component/Result';
-import Camera11 from '../Component/camera';
 
 const RootStack1 = createStackNavigator({
   Home: {

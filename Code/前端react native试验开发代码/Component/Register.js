@@ -142,7 +142,7 @@ export default class Register extends Component {
 
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/bg1.png')}>
+                source={require('../src/img/ppp.png')}>
                 <View style={base.container}>
 
                     <View style={header.container}>
@@ -194,12 +194,24 @@ export default class Register extends Component {
 
                         <Button
                             rounded
+                            bordered
                             activeOpacity={0.5}
                             onPress={this.register} //-----------该属性需要保留！-------------
-                            style={styles.button}
+                            style={base.button}
                             clear={this.clearAllInputs}>
                             <Text style={base.btText}>注 册</Text>
                         </Button>
+                        {/* <Button
+                            rounded
+                            bordered    
+                            activeOpacity={0.5}
+                            onPress={this.register} //-----------该属性需要保留！-------------
+                            style={base.button}>
+                            <Image
+                                source={require('../src/img/start2.png')}
+                                style={{height: '180%', width:'180%',}}
+                            />
+                        </Button> */}
                     </View>
                 </View>
             </ImageBackground>

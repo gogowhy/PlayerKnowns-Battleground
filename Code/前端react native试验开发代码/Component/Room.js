@@ -8,11 +8,12 @@ import {
     SectionList,
     FlatList,
     ImageBackground,
+    Image,
     Dimensions,
     Platform,
     BackHandler
 } from 'react-native';
-import { Spinner } from 'native-base';
+import { Spinner, Button, Icon } from 'native-base';
 
 import base from '../src/style/base';
 import header from '../src/style/header';
@@ -588,31 +589,32 @@ export default class Room extends Component {
                 </View>
             )
 
-        const teamA = [];
-        const teamB = [];
-
-        const T = (this.state.team == TEAM_B) ? "B->A" : "A->B"; //更换队伍按钮的文字说明
+        var teamA = [['',''],['',''],['',''],['',''],['','']];
+        var teamB = [['',''],['',''],['',''],['',''],['','']];
 
         this.state.players.forEach((player) => {
             if (player.playerteam == TEAM_A) {
-                if (player.playerstatus) teamA.push([player.username, 'Ready']);
-                if (!player.playerstatus) teamA.push([player.username, 'UnReady']);
+                if (player.playerstatus) teamA.splice(['',''],1,[player.username, 'Ready']);
+                if (!player.playerstatus) teamA.splice(['',''],1,[player.username, 'UnReady']);
             }
 
             if (player.playerteam == TEAM_B) {
-                if (player.playerstatus) teamB.push([player.username, 'Ready']);
-                if (!player.playerstatus) teamB.push([player.username, 'UnReady']);
+                if (player.playerstatus) teamB.splice(['',''],1,[player.username, 'Ready']);
+                if (!player.playerstatus) teamB.splice(['',''],1,[player.username, 'UnReady']);
             }
-        }
-        )
+        })
 
-        const ReadyOrNot = !this.state.isReady ? <TouchableOpacity
+        const ReadyOrNot = !this.state.isReady ? <Button
+            rounded
+            bordered
             activeOpacity={0.5}
             onPress={this.ready} //-----------该属性需要保留！-------------
             style={base.button}>
-            <Text
-                style={base.btText}>准备</Text>
-        </TouchableOpacity>
+            <Image
+                source={require('../src/img/ready.png')}
+                style={{height: '180%', width:'180%',}}
+            />
+        </Button>
             : <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={this.unready} //-----------该属性需要保留！-------------
@@ -621,38 +623,42 @@ export default class Room extends Component {
                     style={base.btText}>取消准备</Text>
             </TouchableOpacity>;
 
-        const StartOrReady = this.state.host ? <TouchableOpacity
+        const StartOrReady = this.state.host ? <Button
+            rounded
+            bordered
             activeOpacity={0.5}
             onPress={this.startGame} //-----------该属性需要保留！-------------
             style={base.button}>
-            <Text
-                style={base.btText}>开始游戏</Text>
-        </TouchableOpacity>
+            <Image
+                source={require('../src/img/start2.png')}
+                style={{height: '180%', width:'180%',}}
+            />
+        </Button>
             : ReadyOrNot;
 
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/bg1.png')}>
+                source={require('../src/img/room.jpeg')}>
                 <View style={{ flex: 1 }}>
                     <View style={header.container}>
                         <View style={header.header}>
-                            <View style={header.Head}>
-                                <Ionicons
-                                    name={'md-arrow-round-back'}
-                                    size={30}
+                        <View style={header.Head}>
+                                <Icon
+                                    name={'md-exit'}
                                     onPress={this.exitRoom}
+                                    style={{color: '#8A8A8A'}}
                                 />
                             </View>
                             <View style={header.End}>
-                                <Ionicons
+                                <Icon
                                     name={'md-settings'}
-                                    size={31}
                                     onPress={this.settings}
-                                    style={{ marginRight: 6 }}
+                                    style={{color: '#8A8A8A', marginRight: 6 }}
                                 />
                                 <Entypo
                                     name={'help-with-circle'}
-                                    size={28}
+                                    size={26}
+                                    style={{color: '#8A8A8A'}}
                                     onPress={this.help}
                                 />
                             </View>
@@ -666,29 +672,38 @@ export default class Room extends Component {
                         </Text>
                         <Text
                             style={styles.Text}>
-                            {'  '}房间密码：{this.state.password}
+                            {'   '}房间密码：{this.state.password}
                         </Text>
                     </View>
 
 
                     <View style={base.containerTop}>
                         {StartOrReady}
-
-                        <TouchableOpacity
+                        
+                        <Button
+                            rounded
+                            bordered
                             activeOpacity={0.5}
                             onPress={this.changeTeam} //-----------该属性需要保留！-------------
                             style={base.button}>
-                            <Text
-                                style={base.btText}>{T}</Text>
-                        </TouchableOpacity>
+                            <Image
+                                source={require('../src/img/change.png')}
+                                style={{height: '180%', width:'180%',}}
+                            />
+                        </Button>
 
-                        <TouchableOpacity
+                        <Button
+                            rounded
+                            bordered
                             activeOpacity={0.5}
                             onPress={this.exitRoom} //-----------该属性需要保留！-------------
                             style={base.button}>
-                            <Text
-                                style={base.btText}>退出房间</Text>
-                        </TouchableOpacity>
+                            <Image
+                                source={require('../src/img/exit.png')}
+                                style={{height: '180%', width:'180%',}}
+                            />
+                        </Button>
+
                     </View>
 
                     <View style={styles.containerRow}>
@@ -700,10 +715,10 @@ export default class Room extends Component {
                                 keyExtractor={(item, index) => item + index}
                                 renderItem={this._renderSectionListItem}
                                 renderSectionHeader={this._renderSectionHeader}
-                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
-                                numColumns={2}
-                                columnWrapperStyle={{ borderWidth: 3, borderColor: '#f4f4f4' }}
-                                style={{ marginTop: 10, marginLeft: 5}}
+                                //ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
+                                //numColumns={2}
+                                //columnWrapperStyle={{ borderWidth: 3, borderColor: '#f4f4f4' }}
+                                style={{ margin: 4, borderWidth: 2, borderColor:'#EEC900', borderRadius: 2 }}
                             />
                             <SectionList
                                 sections={[
@@ -712,10 +727,10 @@ export default class Room extends Component {
                                 keyExtractor={(item, index) => item + index}
                                 renderItem={this._renderSectionListItem}
                                 renderSectionHeader={this._renderSectionHeader}
-                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
-                                numColumns={2}
-                                columnWrapperStyle={{ borderWidth: 3, borderColor: 'black' }}
-                                style={{ marginTop: 10, marginRight: 5 }}
+                                //ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
+                                //numColumns={2}
+                                //columnWrapperStyle={{ borderWidth: 3, borderRadius:18, borderColor: 'black' }}
+                                style={{ margin: 4, borderWidth: 2, borderColor:'#EEC900', borderRadius: 2 }}
                             />
                         </View>
                     </View>
@@ -737,7 +752,7 @@ export default class Room extends Component {
             numColumns={2}
             renderItem={this._renderItem}
             keyExtractor={this._keyExtractor}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
+            //ItemSeparatorComponent={this._ItemSeparatorComponent}
         />
     )
 
@@ -753,8 +768,8 @@ export default class Room extends Component {
     _renderSectionHeader = ({ section }) => {
         var txt = ' Team ' + section.title;
         return (
-            <View style={{ height: 30, justifyContent: 'center' }}>
-                <Text style={styles.SectionHeader}>{txt}</Text>
+            <View style={styles.SectionHeader}>
+                <Text style={styles.SectionHeaderText}>{txt}</Text>
             </View>
         )
     }
@@ -762,7 +777,7 @@ export default class Room extends Component {
 
 const styles = StyleSheet.create({
     Text: {
-        color: '#000',
+        color: '#8A8A8A',
         fontWeight: 'bold',
         fontSize: 20,
     },
@@ -777,11 +792,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
     },
-    Table: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     waiting: {
         color: '#000',
         fontSize: 18,
@@ -789,37 +799,52 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     list: {
-        height: height - 150,
-        width: width - 80,
+        height: height - 160,
+        width: width - 70,
         flexDirection: 'row',
-        backgroundColor: '#DEDEDE',
-        marginTop: 8,
+        backgroundColor: '#5d758e',
+        marginTop: 10,
         justifyContent: 'center',
+        borderRadius: 5,
     },
     cell: {
-        width: (width - 94) / 4,
+        width: (width - 100) / 4 - 7,
+        height: 34,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#607B8B',
-        marginTop: 2,
+        backgroundColor: '#03172b',
+        borderWidth: 2,
+        borderColor: '#CD9B1D',
+        borderRadius: 2,
+        marginLeft: 4,
+        marginRight: 4,
+        marginTop: 3,
     },
     cellText: {
-        height: 30,
         textAlign: 'center',
         textAlignVertical: 'center',
         color: '#fff',
+        fontWeight: 'bold',
         fontSize: 15,
-        marginLeft: 10,
-        marginRight: 10,
     },
     SectionHeader: {
-        height: 30,
-        width: (width - 94) / 2,
+        height: 36,
+        width: (width - 100) / 2 - 6,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#021f3c',
+        borderWidth: 2,
+        borderRadius: 2,
+        borderColor: '#EEC900',
+        margin: 4,
+        marginTop: 8,
+    },
+    SectionHeaderText: {
         textAlign: 'center',
         textAlignVertical: 'center',
-        backgroundColor: '#473C8B',
+        fontWeight: 'bold',
         color: 'white',
-        fontSize: 20
+        fontSize: 20,
     },
 });
