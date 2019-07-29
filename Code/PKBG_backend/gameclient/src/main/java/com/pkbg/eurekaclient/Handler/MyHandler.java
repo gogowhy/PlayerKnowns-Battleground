@@ -84,6 +84,8 @@ public class MyHandler implements WebSocketHandler {
         Integer roomnumber = Integer.valueOf(roomnum);
         System.out.println(roomnumber);
 
+        //send an ID of another player
+
         if (ID != null) {
             users.put(ID, session);
             //session.sendMessage(new TextMessage("成功建立socket连接"));
@@ -107,6 +109,7 @@ public class MyHandler implements WebSocketHandler {
             switch(code)
             {
                 case 0://start
+                    String target = new String((String) jsonobject.get("target"));
                     Integer times = new Integer((Integer) jsonobject.get("times"));
                     System.out.println("times:"+times);
                     Double male = new Double((Double) jsonobject.get("male"));
@@ -117,7 +120,7 @@ public class MyHandler implements WebSocketHandler {
                     Integer lowerg = new Integer((Integer) jsonobject.get("lower_body_cloth_color_g"));
                     Integer lowerb = new Integer((Integer) jsonobject.get("lower_body_cloth_color_b"));
                     System.out.println(code);
-                    String Result0 = gameService.start(playername,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
+                    String Result0 = gameService.start(target,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
                     if (!Result0.equals("Success!"))
                     {
                         Map<String, Object> map = new HashMap<String, Object>();
