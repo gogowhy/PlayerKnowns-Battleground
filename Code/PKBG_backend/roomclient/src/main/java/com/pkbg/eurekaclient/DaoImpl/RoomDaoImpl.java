@@ -526,30 +526,13 @@ public class RoomDaoImpl implements RoomDao {
         MyHandler myHandler = new MyHandler();
         for(int i=0;i<players.size();i++)
         {
-            Player player_temp=players.get(i);
-            if (i!=players.size()-1)
-            {
-                Player player_temp2 = players.get(i+1);
-                String target = player_temp2.getPlayername();
+                Player player_temp=players.get(i);
                 String playername = player_temp.getPlayername();
                 Map <String,Object> map = new HashMap<String,Object>();
                 map.put("code",0);
-                map.put("targer",target);
                 JSONArray json2 = JSONArray.fromObject(map);
                 String message = json2.toString();
                 myHandler.sendMessageToUser(playername, new TextMessage(message));
-            }
-                else {
-                Player player_temp2 = players.get(0);
-                String target = player_temp2.getPlayername();
-                String playername = player_temp.getPlayername();
-                Map <String,Object> map = new HashMap<String,Object>();
-                map.put("code",0);
-                map.put("targer",target);
-                JSONArray json2 = JSONArray.fromObject(map);
-                String message = json2.toString();
-                myHandler.sendMessageToUser(playername, new TextMessage(message));
-            }
         }
         return "Success!";
     }

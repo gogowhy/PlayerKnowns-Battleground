@@ -93,6 +93,21 @@ public class MyHandler implements WebSocketHandler {
             System.out.println(session);
             //sendMessageToUser(ID+"",new TextMessage("8"));
         }
+
+        List<Player> players = playerRepository.findByRoomnumber(roomnumber);
+        Integer i = new Integer(0);
+        for (i=0;i<players.size();i++)
+            if (players.get(i).getPlayername().equals(ID)) break;
+        StringBuffer targetn = new StringBuffer();
+        if (i!=players.size()-1) targetn.append(players.get(i+1).getPlayername());
+            else targetn.append(players.get(0).getPlayername());
+        String target = new String(targetn);
+        Map <String,Object> map = new HashMap<String,Object>();
+        map.put("code",8);
+        map.put("target",target);
+        JSONArray json2 = JSONArray.fromObject(map);
+        String message = json2.toString();
+        sendMessageToUser(ID, new TextMessage(message));
         System.out.println("当前在线人数："+users.size());
     }
 

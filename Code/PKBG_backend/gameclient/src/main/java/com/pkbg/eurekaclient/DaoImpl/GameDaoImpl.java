@@ -137,7 +137,15 @@ public class GameDaoImpl implements GameDao {
             Player player_temp = players.get(i);
             String name = player_temp.getPlayername();
             Double tmale = player_temp.getMale();
-            if ((tmale-0.5)*(male-0.5)<0) continue;
+            if ((male>=0) && (male<=0.4))
+                if (tmale>0.4)
+                    return "Miss Shot!";
+            if ((male>=0.6) && (male<=1))
+                if (tmale<0.6)
+                    return "Miss Shot!";
+            if ((male>0.4) && (male<0.6))
+                if (Math.abs(male-tmale)>0.15)
+                    return "Miss Shot!";
             if (name.equals(playername)) continue;
             Integer flag = new Integer(0);
             flag = judge(upperr,player_temp.getUpperr1(),player_temp.getSigmaur())+judge(upperg,player_temp.getUpperg1(),player_temp.getSigmaug())+judge(upperb,player_temp.getUpperb1(),player_temp.getSigmaub())+judge(lowerr,player_temp.getLowerr1(),player_temp.getSigmalr())+judge(lowerg,player_temp.getLowerg1(),player_temp.getSigmalg())+judge(lowerb,player_temp.getLowerb1(),player_temp.getSigmalb());
@@ -286,11 +294,35 @@ public class GameDaoImpl implements GameDao {
         if (times == 2)
         {
             Double omale = new Double(player.getMale());
-            if ((omale-0.5)*(male-0.5)<0)
+            if ((0<=omale) && (omale<=0.4))
             {
-                player.setTimes(0);
-                updateplayer(player);
-                return "unsuitable";//unsuitable
+                if (male>0.4)
+                {
+                    player.setTimes(0);
+                    updateplayer(player);
+                    return "unsuitable";//unsuitable
+                }
+                player.setMale((omale+male)/2);
+            }
+            if ((0.6<=omale) && (omale<=1))
+            {
+                if (male<0.6)
+                {
+                    player.setTimes(0);
+                    updateplayer(player);
+                    return "unsuitable";//unsuitable
+                }
+                player.setMale((omale+male)/2);
+            }
+            if ((0.4<omale) && (omale<0.6))
+            {
+                if (Math.abs(omale-male)>0.15)
+                {
+                    player.setTimes(0);
+                    updateplayer(player);
+                    return "unsuitable";//unsuitable
+                }
+                player.setMale((omale+male)/2);
             }
             Integer oupperr = new Integer(player.getUpperr1());
             Integer oupperg = new Integer(player.getUpperg1());
@@ -330,11 +362,35 @@ public class GameDaoImpl implements GameDao {
         if (times == 3)
         {
             Double tmale = new Double(player.getMale());
-            if ((tmale-0.5)*(male-0.5)<0)
+            if ((0<=tmale) && (tmale<=0.4))
             {
-                player.setTimes(0);
-                updateplayer(player);
-                return "unsuitable";//unsuitable
+                if (male>0.4)
+                {
+                    player.setTimes(0);
+                    updateplayer(player);
+                    return "unsuitable";//unsuitable
+                }
+                player.setMale((2*tmale+male)/3);
+            }
+            if ((0.6<=tmale) && (tmale<=1))
+            {
+                if (male<0.6)
+                {
+                    player.setTimes(0);
+                    updateplayer(player);
+                    return "unsuitable";//unsuitable
+                }
+                player.setMale((2*tmale+male)/3);
+            }
+            if ((0.4<tmale) && (tmale<0.6))
+            {
+                if (Math.abs(tmale-male)>0.15)
+                {
+                    player.setTimes(0);
+                    updateplayer(player);
+                    return "unsuitable";//unsuitable
+                }
+                player.setMale((2*tmale+male)/3);
             }
             Integer tupperr = new Integer(player.getUpperr1());
             Integer tupperg = new Integer(player.getUpperg1());
