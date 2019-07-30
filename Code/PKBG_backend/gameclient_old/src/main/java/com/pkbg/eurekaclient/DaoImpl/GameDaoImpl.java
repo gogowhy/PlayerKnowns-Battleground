@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.Math.sqrt;
-
 @Repository
 public class GameDaoImpl implements GameDao {
 
@@ -43,53 +41,17 @@ public class GameDaoImpl implements GameDao {
         Update update = new Update();
         update.set("male",player.getMale());
         mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperr1",player.getUpperr1());
+        update.set("upperr",player.getUpperr());
         mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperg1",player.getUpperg1());
+        update.set("upperg",player.getUpperg());
         mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperb1",player.getUpperb1());
+        update.set("upperb",player.getUpperb());
         mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerr1",player.getLowerr1());
+        update.set("lowerr",player.getLowerr());
         mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerg1",player.getLowerg1());
+        update.set("lowerg",player.getLowerg());
         mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerb1",player.getLowerb1());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperr2",player.getUpperr2());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperg2",player.getUpperg2());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperb2",player.getUpperb2());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerr2",player.getLowerr2());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerg2",player.getLowerg2());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerb2",player.getLowerb2());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperr3",player.getUpperr3());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperg3",player.getUpperg3());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("upperb3",player.getUpperb3());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerr3",player.getLowerr3());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerg3",player.getLowerg3());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("lowerb3",player.getLowerb3());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("sigmaur",player.getSigmaur());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("sigmaug",player.getSigmaug());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("sigmaub",player.getSigmaub());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("sigmalr",player.getSigmalr());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("sigmalg",player.getSigmalg());
-        mongoTemplate.updateFirst(query,update,collectionname);
-        update.set("sigmalb",player.getSigmalb());
+        update.set("lowerb",player.getLowerb());
         mongoTemplate.updateFirst(query,update,collectionname);
         update.set("HP",player.getHP());
         mongoTemplate.updateFirst(query,update,collectionname);
@@ -112,17 +74,6 @@ public class GameDaoImpl implements GameDao {
         mongoTemplate.updateFirst(query,update,collectionname);
     }
 
-    public Integer judge (Integer get , Integer ori , Double sigma)
-    {
-        BigDecimal left = new BigDecimal(ori-3*sigma);
-        BigDecimal right = new BigDecimal(ori+3*sigma);
-        BigDecimal middle = new BigDecimal(get);
-        if (left.compareTo(middle)<1)
-            if (right.compareTo(middle)>-1)
-                return 0;
-        return 1;
-    }
-
     public  String shoot(String playername,Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
     {
         MyHandler myHandler = new MyHandler();
@@ -130,20 +81,27 @@ public class GameDaoImpl implements GameDao {
         Integer team1 = player1.getPlayerteam();
         Integer roomnumber = player1.getRoomnumber();
         List<Player> players = playerRepository.findByRoomnumber(roomnumber);
+        Double minn = new Double(500);
         Map<Integer,String> map = new HashMap<>();
         Integer j = new Integer(0);
         for (int i=0;i<players.size();i++)
         {
             Player player_temp = players.get(i);
             String name = player_temp.getPlayername();
-            Double tmale = player_temp.getMale();
-            if ((tmale-0.5)*(male-0.5)<0) continue;
             if (name.equals(playername)) continue;
-            Integer flag = new Integer(0);
-            flag = judge(upperr,player_temp.getUpperr1(),player_temp.getSigmaur())+judge(upperg,player_temp.getUpperg1(),player_temp.getSigmaug())+judge(upperb,player_temp.getUpperb1(),player_temp.getSigmaub())+judge(lowerr,player_temp.getLowerr1(),player_temp.getSigmalr())+judge(lowerg,player_temp.getLowerg1(),player_temp.getSigmalg())+judge(lowerb,player_temp.getLowerb1(),player_temp.getSigmalb());
-            if (flag>1) continue;
-            map.put(j,player_temp.getPlayername());
-            j++;
+            BigDecimal tempt = new BigDecimal(player_temp.getMale()+player_temp.getUpperr()+player_temp.getUpperg()+player_temp.getUpperb()+player_temp.getLowerr()+player_temp.getLowerg()+player_temp.getLowerb());
+            BigDecimal orit = new BigDecimal(male+upperr+upperg+upperb+lowerr+lowerg+lowerb);
+            Double dtempt = tempt.doubleValue();
+            Double dorit = orit.doubleValue();
+            Double mint = new Double(0);
+            if (dtempt<dorit) mint=dorit-dtempt;
+                else mint = dtempt-dorit;
+            if (minn>mint)
+            {
+                minn = mint;
+                map.put(j, player_temp.getPlayername());
+                j++;
+            }
         }
         if (j!=0)
         {
@@ -248,18 +206,11 @@ public class GameDaoImpl implements GameDao {
         return c.compareTo(d);//< -1 = 0 > 1
     }
 
-    public Integer compareadd(Integer a,Integer b)
+    public Integer compared(Double a,Double b)
     {
         BigDecimal c = new BigDecimal((float)(a-b)/b);
-        BigDecimal d = new BigDecimal(0.15);
+        BigDecimal d = new BigDecimal(0.1);
         return c.compareTo(d);//< -1 = 0 > 1
-    }
-
-    public Double sigma(Integer a, Integer b, Integer c)//a=average
-    {
-        BigDecimal temp = new BigDecimal(sqrt(((2*a-b-c)*(2*a-b-c)+(b-a)*(b-a)+(c-a)*(c-a))/3));
-        Double sigma = temp.doubleValue();
-        return sigma;
     }
 
     public String start(String playername,Integer times, Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
@@ -273,12 +224,12 @@ public class GameDaoImpl implements GameDao {
         if (times==1)
         {
             player.setMale(male);
-            player.setUpperr1(upperr);
-            player.setUpperg1(upperg);
-            player.setUpperb1(upperb);
-            player.setLowerr1(lowerr);
-            player.setLowerg1(lowerg);
-            player.setLowerb1(lowerb);
+            player.setUpperr(upperr);
+            player.setUpperg(upperg);
+            player.setUpperb(upperb);
+            player.setLowerr(lowerr);
+            player.setLowerg(lowerg);
+            player.setLowerb(lowerb);
             player.setTimes(1);
             updateplayer(player);
             System.out.println("time1");
@@ -286,19 +237,14 @@ public class GameDaoImpl implements GameDao {
         if (times == 2)
         {
             Double omale = new Double(player.getMale());
-            if ((omale-0.5)*(male-0.5)<0)
-            {
-                player.setTimes(0);
-                updateplayer(player);
-                return "unsuitable";//unsuitable
-            }
-            Integer oupperr = new Integer(player.getUpperr1());
-            Integer oupperg = new Integer(player.getUpperg1());
-            Integer oupperb = new Integer(player.getUpperb1());
-            Integer olowerr = new Integer(player.getLowerr1());
-            Integer olowerg = new Integer(player.getLowerg1());
-            Integer olowerb = new Integer(player.getLowerb1());
+            Integer oupperr = new Integer(player.getUpperr());
+            Integer oupperg = new Integer(player.getUpperg());
+            Integer oupperb = new Integer(player.getUpperb());
+            Integer olowerr = new Integer(player.getLowerr());
+            Integer olowerg = new Integer(player.getLowerg());
+            Integer olowerb = new Integer(player.getLowerb());
             Integer flag = new Integer(0);
+            if (compared(male, omale) > 0) flag++;
             if (compare(upperr, oupperr) > 0) flag++;
             if (compare(upperg, oupperg) > 0) flag++;
             if (compare(upperb, oupperb) > 0) flag++;
@@ -311,18 +257,13 @@ public class GameDaoImpl implements GameDao {
                 updateplayer(player);
                 return "unsuitable";//unsuitable
             }
-            if (compareadd((olowerb+olowerg+olowerr+oupperb+oupperg+oupperr),(lowerb+lowerg+lowerr+upperb+upperg+upperr))>0)
-            {
-                player.setTimes(0);
-                updateplayer(player);
-                return "unsuitable";//unsuitable
-            }
-            player.setUpperr1((upperr + oupperr) / 2);
-            player.setUpperg1((upperg + oupperg) / 2);
-            player.setUpperb1((upperb + oupperb) / 2);
-            player.setLowerr1((lowerr + olowerr) / 2);
-            player.setLowerg1((lowerg + olowerg) / 2);
-            player.setLowerb1((lowerb + olowerb) / 2);
+            player.setMale((male + omale) / 2);
+            player.setUpperr((upperr + oupperr) / 2);
+            player.setUpperg((upperg + oupperg) / 2);
+            player.setUpperb((upperb + oupperb) / 2);
+            player.setLowerr((lowerr + olowerr) / 2);
+            player.setLowerg((lowerg + olowerg) / 2);
+            player.setLowerb((lowerb + olowerb) / 2);
             player.setTimes(2);
             updateplayer(player);
             System.out.println("time2");
@@ -330,19 +271,14 @@ public class GameDaoImpl implements GameDao {
         if (times == 3)
         {
             Double tmale = new Double(player.getMale());
-            if ((tmale-0.5)*(male-0.5)<0)
-            {
-                player.setTimes(0);
-                updateplayer(player);
-                return "unsuitable";//unsuitable
-            }
-            Integer tupperr = new Integer(player.getUpperr1());
-            Integer tupperg = new Integer(player.getUpperg1());
-            Integer tupperb = new Integer(player.getUpperb1());
-            Integer tlowerr = new Integer(player.getLowerr1());
-            Integer tlowerg = new Integer(player.getLowerg1());
-            Integer tlowerb = new Integer(player.getLowerb1());
+            Integer tupperr = new Integer(player.getUpperr());
+            Integer tupperg = new Integer(player.getUpperg());
+            Integer tupperb = new Integer(player.getUpperb());
+            Integer tlowerr = new Integer(player.getLowerr());
+            Integer tlowerg = new Integer(player.getLowerg());
+            Integer tlowerb = new Integer(player.getLowerb());
             Integer flag2 = new Integer(0);
+            if (compared(male, tmale) > 0) flag2++;
             if (compare(upperr, tupperr) > 0) flag2++;
             if (compare(upperg, tupperg) > 0) flag2++;
             if (compare(upperb, tupperb) > 0) flag2++;
@@ -355,25 +291,14 @@ public class GameDaoImpl implements GameDao {
                 updateplayer(player);
                 return "unsuitable";//unsuitable
             }
-            if (compareadd((tlowerb+tlowerg+tlowerr+tupperb+tupperg+tupperr),(lowerb+lowerg+lowerr+upperb+upperg+upperr))>0)
-            {
-                player.setTimes(0);
-                updateplayer(player);
-                return "unsuitable";//unsuitable
-            }
-            player.setUpperr1((2 * upperr + tupperr) / 3);
-            player.setUpperg1((2 * upperg + tupperg) / 3);
-            player.setUpperb1((2 * upperb + tupperb) / 3);
-            player.setLowerr1((2 * lowerr + tlowerr) / 3);
-            player.setLowerg1((2 * lowerg + tlowerg) / 3);
-            player.setLowerb1((2 * lowerb + tlowerb) / 3);
+            player.setMale((2 * male + tmale) / 3);
+            player.setUpperr((2 * upperr + tupperr) / 3);
+            player.setUpperg((2 * upperg + tupperg) / 3);
+            player.setUpperb((2 * upperb + tupperb) / 3);
+            player.setLowerr((2 * lowerr + tlowerr) / 3);
+            player.setLowerg((2 * lowerg + tlowerg) / 3);
+            player.setLowerb((2 * lowerb + tlowerb) / 3);
             player.setTimes(3);
-            player.setSigmaur(sigma(player.getUpperr1(),player.getUpperr2(),player.getUpperr3()));
-            player.setSigmaug(sigma(player.getUpperg1(),player.getUpperg2(),player.getUpperg3()));
-            player.setSigmaub(sigma(player.getUpperb1(),player.getUpperb2(),player.getUpperb3()));
-            player.setSigmalr(sigma(player.getLowerr1(),player.getLowerr2(),player.getLowerr3()));
-            player.setSigmalr(sigma(player.getLowerr1(),player.getLowerr2(),player.getLowerr3()));
-            player.setSigmalr(sigma(player.getLowerr1(),player.getLowerr2(),player.getLowerr3()));
             updateplayer(player);
             System.out.println("time3");
             MyHandler myHandler = new MyHandler();
