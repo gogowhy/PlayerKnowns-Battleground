@@ -3,7 +3,8 @@ import {
     StyleSheet,
     View,
     Text,
-    ImageBackground
+    ImageBackground,
+    Image
 } from 'react-native';
 import { Form, Button, Label, Item, Icon } from 'native-base';
 import Email from './InputComponents/Email';
@@ -142,7 +143,7 @@ export default class Register extends Component {
 
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/ppp.png')}>
+                source={require('../src/img/ppp0.jpg')}>
                 <View style={base.container}>
 
                     <View style={header.container}>
@@ -194,24 +195,16 @@ export default class Register extends Component {
 
                         <Button
                             rounded
-                            bordered
+                            bordered    
                             activeOpacity={0.5}
                             onPress={this.register} //-----------该属性需要保留！-------------
                             style={base.button}
                             clear={this.clearAllInputs}>
-                            <Text style={base.btText}>注 册</Text>
-                        </Button>
-                        {/* <Button
-                            rounded
-                            bordered    
-                            activeOpacity={0.5}
-                            onPress={this.register} //-----------该属性需要保留！-------------
-                            style={base.button}>
                             <Image
-                                source={require('../src/img/start2.png')}
-                                style={{height: '180%', width:'180%',}}
+                                source={require('../src/img/signup.png')}
+                                style={{height: '250%', width:'250%',}}
                             />
-                        </Button> */}
+                        </Button>
                     </View>
                 </View>
             </ImageBackground>

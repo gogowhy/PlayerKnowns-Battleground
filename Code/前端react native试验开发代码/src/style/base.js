@@ -37,7 +37,7 @@ const base = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 20,
         borderColor: 'yellow',
-        borderWidth: 2,
+        borderWidth: 4,
         marginTop: 10,
         marginBottom: 10,
         marginLeft: 10,

@@ -10,7 +10,6 @@ import {
 import { Icon, Button } from 'native-base';
 import base from '../src/style/base';
 import header from '../src/style/header';
-
 //import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -22,7 +21,8 @@ export default class MainPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: this.props.navigation.state.params.username
+            username: this.props.navigation.state.params.username,
+            paused: false  // false: 表示播放，true: 表示暂停
         }
         this.createRoom = this.createRoom.bind(this);
         this.enterRoom = this.enterRoom.bind(this);
@@ -126,7 +126,8 @@ export default class MainPage extends Component {
     }
 
     settings() {
-
+        const { navigate } = this.props.navigation;
+        navigate('BGmusic');
     }
 
     help() {
@@ -136,7 +137,7 @@ export default class MainPage extends Component {
     render() {
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/ppp.png')}>
+                source={require('../src/img/main.jpg')}>
                 <TouchableOpacity
                     activeOpacity={1.0}  //设置背景被点击时，透明度不变
                     style={{ flex: 1 }}>
@@ -146,19 +147,19 @@ export default class MainPage extends Component {
                                 <Icon
                                     name={'md-exit'}
                                     onPress={this.exit}
-                                    style={{color: '#8A8A8A'}}
+                                    style={{ color: '#8A8A8A' }}
                                 />
                             </View>
                             <View style={header.End}>
                                 <Icon
                                     name={'md-settings'}
                                     onPress={this.settings}
-                                    style={{color: '#8A8A8A', marginRight: 6 }}
+                                    style={{ color: '#8A8A8A', marginRight: 6 }}
                                 />
                                 <Entypo
                                     name={'help-with-circle'}
                                     size={26}
-                                    style={{color: '#8A8A8A'}}
+                                    style={{ color: '#8A8A8A' }}
                                     onPress={this.help}
                                 />
                             </View>
@@ -167,49 +168,50 @@ export default class MainPage extends Component {
 
                     <View style={styles.container}>
                         <View style={styles.containerRow}>
-                            <FontAwesome5
+                            {/* <FontAwesome5
                                 style={{ marginRight: 10 }}
                                 name={'warehouse'}
                                 size={40}
                                 onPress={this.warehouse}
                                 color={'yellow'}
-                            />
+                            /> */}
                             <Button
                                 rounded
                                 bordered
                                 activeOpacity={0.5}
                                 onPress={this.createRoom} //-----------该属性需要保留！-------------
-                                style={[base.button,{height: 70, width: 240}]}>
+                                style={[base.button, { height: 70, marginLeft: 40, width: 220 }]}>
                                 <Image
                                     source={require('../src/img/create.png')}
-                                    style={{height: '180%', width:'180%',}}
+                                    style={{ height: '220%', width: '220%', }}
                                 />
                             </Button>
                         </View>
 
                         <View style={styles.containerRow}>
-                            <Entypo
+                            {/* <Entypo
                                 style={{ marginRight: 8 }}
                                 name={'shop'}
                                 size={55}
                                 onPress={this.shop}
                                 color={'yellow'}
-                            />
+                            /> */}
                             <Button
                                 rounded
                                 bordered
                                 activeOpacity={0.5}
                                 onPress={this.enterRoom} //-----------该属性需要保留！-------------
-                                style={[base.button,{height: 70, width: 240}]}>
+                                style={[base.button, { height: 70, marginLeft: 40, width: 220 }]}>
                                 <Image
                                     source={require('../src/img/join.png')}
-                                    style={{height: '180%', width:'180%',}}
+                                    style={{ height: '220%', width: '220%', }}
                                 />
                             </Button>
                         </View>
                     </View>
 
                 </TouchableOpacity>
+
             </ImageBackground>
         );
     }
@@ -220,29 +222,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
     },
     containerRow: {
-        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    // button: {
-    //     height: 70,
-    //     width: 240,
-    //     justifyContent: 'center',
-    //     alignItems: 'flex-start',
-    //     borderRadius: 18,
-    //     backgroundColor: '#FF4500',
-    //     marginTop: 10,
-    //     marginBottom: 10,
-    //     marginLeft: 10,
-    //     marginRight: 20,
-    // },
-    // btText: {
-    //     color: '#fff',
-    //     fontFamily: 'zhenhunshoushu',
-    //     fontSize: 40,
-    //     paddingTop: 6,
-    // },
+    backgroundVideo: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+    },
+
 });

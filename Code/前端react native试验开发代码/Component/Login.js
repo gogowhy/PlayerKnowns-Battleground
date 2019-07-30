@@ -151,7 +151,7 @@ export default class Login extends Component {
 
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/ppp.png')}>
+                source={require('../src/img/ppp0.jpg')}>
                 <View style={base.container}>
 
                     <Form>
@@ -167,32 +167,22 @@ export default class Login extends Component {
                         />
                     </Form>
 
-                    {/* <Button
+                    <Button
                         rounded
                         bordered    
                         activeOpacity={0.5}
                         onPress={this.login} //-----------该属性需要保留！-------------
-                        style={base.button}>
-                        <Image
-                            source={require('../src/img/start2.png')}
-                            style={{height: '180%', width:'180%',}}
-                        />
-                    </Button> */}
-
-                    <Button
-                        rounded
-                        bordered
-                        activeOpacity={0.5}
-                        onPress={this.login} //-----------该属性需要保留！-------------
                         style={base.button}
                         clear={this.clearAllInputs}>
-                        <Text
-                            style={base.btText}>登 录</Text>
+                        <Image
+                            source={require('../src/img/startgame.png')}
+                            style={{ height: '250%', width:'250%', marginTop:9 }}
+                        />
                     </Button>
 
                     <View style={base.underline}>
                         <Button
-                            transparent  
+                            transparent
                             activeOpacity={0.5}
                             onPress={this.forgetPW} //-----------该属性需要保留！-------------
                             style={[base.text,{width: 160}]}>

@@ -605,23 +605,27 @@ export default class Room extends Component {
         })
 
         const ReadyOrNot = !this.state.isReady ? <Button
-            rounded
-            bordered
-            activeOpacity={0.5}
-            onPress={this.ready} //-----------该属性需要保留！-------------
-            style={base.button}>
-            <Image
-                source={require('../src/img/ready.png')}
-                style={{height: '180%', width:'180%',}}
-            />
-        </Button>
-            : <TouchableOpacity
+                rounded
+                bordered
+                activeOpacity={0.5}
+                onPress={this.ready} //-----------该属性需要保留！-------------
+                style={base.button}>
+                <Image
+                    source={require('../src/img/ready.png')}
+                    style={{height: '180%', width:'180%',}}
+                />
+            </Button>
+            :<Button
+                rounded
+                bordered
                 activeOpacity={0.5}
                 onPress={this.unready} //-----------该属性需要保留！-------------
                 style={base.button}>
-                <Text
-                    style={base.btText}>取消准备</Text>
-            </TouchableOpacity>;
+                <Image
+                    source={require('../src/img/cancel.png')}
+                    style={{height: '200%', width:'200%',}}
+                />
+            </Button> 
 
         const StartOrReady = this.state.host ? <Button
             rounded

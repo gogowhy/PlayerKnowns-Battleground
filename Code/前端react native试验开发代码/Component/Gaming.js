@@ -16,7 +16,7 @@ import Feather from "react-native-vector-icons/Feather";
 import axios from 'axios';
 import base from '../src/style/base';
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { Button } from 'native-base';
+import { Button, Spinner, Icon } from 'native-base';
 
 
 const DONE = 101, NOT_DONE = 102, ALL_DONE = 103, HIT = 7, BE_SHOT = 8, ONE_KILLED = 6, WIN = 4, LOSE = 5;
@@ -48,7 +48,6 @@ export default class Gaming extends Component {
 
     componentDidMount() {
         this.ConnectWebSocket();
-
     }
 
     /**
@@ -296,26 +295,28 @@ export default class Gaming extends Component {
 
         if (this.state.socketState !== WebSocket.OPEN)
             return (
-                <View style={base.container}>
-                    <AntDesign
-                        style={{ marginBottom: 20 }}
-                        name={'loading1'}
-                        size={30}
-                    />
-                    <Text style={styles.waiting}>正在建立连接...</Text>
-                </View>
+                <ImageBackground style={[ base.background, { flexDirection:'row', alignItems: 'flex-end' } ]}
+                    source={require('../src/img/room.jpeg')}>
+                    <View style={[ base.container, { marginBottom:25 } ]}>
+                        <Spinner
+                            color={'white'}
+                        />
+                        <Text style={styles.waiting}>正在建立连接...</Text>
+                    </View>
+                </ImageBackground>
             )
 
         if (this.state.stage == 2)
             return (
-                <View style={base.container}>
-                    <AntDesign
-                        style={{ marginBottom: 20 }}
-                        name={'loading1'}
-                        size={30}
-                    />
-                    <Text style={styles.waiting}>等待其他玩家录入信息...</Text>
-                </View>
+                <ImageBackground style={[ base.background, { flexDirection:'row', alignItems: 'flex-end' } ]}
+                    source={require('../src/img/room.jpeg')}>
+                    <View style={[ base.container, { marginBottom:25 } ]}>
+                        <Spinner
+                            color={'white'}
+                        />
+                        <Text style={styles.waiting}>等待其他玩家录入信息...</Text>
+                    </View>
+                </ImageBackground>
             )
 
         if (this.state.stage == 0 || this.state.stage == 1)
@@ -386,35 +387,39 @@ export default class Gaming extends Component {
                             console.log(barcodes);
                         }}
                     />
-                    <View style={[StyleSheet.absoluteFill, { flexDirection: 'column' }]}>
-                        <View>
-                            {/* <CountDown
-                                until={10}
-                                size={10}
-                                onFinish={this.timeOut}
-                                digitStyle={{ backgroundColor: '#FFF', marginTop: 5 }}
-                                digitTxtStyle={{ color: 'black', fontSize: 15 }}
-                                separatorStyle={{ color: 'black', fontSize: 20 }}
-                                timeToShow={['M', 'S']}
-                                timeLabels={{ m: null, s: null }}
-                                showSeparator
-                            /> */}
-                            <View style={{ flex: 0, justifyContent: 'flex-start', alignItems: 'center', margin: 15 }}>
-                                <Foundation
-                                    name={'map'}
-                                    size={26}
-                                    color={'black'}
-                                    onPress={this.gotoMap}
-                                    style
-                                />
-                            </View>
-                            <View style={{ flex: 0, justifyContent: 'center', alignItems: 'center' }}>
-                                <TouchableOpacity style={styles.head}>
-                                    <Text style={{ fontSize: 20 }}>
-                                        {' ' + this.state.self + ' vs ' + this.state.enemy + ' '}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
+                    <View style={[StyleSheet.absoluteFill, { flex: 1, flexDirection: 'row' }]}>
+                        {/* <CountDown
+                            until={10}
+                            size={10}
+                            onFinish={this.timeOut}
+                            digitStyle={{ backgroundColor: '#FFF', marginTop: 5 }}
+                            digitTxtStyle={{ color: 'black', fontSize: 15 }}
+                            separatorStyle={{ color: 'black', fontSize: 20 }}
+                            timeToShow={['M', 'S']}
+                            timeLabels={{ m: null, s: null }}
+                            showSeparator
+                        /> */}
+                        <View style={{ flex: 2, alignItems: 'flex-start', margin: 15 }}>
+                            <Icon
+                                name={'md-exit'}
+                                onPress={this.exit}
+                                style={{color: '#8A8A8A'}}
+                            />
+                        </View>
+                        <View style={{ flex: 3, height: 20, alignItems: 'center' }}>
+                            <TouchableOpacity style={styles.head}>
+                                <Text style={{ fontSize: 20 }}>
+                                    {' ' + this.state.self + ' vs ' + this.state.enemy + ' '}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 2, alignItems: 'flex-end', margin: 15 }}>
+                            <Foundation
+                                name={'map'}
+                                size={26}
+                                color={'#8A8A8A'}
+                                onPress={this.gotoMap}
+                            />
                         </View>
                     </View>
 
@@ -439,7 +444,7 @@ export default class Gaming extends Component {
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.info}>
                                 <Text style={{ fontSize: 20 }}>
-                                    {'当前血量：' + this.state.HP * 33}
+                                    {'当前血量：' + this.state.HP * 33 + 1 }
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -461,14 +466,12 @@ export default class Gaming extends Component {
         }
         if (this.state.stage == 4) {
             return (
-                <View style={base.container}>
-                    <AntDesign
-                        style={{ marginBottom: 20 }}
-                        name={'loading1'}
-                        size={30}
-                    />
-                    <Text style={styles.waiting}>您已经被淘汰了</Text>
-                </View>
+                <ImageBackground style={[ base.background, { flexDirection:'row', alignItems: 'flex-end' } ]}
+                    source={require('../src/img/room.jpeg')}>
+                    <View style={[ base.container, { marginBottom: 35 } ]}>
+                        <Text style={styles.waiting}>您已经被淘汰了</Text>
+                    </View>
+                </ImageBackground>
             )
         }
 
@@ -516,5 +519,11 @@ const styles = StyleSheet.create({
     focus: {
         justifyContent: 'center',
         alignSelf: 'center',
+    },
+    waiting: {
+        color: '#fff',
+        fontSize: 18,
+        textAlignVertical: 'center',
+        textAlign: 'center',
     }
 });
