@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.Math.sqrt;
-
 @Repository
 public class GameDaoImpl implements GameDao {
 
@@ -266,7 +264,7 @@ public class GameDaoImpl implements GameDao {
 
     public Double sigma(Integer a, Integer b, Integer c)//a=average
     {
-        BigDecimal temp = new BigDecimal(sqrt(((2*a-b-c)*(2*a-b-c)+(b-a)*(b-a)+(c-a)*(c-a))/3));
+        BigDecimal temp = new BigDecimal(Math.sqrt(((2*a-b-c)*(2*a-b-c)+(b-a)*(b-a)+(c-a)*(c-a))/3));
         Double sigma = temp.doubleValue();
         return sigma;
     }
