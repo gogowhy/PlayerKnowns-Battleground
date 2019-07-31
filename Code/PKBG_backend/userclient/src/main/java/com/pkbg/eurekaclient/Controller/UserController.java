@@ -6,13 +6,19 @@ import com.pkbg.eurekaclient.Entity.User;
 import com.pkbg.eurekaclient.Repository.UserRepository;
 import com.pkbg.eurekaclient.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -24,9 +30,11 @@ public class UserController {
     @Autowired
     private JavaMailSender mailSender;
 
-
     @Autowired
     public UserRepository userRepository;
+
+    @Autowired
+    public MongoTemplate mongoTemplate;
 
     @RequestMapping("/register")
     @ResponseBody
@@ -99,5 +107,49 @@ public class UserController {
         message.setText("New password is "+"12345678");
         mailSender.send(message);
         return "success";
+    }
+
+    @RequestMapping("/testuserexist")
+    @ResponseBody
+    public Integer testuserexist(HttpServletRequest request)
+    {
+        try
+        {
+            String name = request.getParameter("username");
+            System.out.println(name);
+            User user = userRepository.findByUsername(name);
+            System.out.println("found");
+            return 1;
+        }
+        catch (Exception e)
+        {
+            System.out.println("null");
+            return 0;
+        }
+    }
+
+    @RequestMapping("/changepass")
+    @ResponseBody
+    public Integer changepass(@RequestBody Map<String,Object> map) throws IOException
+    {
+        String name =map.get("username").toString();
+        String oldpass =map.get("oldpass").toString();
+        String newpass =map.get("newpass").toString();
+        System.out.println(name);
+        System.out.println(oldpass);
+        System.out.println(newpass);
+        User user = userRepository.findByUsername(name);
+        String pass = user.getUserpassword();
+        System.out.println(pass);
+        if (!pass.equals(oldpass)) return 0;
+        user.setUserpassword(newpass);
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("username").is(name));
+        String collectionname = "PKBG";
+        Update update = new Update();
+        update.set("userpassword",user.getUserpassword());
+        mongoTemplate.updateFirst(query,update,collectionname);
+        return 1;
     }
 }

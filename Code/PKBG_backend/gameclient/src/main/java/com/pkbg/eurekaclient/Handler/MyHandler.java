@@ -103,7 +103,7 @@ public class MyHandler implements WebSocketHandler {
             else targetn.append(players.get(0).getPlayername());
         String target = new String(targetn);
         Map <String,Object> map = new HashMap<String,Object>();
-        map.put("code",8);
+        map.put("code",9);
         map.put("target",target);
         JSONArray json2 = JSONArray.fromObject(map);
         String message = json2.toString();
@@ -162,7 +162,7 @@ public class MyHandler implements WebSocketHandler {
                     if (!Result2.equals("Success!"))
                         senderror(playername,Result2);
                     break;
-                case 3://get gps
+                case 10://get gps
                     Double longitude2 = new Double((Double) jsonobject.get("longitude"));
                     Double latitude2 = new Double((Double) jsonobject.get("latitude"));
                     String Result3 = gameService.updategps(playername,longitude2,latitude2);

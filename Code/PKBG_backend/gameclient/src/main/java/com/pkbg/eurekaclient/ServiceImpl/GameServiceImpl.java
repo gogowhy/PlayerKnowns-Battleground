@@ -1,9 +1,12 @@
 package com.pkbg.eurekaclient.ServiceImpl;
 
 import com.pkbg.eurekaclient.Dao.GameDao;
+import com.pkbg.eurekaclient.Entity.Player;
 import com.pkbg.eurekaclient.Service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -27,6 +30,12 @@ public class GameServiceImpl implements GameService {
     public String aim(String player, Double direction)
     {
         return gameDao.aim(player,direction);
+    }
+
+    @Override
+    public List<Player> queryAll()
+    {
+        return gameDao.queryAll();
     }
 
     @Override

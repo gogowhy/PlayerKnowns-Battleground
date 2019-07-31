@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.TextMessage;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -490,6 +491,34 @@ public class GameDaoImpl implements GameDao {
         update.set("longitude",longitude);
         update.set("latitude",latitude);
         mongoTemplate.updateFirst(query,update,collectionname);
+
+        Player player1 = playerRepository.findByPlayername(player);
+        Integer roomnumber = player1.getRoomnumber();
+        Integer team = player1.getPlayerteam();
+        List<Player> players = playerRepository.findByRoomnumber(roomnumber);
+        Map<String,Object> map = new HashMap<>();
+        map.put("code",10);
+        map.put("playername",player);
+        map.put("longitude",longitude);
+        map.put("latitude",latitude);
+        JSONArray json = JSONArray.fromObject(map);
+        String message2 = json.toString();
+        MyHandler myHandler = new MyHandler();
+        for (int i=0;i<players.size();i++)
+        {
+            Player player_temp = players.get(i);
+            if (!player_temp.getPlayername().equals(player1.getPlayername()))
+                if (player_temp.getPlayerteam()==player1.getPlayerteam())
+                    myHandler.sendMessageToUser(player_temp.getPlayername(),new TextMessage(message2));
+        }
         return "Success!";
+    }
+
+    @Override
+    public List<Player> queryAll()
+    {
+        List<Player> users = new ArrayList<Player>();
+        users=playerRepository.findByRoomnumber(20462);
+        return users;
     }
 }
