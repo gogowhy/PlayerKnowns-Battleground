@@ -1,0 +1,35 @@
+Ê¸Á¿Í¼±ê£º
+// Ìí¼ÓÒÀÀµ
+npm install --save react-native-vector-icons
+// Á´½ÓÔ­Éú¿â
+react-native link react-native-vector-icons
+
+µ¼º½£º
+yarn add react-navigation
+yarn add react-native-gesture-handler
+react-native link react-native-gesture-handler
+
+axios£º
+npm install --save axios
+
+ºáÊúÆÁ£º
+npm install react-native-orientation --save
+react-native link react-native-orientation
+
+native-base¿â£º
+npm install native-base --save
+react-native link native-base
+
+prop-typesÀàĞÍ¼ì²â£º
+npm install --save prop-types
+
+ÅÄÕÕÉãÏñ£º
+npm install react-native-camera@2.11.1 --save
+react-native link react-native-camera
+
+±³¾°ÒôÀÖ£º
+yarn add react-native-video@4.4.4
+react-native link react-native-video
+¸Äandroid/settings.gradle£º
+project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android')
+//É¾³ıÁË-exoplayer
