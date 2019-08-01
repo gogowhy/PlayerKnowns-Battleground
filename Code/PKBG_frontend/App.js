@@ -3,7 +3,8 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import Orientation from 'react-native-orientation';
 import Home from './Component/Home.js';
 import RootStack from './Navigator/StackNavigator.js';
-import Camera11 from "./Component/camera.js";
+import Camera11 from "./Component/Camera.js";
+import BaiduMap from "./Component/Map";
 
 export default class App extends Component {
 
@@ -14,8 +15,8 @@ export default class App extends Component {
 
   render() {
         return (
-            //<RootStack />
-            <Camera11 />
+            <RootStack />
+            //<BaiduMap />
         );
   }
 }

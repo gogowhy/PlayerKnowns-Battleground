@@ -35,7 +35,7 @@ export default class Gaming extends Component {
             players: this.props.navigation.state.params.players,
             socketState: WebSocket.CLOSED,
             times: 1, //次数
-            stage: 3, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
+            stage: 0, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
             HP: 3,
             killamount: 0,
             teammates: this.props.navigation.state.params.amount_of_teammates,
@@ -58,7 +58,7 @@ export default class Gaming extends Component {
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.SendAndReceivePosition = this.SendAndReceivePosition.bind(this);
 
-        //this.timer = setInterval(this.SendAndReceivePosition,1000);
+        this.timer = setInterval(this.SendAndReceivePosition, 1500);
         this.Use_Map = this.Use_Map.bind(this);
         this.UnUse_Map = this.UnUse_Map.bind(this);
     }
@@ -84,15 +84,22 @@ export default class Gaming extends Component {
     }
 
     SendAndReceivePosition() {
+        if (this.socketState !== WebSocket.OPEN) return;
+        ki = this.state.killamount + 1;
+        this.setState({
+            killamount: ki
+        })
 
         Geolocation.getCurrentPosition()
             .then(data => {
                 console.log(data);
+
                 this.setState({
                     center: {
                         longitude: data.longitude,
                         latitude: data.latitude
                     },
+
                 })
 
                 let data1 = {
@@ -245,15 +252,25 @@ export default class Gaming extends Component {
                 }
                 case POSITION: {
 
-                    cur_center = [];
+                    temp_center = this.state.teammates_center;
+                    var flag = 0;
 
-                    res.teammates_center.forEach((one_center) => {
-                        cur_center.push({ playername: one_center.playername, center: { longitude: one_center.longitude, latitude: one_center.latitude } });
+                    temp_center.forEach((one_center) => {
+                        if (one_center.playername == res.playername) {
+                            one_center.center.longitude = res.longitude;
+                            one_center.center.latitude = res.latitude;
+                            flag = 1;
+                            return;
+                        }
                     })
+
+                    if (!flag) {
+                        temp_center.push({ playername: res.playername, center: { longitude: res.longitude, latitude: res.latitude } })
+                    }
 
 
                     this.setState({
-                        teammates_center: cur_center,
+                        teammates_center: temp_center,
                     })
                     break;
                 }
@@ -561,7 +578,7 @@ export default class Gaming extends Component {
                                 onPress={this.shoot}
                             />
                         </TouchableOpacity>
-                        
+
                         {/** 小地图按钮，单击打开大地图 */}
                         <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
                     </View>
