@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Button } from 'native-base';
 import base from '../src/style/base';
+import BGmusic from './BGmusic';
 
 export default class Home extends Component {
 
@@ -44,6 +45,7 @@ export default class Home extends Component {
                         />
                     </Button>
                 </View>
+                <BGmusic/>
             </ImageBackground>
         );
     }

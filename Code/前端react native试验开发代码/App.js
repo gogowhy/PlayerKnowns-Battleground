@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import { StatusBar , View, AppState } from "react-native";
+import { StatusBar , View } from "react-native";
 import Orientation from 'react-native-orientation';
 import RootStack from './Navigator/StackNavigator.js';
-//import BGmusic from './Component/BGmusic';
 
 export default class App extends Component {
   componentWillMount() {
     Orientation.lockToLandscape(); //强制横屏
     //Orientation.lockToPortrait();  //强制竖屏
   }
-
+  
   render() {
         return (
           <View style={{flex: 1}}>
@@ -21,7 +20,6 @@ export default class App extends Component {
               animated={true}
             />
             <RootStack/>
-            {/* <BGmusic/> */}
           </View>
         );
   }

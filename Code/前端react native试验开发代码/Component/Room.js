@@ -803,17 +803,16 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     list: {
-        height: height - 160,
+        height: height - 145,
         width: width - 70,
         flexDirection: 'row',
         backgroundColor: '#5d758e',
-        marginTop: 10,
         justifyContent: 'center',
         borderRadius: 5,
     },
     cell: {
         width: (width - 100) / 4 - 7,
-        height: 34,
+        height: 32,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -823,7 +822,8 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         marginLeft: 4,
         marginRight: 4,
-        marginTop: 3,
+        marginTop: 1,
+        marginBottom: 2,
     },
     cellText: {
         textAlign: 'center',
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         borderColor: '#EEC900',
         margin: 4,
-        marginTop: 8,
+        marginTop: 4,
     },
     SectionHeaderText: {
         textAlign: 'center',

@@ -127,7 +127,7 @@ export default class MainPage extends Component {
 
     settings() {
         const { navigate } = this.props.navigation;
-        navigate('BGmusic');
+        navigate('Settings');
     }
 
     help() {

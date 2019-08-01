@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Item, Icon, Input, Label } from 'native-base';
+import base from '../../src/style/base';
 
 export default class PasswordRepeat extends Component {
   constructor() {
@@ -48,12 +49,7 @@ export default class PasswordRepeat extends Component {
       <Item style={{ borderBottomWidth: 0, flexDirection: 'column', width: 300 }}>
         <Item style={{ borderBottomWidth: 0 }}>
           <Item rounded
-            style={{
-              width: 300,
-              height: 38,
-              marginTop: 2,
-              backgroundColor: '#fff',
-            }}
+            style={base.inputBox}
           >
             <Icon
               name="ios-lock"
@@ -64,13 +60,7 @@ export default class PasswordRepeat extends Component {
             <Input
               autoCorrect={false}
               maxLength={100}
-              style={{
-                paddingBottom: 6,
-                fontWeight: '400',
-                fontSize: 18,
-                height: 38,
-                paddingLeft: 16,
-              }}
+              style={base.input}
               blurOnSubmit
               //returnKeyType="next"
               ref={(ref) => { this.state.inputRef = ref; }}
@@ -84,8 +74,8 @@ export default class PasswordRepeat extends Component {
             {checkMarksArray[this.state.isCorrect]}
           </Item>
         </Item>
-        <Item style={{ borderBottomWidth: 0, height: 14, justifyContent: 'center', alignSelf: 'flex-end' }}>
-          <Label style={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>{pass_line}</Label>
+        <Item style={base.checkIcon}>
+          <Label style={base.checkInfo}>{pass_line}</Label>
         </Item>
       </Item>
     );

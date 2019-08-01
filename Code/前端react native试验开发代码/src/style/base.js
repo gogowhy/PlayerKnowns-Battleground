@@ -1,6 +1,24 @@
 import {
-    StyleSheet
+    StyleSheet,
+    Dimensions
 } from 'react-native';
+
+/**
+ * 获取横屏时的屏幕宽度和高度
+ * 
+ */
+let windowWidth = Dimensions.get('window').width;
+let windowHeight = Dimensions.get('window').height;
+
+if (windowHeight > windowWidth) {
+    console.log("初始竖屏");
+    var width = windowHeight;
+    var height = windowWidth;
+} else {
+    console.log("初始横屏");
+    var width = windowWidth;
+    var height = windowHeight;
+}
 
 const base = StyleSheet.create({
     container: {
@@ -38,7 +56,7 @@ const base = StyleSheet.create({
         borderRadius: 20,
         borderColor: 'yellow',
         borderWidth: 4,
-        marginTop: 10,
+        marginTop: 5,
         marginBottom: 10,
         marginLeft: 10,
         marginRight: 10,
@@ -54,20 +72,28 @@ const base = StyleSheet.create({
         fontSize: 30,
     },
     input: {
-        width: 100,
+        paddingBottom: 6,
+        fontWeight: '400',
         fontSize: 18,
-        color: '#000',//输入框输入的文本为黑色
-        marginRight: 18
+        height: 38,
+        paddingLeft: 16,
     },
     inputBox: {
-        //flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
         width: 300,
-        height: 42,
-        borderRadius: 8,
-        backgroundColor: '#FFFFF0',
-        marginBottom: 8,
+        height: 38,
+        marginTop: 2,
+        backgroundColor: '#fff',
+    },
+    checkIcon: {
+        borderBottomWidth: 0,
+        height: 14,
+        justifyContent: 'center',
+        alignSelf: 'flex-end',
+    },
+    checkInfo: {
+        fontSize: 15,
+        color: 'white',
+        fontWeight: 'bold',
     },
     underline: {
         justifyContent: 'center',

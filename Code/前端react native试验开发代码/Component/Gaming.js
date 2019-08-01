@@ -18,8 +18,11 @@ import base from '../src/style/base';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Button, Spinner, Icon } from 'native-base';
 
+import { MapView, MapTypes, Geolocation, Overlay } from 'react-native-baidu-map';
+const { Marker } = Overlay;
+import BaiduMap from './Map';
 
-const DONE = 101, NOT_DONE = 102, ALL_DONE = 103, HIT = 7, BE_SHOT = 8, ONE_KILLED = 6, WIN = 4, LOSE = 5;
+const DONE = 101, NOT_DONE = 102, ALL_DONE = 103, HIT = 7, BE_SHOT = 8, ONE_KILLED = 6, WIN = 4, LOSE = 5, TAKE_PHOTO_AIM = 9, POSITION = 10;
 
 export default class Gaming extends Component {
 
@@ -29,25 +32,99 @@ export default class Gaming extends Component {
             username: this.props.navigation.state.params.username, //用户名
             roomID: this.props.navigation.state.params.roomID,
             team: this.props.navigation.state.params.team,
+            players: this.props.navigation.state.params.players,
             socketState: WebSocket.CLOSED,
             times: 1, //次数
             stage: 0, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
             HP: 3,
             killamount: 0,
-            self: 0,
-            enemy: 0,
+            teammates: this.props.navigation.state.params.amount_of_teammates,
+            enemies: this.props.navigation.state.params.amount_of_enemies,
+            take_photo_aim: null,
+            win: false,
+            lose: false,
+
+            /**以下是Map需要用到的 */
+            Using_map: false,
+            center: {
+                longitude: 113.896198,
+                latitude: 22.959144,
+            },
+            teammates_center: []
         }
 
         this.ws = new WebSocket("ws://49.234.27.75:2003/myHandler/ID=" + this.state.username + "ROOMNUMBER=" + this.state.roomID);
-        //this.ws = new WebSocket('wss://echo.websocket.org/');
         this.shoot = this.shoot.bind(this);
         this.timeOut = this.timeOut.bind(this);
         this.gotoMap = this.gotoMap.bind(this);
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
+        this.SendAndReceivePosition = this.SendAndReceivePosition.bind(this);
+
+        //this.timer = setInterval(this.SendAndReceivePosition,1000);
+        this.Use_Map = this.Use_Map.bind(this);
+        this.UnUse_Map = this.UnUse_Map.bind(this);
     }
 
     componentDidMount() {
+
         this.ConnectWebSocket();
+
+        Geolocation.getCurrentPosition()
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    center: {
+                        longitude: data.longitude,
+                        latitude: data.latitude
+                    },
+                })
+            })
+            .catch(e => {
+                console.warn(e, 'error');
+            })
+
+    }
+
+    SendAndReceivePosition() {
+
+        Geolocation.getCurrentPosition()
+            .then(data => {
+                console.log(data);
+                this.setState({
+                    center: {
+                        longitude: data.longitude,
+                        latitude: data.latitude
+                    },
+                })
+
+                let data1 = {
+                    code: POSITION,
+                    playername: this.state.username,
+                    longitude: data.longitude,
+                    latitude: data.latitude
+                }
+
+                if (this.state.socketState == WebSocket.OPEN) {
+                    this.ws.send(JSON.stringify(data1));
+                    alert(JSON.stringify(data1));
+                }
+            })
+            .catch(e => {
+                console.warn(e, 'error');
+            })
+
+    }
+
+    Use_Map() {
+        this.setState({
+            Using_map: true
+        })
+    }
+
+    UnUse_Map() {
+        this.setState({
+            Using_map: false
+        })
     }
 
     /**
@@ -69,7 +146,7 @@ export default class Gaming extends Component {
                     socketState: WebSocket.OPEN
                 }
             )
-            alert("请拍摄自己的全身像3次，录入信息！");
+
         };
 
         this.ws.onmessage = (e) => {
@@ -109,22 +186,46 @@ export default class Gaming extends Component {
                 case ONE_KILLED: {
                     if (res.shooter == this.state.username)
                         alert("您淘汰了" + res.victim + "!");
-                    else if (res.victim == this.state.username){
+                    else if (res.victim == this.state.username) {
                         alert("您被" + res.shooter + "淘汰了！");
                         this.setState({
-                            stage : 4
+                            stage: 4
                         });
                     }
                     else
                         alert(res.shooter + "淘汰了" + res.victim + "!");
+
+                    this.state.players.forEach((player) => {
+                        if (player.username == res.victim) {
+                            if (player.playerteam == this.state.team) {
+                                var temp = this.state.teammates - 1;
+                                this.setState({
+                                    teammates: temp
+                                })
+                            }
+                            else {
+                                var temp = this.state.enemies - 1;
+                                this.setState({
+                                    enemies: temp
+                                })
+                            }
+                            return;
+                        }
+                    })
                     break;
                 }
                 case WIN: {
                     alert("您的队伍获胜了！");
+                    this.setState({
+                        win: true
+                    })
                     break;
                 }
                 case LOSE: {
                     alert("您的队伍失败了。");
+                    this.setState({
+                        lose: true
+                    })
                     break;
                 }
                 case BE_SHOT: {
@@ -141,6 +242,27 @@ export default class Gaming extends Component {
                     this.setState({
                         killamount: killamount
                     });
+                    break;
+                }
+                case TAKE_PHOTO_AIM: {
+                    alert("请在光线明亮的地方拍摄" + res.target + "全身像，以录入信息。");
+                    this.setState({
+                        take_photo_aim: res.target
+                    })
+                    break;
+                }
+                case POSITION: {
+
+                    cur_center = [];
+
+                    res.teammates_center.forEach((one_center) => {
+                        cur_center.push({ playername: one_center.playername, center: { longitude: one_center.longitude, latitude: one_center.latitude } });
+                    })
+
+
+                    this.setState({
+                        teammates_center: cur_center,
+                    })
                     break;
                 }
             }
@@ -217,7 +339,7 @@ export default class Gaming extends Component {
         this.handleResponse(res.humanbodies);
 
     }
-
+    
     handleResponse(people) {
 
         people.forEach(person => {
@@ -225,11 +347,12 @@ export default class Gaming extends Component {
             if (rect.left < 640 && rect.left + rect.width > 640) {
                 if (rect.top < 480 && rect.top + rect.height > 480) {
                     if (person.confidence > 85) {
-                        if (this.state.stage == 0 || this.state.stage == 1) {
+                        if (this.state.stage == 0 || this.state.stage == 1 && this.state.take_photo_aim) {
 
                             let data = {
                                 code: 0,
                                 times: this.state.times,
+                                target: this.state.take_photo_aim,
                                 playername: this.state.username,
                                 male: person.attributes.gender.male,
                                 lower_body_cloth_color_r: person.attributes.lower_body_cloth.lower_body_cloth_color_rgb.r,
@@ -253,7 +376,7 @@ export default class Gaming extends Component {
                                 }
                             )
                         }
-                        else if (this.state.stage == 3) { //射击， username 是射击者， human_body是击中信息， 
+                        else if (this.state.stage == 3) { //射击， playername 是射击者， human_body是击中信息， 
                             let data = {
                                 code: 2,
                                 playername: this.state.username,
@@ -293,11 +416,13 @@ export default class Gaming extends Component {
 
     render() {
 
+        if (this.state.Using_map) return (<BaiduMap teammates_position={this.state.teammates_position} UnUse_Map={this.UnUse_Map} center={this.state.center} BigOrSmall={true} />);
+
         if (this.state.socketState !== WebSocket.OPEN)
             return (
-                <ImageBackground style={[ base.background, { flexDirection:'row', alignItems: 'flex-end' } ]}
+                <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
                     source={require('../src/img/room.jpeg')}>
-                    <View style={[ base.container, { marginBottom:25 } ]}>
+                    <View style={[base.container, { marginBottom: 25 }]}>
                         <Spinner
                             color={'white'}
                         />
@@ -308,9 +433,9 @@ export default class Gaming extends Component {
 
         if (this.state.stage == 2)
             return (
-                <ImageBackground style={[ base.background, { flexDirection:'row', alignItems: 'flex-end' } ]}
+                <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
                     source={require('../src/img/room.jpeg')}>
-                    <View style={[ base.container, { marginBottom:25 } ]}>
+                    <View style={[base.container, { marginBottom: 25 }]}>
                         <Spinner
                             color={'white'}
                         />
@@ -345,14 +470,14 @@ export default class Gaming extends Component {
                             console.log(barcodes);
                         }}
                     />
-                    <ImageBackground style={[base.background, {justifyContent: 'flex-end', zIndex: 1}]}
+                    <ImageBackground style={[base.background, { justifyContent: 'flex-end', zIndex: 1 }]}
                         source={require('../src/img/picture.png')}>
                         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
                             <Button
                                 rounded
                                 activeOpacity={0.5}
                                 onPress={this.shoot}
-                                style={[styles.capture,{marginRight: 30}]}>
+                                style={[styles.capture, { marginRight: 30 }]}>
                                 <Text style={{ fontSize: 20, fontWeight: 'bold' }}> {'第' + this.state.times + '次录入'} </Text>
                             </Button>
                         </View>
@@ -403,23 +528,20 @@ export default class Gaming extends Component {
                             <Icon
                                 name={'md-exit'}
                                 onPress={this.exit}
-                                style={{color: '#8A8A8A'}}
+                                style={{ color: '#8A8A8A' }}
                             />
                         </View>
                         <View style={{ flex: 3, height: 20, alignItems: 'center' }}>
                             <TouchableOpacity style={styles.head}>
                                 <Text style={{ fontSize: 20 }}>
-                                    {' ' + this.state.self + ' vs ' + this.state.enemy + ' '}
+                                    {' ' + this.state.teammates + ' vs ' + this.state.enemies + ' '}
                                 </Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{ flex: 2, alignItems: 'flex-end', margin: 15 }}>
-                            <Foundation
-                                name={'map'}
-                                size={26}
-                                color={'#8A8A8A'}
-                                onPress={this.gotoMap}
-                            />
+                            
+                            {/** 小地图按钮，单击打开大地图 */}
+                            <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
                         </View>
                     </View>
 
@@ -444,7 +566,7 @@ export default class Gaming extends Component {
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.info}>
                                 <Text style={{ fontSize: 20 }}>
-                                    {'当前血量：' + this.state.HP * 33 + 1 }
+                                    {'当前血量：' + this.state.HP * 33}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -452,7 +574,7 @@ export default class Gaming extends Component {
                         <TouchableOpacity
                             rounded
                             activeOpacity={0.5}
-                            style={[styles.capture, {marginRight: 40}]}
+                            style={[styles.capture, { marginRight: 40 }]}
                             onPress={this.shoot}>
                             <Feather
                                 name={'target'}
@@ -464,18 +586,36 @@ export default class Gaming extends Component {
                 </View>
             )
         }
+
         if (this.state.stage == 4) {
+
+            clearInterval(this.timer);
+
             return (
-                <ImageBackground style={[ base.background, { flexDirection:'row', alignItems: 'flex-end' } ]}
+                <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
                     source={require('../src/img/room.jpeg')}>
-                    <View style={[ base.container, { marginBottom: 35 } ]}>
+                    <View style={[base.container, { marginBottom: 35 }]}>
                         <Text style={styles.waiting}>您已经被淘汰了</Text>
                     </View>
                 </ImageBackground>
             )
         }
 
-
+        if (this.state.win) {
+            return (
+                <ImageBackground style={base.background}
+                    source={require('../src/img/win.png')}>
+                </ImageBackground>
+            )
+        }
+        
+        if (this.state.lose) {
+            return (
+                <ImageBackground style={base.background}
+                    source={require('../src/img/lose.png')}>
+                </ImageBackground>
+            )
+        }
     }
 
 
