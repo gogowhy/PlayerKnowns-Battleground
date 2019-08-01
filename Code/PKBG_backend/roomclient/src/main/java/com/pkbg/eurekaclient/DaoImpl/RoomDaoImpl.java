@@ -244,7 +244,7 @@ public class RoomDaoImpl implements RoomDao {
         {
             return 3;//"Target Room Has Started Game!";
         }
-        if (room.getPlayernumber() == 16)
+        if (room.getPlayernumber() == 10)
         {
             return 4;//"Target Room Is Full!";
         }
