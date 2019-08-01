@@ -20,8 +20,9 @@ import Room from '../Component/Room';
 import EnterRoom_inputID from '../Component/EnterRoom_inputID';
 import Gaming from '../Component/Gaming';
 import Result from '../Component/Result';
-import Map from '../Component/Map';
-import Settings from '../Component/Settings';
+import Change_Password from '../Component/Change_Password';
+// import Map from '../Component/Map';
+// import Settings from '../Component/Settings';
 
 const RootStack1 = createStackNavigator({
   Home: {
@@ -72,18 +73,25 @@ const RootStack1 = createStackNavigator({
       header: null,  //隐藏导航栏标题
     }
   },
-  Map: {
-    screen: Map,
+  Change_Password: {
+    screen: Change_Password,
     navigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
       header: null,  //隐藏导航栏标题
     }
   },
-  Settings: {
-    screen: Settings,
-    navigationOptions:{
-      header: null,
-    }
-  }
+  // Map: {
+  //   screen: Map,
+  //   navigationOptions: {  // 屏幕导航的默认选项, 也可以在组件内用 static navigationOptions 设置(会覆盖此处的设置)
+  //     header: null,  //隐藏导航栏标题
+  //   }
+  // },
+  // Settings: {
+  //   screen: Settings,
+  //   navigationOptions:{
+  //     header: null,
+  //   }
+  // }
+  
 });
 
 const RootStack = createAppContainer(RootStack1);

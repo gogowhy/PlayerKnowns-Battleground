@@ -812,7 +812,7 @@ const styles = StyleSheet.create({
     },
     cell: {
         width: (width - 100) / 4 - 7,
-        height: 32,
+        height: (height - 145 - 78) / 5,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -833,7 +833,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     SectionHeader: {
-        height: 36,
+        height: 40,
         width: (width - 100) / 2 - 6,
         justifyContent: 'center',
         alignItems: 'center',

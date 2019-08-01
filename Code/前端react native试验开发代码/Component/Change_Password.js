@@ -12,16 +12,17 @@ import Password from './InputComponents/Password';
 import PasswordRepeat from './InputComponents/PasswordRepeat';
 import Name from './InputComponents/Name';
 import Telephone from './InputComponents/Telephone';
-import BGmusic from './BGmusic';
+import OldPassword from './InputComponents/OldPassword';
+
 import base from '../src/style/base';
 import header from '../src/style/header';
 
 import axios from 'axios';
 
-/* 组件 : Register
+/* 组件 : Change_Password
 -- 作用 : 收集用户信息，并提交至后端
 */
-export default class Register extends Component {
+export default class Change_Password extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +33,7 @@ export default class Register extends Component {
     }
 
     changeInputFocus = index => () => {
-        if (index < 4) {
+        if (index < 2) {
             this.state.inputs[index + 1].state.inputRef._root.focus(); // eslint-disable-line
         }
     };
@@ -72,18 +73,17 @@ export default class Register extends Component {
     async   register() {
         const _this = this;
 
-        if (!(this.state.inputs[2].state.isCorrect && this.state.inputs[3].state.isCorrect && this.state.inputs[4].state.isCorrect)) {
-            alert("个人信息格式不对！");
+        if (!(this.state.inputs[2].state.isCorrect)) {
+            alert("两次输入的新密码不一致！");
             return;
         }
 
-        const url = "http://49.234.27.75:2001/user/register";
+        const url = "http://49.234.27.75:2001/user/changepass";
 
         data = {
-            username: _this.state.inputs[0].state.value,
-            userpassword: _this.state.inputs[1].state.value,
-            useremail: _this.state.inputs[3].state.value,
-            usertele: _this.state.inputs[4].state.value,
+            username: _this.props.username,
+            oldpass: _this.state.inputs[0].state.value,
+            newpass: _this.state.inputs[1].state.value,
         }
 
         var code = -1;
@@ -105,14 +105,14 @@ export default class Register extends Component {
 
         switch (code) {
             case 1:
-                alert("注册成功！欢迎新用户" + data.username);
+                alert("修改成功！请使用新密码登录。");
                 this.gobackLogin();
                 break;
             case 0:
-                alert("注册失败！用户名" + data.username + "重复。");
+                alert("修改失败！旧密码错误。");
                 break;
             case -2:
-                alert("出错了！请稍后再试。");
+                alert("服务器异常。");
                 break;
             case -1:
                 alert("未响应。");
@@ -161,9 +161,10 @@ export default class Register extends Component {
                     <View style={base.container}>
 
                         <Form>
-                            <Name
+                            <OldPassword
                                 changeFocus={this.changeInputFocus(0)}
                                 update={this.updateCanRegisterState}
+                                special
                                 ref={(ref) => { this.state.inputs[0] = ref; }}
                             />
 
@@ -180,17 +181,6 @@ export default class Register extends Component {
                                 ref={(ref) => { this.state.inputs[2] = ref; }}
                             />
 
-                            <Email
-                                changeFocus={this.changeInputFocus(3)}
-                                update={this.updateCanRegisterState}
-                                ref={(ref) => { this.state.inputs[3] = ref; }}
-                            />
-
-                            <Telephone
-                                changeFocus={this.changeInputFocus(4)}
-                                update={this.updateCanRegisterState}
-                                ref={(ref) => { this.state.inputs[4] = ref; }}
-                            />
                         </Form>
 
                         <Button
@@ -201,7 +191,7 @@ export default class Register extends Component {
                             style={[base.button,{height: 38}]}
                             clear={this.clearAllInputs}>
                             <Image
-                                source={require('../src/img/signup.png')}
+                                source={require('../src/img/changePass.png')}
                                 style={{height: '250%', width:'250%',}}
                             />
                         </Button>
@@ -228,5 +218,15 @@ const styles = StyleSheet.create({
         color: '#FF4500',
         fontSize: 15,
         //marginBottom: 4,
+    },
+    button: {
+        height: 40,
+        width: 120,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius: 18,
+        backgroundColor: '#FF4500',
+        marginTop: 5,
+        marginBottom: 10,
     },
 });

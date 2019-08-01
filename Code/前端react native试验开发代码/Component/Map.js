@@ -178,7 +178,7 @@ export default class BaiduMap extends Component {
                 <Text style={styles.itemText}>地址: {item.address}</Text>
             </View>
         )
-    }
+    } 
 }
 const styles = StyleSheet.create({
     container: {

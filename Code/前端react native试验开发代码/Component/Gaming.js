@@ -35,7 +35,7 @@ export default class Gaming extends Component {
             players: this.props.navigation.state.params.players,
             socketState: WebSocket.CLOSED,
             times: 1, //次数
-            stage: 0, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
+            stage: 3, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
             HP: 3,
             killamount: 0,
             teammates: this.props.navigation.state.params.amount_of_teammates,
@@ -60,7 +60,7 @@ export default class Gaming extends Component {
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.SendAndReceivePosition = this.SendAndReceivePosition.bind(this);
 
-        //this.timer = setInterval(this.SendAndReceivePosition,1000);
+        this.timer = setInterval(this.SendAndReceivePosition,1000);
         this.Use_Map = this.Use_Map.bind(this);
         this.UnUse_Map = this.UnUse_Map.bind(this);
     }

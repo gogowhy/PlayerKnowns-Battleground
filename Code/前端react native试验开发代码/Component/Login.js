@@ -22,6 +22,7 @@ export default class Login extends Component {
         this.forgetPW = this.forgetPW.bind(this);
         this.login = this.login.bind(this);
         this.gotoRegister = this.gotoRegister.bind(this);
+        this.gotoChangePass =this.gotoChangePass.bind(this);
     }
 
     changeInputFocus = index => () => {
@@ -49,6 +50,12 @@ export default class Login extends Component {
     gotoRegister() {
         const { navigate } = this.props.navigation;
         navigate('Register');
+    }
+
+    /** 跳转到注册界面 */
+    gotoChangePass() {
+        const { navigate } = this.props.navigation;
+        navigate('Change_Password');
     }
 
     /**
@@ -199,6 +206,17 @@ export default class Login extends Component {
                             <Image
                                 source={require('../src/img/register.png')}
                                 style={{height: '150%', width:'150%',}}
+                            />
+                        </Button>
+
+                        <Button
+                            transparent
+                            activeOpacity={0.5}
+                            onPress={this.gotoChangePass} //-----------该属性需要保留！-------------
+                            style={[base.text,{width: 160}]}>
+                            <Image
+                                source={require('../src/img/changePass.png')}
+                                style={{height: '190%', width:'190%',}}
                             />
                         </Button>
                     </View>
