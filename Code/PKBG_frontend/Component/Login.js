@@ -23,6 +23,7 @@ export default class Login extends Component {
         this.forgetPW = this.forgetPW.bind(this);
         this.login = this.login.bind(this);
         this.gotoRegister = this.gotoRegister.bind(this);
+        this.changePW = this.changePW.bind(this);
     }
 
     changeInputFocus = index => () => {
@@ -94,13 +95,9 @@ export default class Login extends Component {
             case PASSWORD: alert("密码错误！"); break;
             // BANNED 即用户被禁用，在该文件 Login.js 顶部已定义
             case BANNED: alert("您的用户已被禁用，请联系管理员处理。"); break;
-            default: alert("未响应！"); break;
+            default: alert("请输入用户名和密码！"); break;
         }
 
-        /* 以下为测试用代码 
-        const { navigate } = this.props.navigation ; 
-        navigate('MainPage' , {username : this.state.username});
-        /* 以上为测试用代码 */
     }
 
     /**
@@ -147,6 +144,41 @@ export default class Login extends Component {
 
     }
 
+    async changePW() {
+        const _this = this;
+
+        const url = "http://49.234.27.75:2001/user/testuserexist";
+
+        let data = {
+            username: _this.state.inputs[0].state.value,
+        }
+
+        var code = -1;
+        await axios.post(url, data)
+            .then(function (response) {
+                // handle success
+
+                code = response.data;
+                console.log(response);
+            })
+            .catch(function (error) {
+                // handle error
+                code = -2;
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+
+        switch (code) {
+            case 1: const { navigate } = this.props.navigation;
+                navigate('Change_Password', { username : this.state.inputs[0].state.value }); break;
+            case 0: alert("该用户名不存在！"); break;
+            case -2: alert("服务器异常！"); break;
+            default: alert("未响应！"); break;
+        }
+    }
+
     render() {
 
         return (
@@ -184,6 +216,13 @@ export default class Login extends Component {
                         >
                             <Text
                                 style={base.ulText}>忘记密码</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.5}
+                            onPress={this.changePW} //-----------该属性需要保留！-------------
+                        >
+                            <Text
+                                style={base.ulText}>修改密码</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.5}

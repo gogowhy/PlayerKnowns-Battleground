@@ -6,11 +6,8 @@ import {
     ImageBackground
 } from 'react-native';
 import { Form, Button, Label, Item, Icon } from 'native-base';
-import Email from './InputComponents/Email';
 import Password from './InputComponents/Password';
 import PasswordRepeat from './InputComponents/PasswordRepeat';
-import Name from './InputComponents/Name';
-import Telephone from './InputComponents/Telephone';
 import OldPassword from './InputComponents/OldPassword';
 
 import base from '../src/style/base';
@@ -80,11 +77,11 @@ export default class Change_Password extends Component {
         const url = "http://49.234.27.75:2001/user/changepass";
 
         data = {
-            username: _this.props.username,
+            username: _this.props.navigation.state.params.username,
             oldpass: _this.state.inputs[0].state.value,
             newpass: _this.state.inputs[1].state.value,
         }
-
+        alert(JSON.stringify(data));
         var code = -1;
         await axios.post(url, data)
             .then(function (res) {
