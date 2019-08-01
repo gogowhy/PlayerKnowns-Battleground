@@ -3,7 +3,6 @@ import { View, StyleSheet, TouchableOpacity, ImageBackground, Image } from 'reac
 import { Form, Text, Button } from 'native-base';
 import Name from './InputComponents/Name';
 import Password from './InputComponents/Password';
-
 import base from '../src/style/base';
 
 import axios from 'axios';
@@ -203,7 +202,6 @@ export default class Login extends Component {
                             />
                         </Button>
                     </View>
-
                 </View>
             </ImageBackground>
         );

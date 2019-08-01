@@ -12,7 +12,7 @@ import Password from './InputComponents/Password';
 import PasswordRepeat from './InputComponents/PasswordRepeat';
 import Name from './InputComponents/Name';
 import Telephone from './InputComponents/Telephone';
-
+import BGmusic from './BGmusic';
 import base from '../src/style/base';
 import header from '../src/style/header';
 
@@ -198,7 +198,7 @@ export default class Register extends Component {
                             bordered    
                             activeOpacity={0.5}
                             onPress={this.register} //-----------该属性需要保留！-------------
-                            style={base.button}
+                            style={[base.button,{height: 35}]}
                             clear={this.clearAllInputs}>
                             <Image
                                 source={require('../src/img/signup.png')}

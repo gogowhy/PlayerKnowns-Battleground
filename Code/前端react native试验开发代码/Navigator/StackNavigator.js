@@ -21,7 +21,7 @@ import EnterRoom_inputID from '../Component/EnterRoom_inputID';
 import Gaming from '../Component/Gaming';
 import Result from '../Component/Result';
 import Map from '../Component/Map';
-import BGmusic from '../Component/BGmusic';
+import Settings from '../Component/Settings';
 
 const RootStack1 = createStackNavigator({
   Home: {
@@ -78,8 +78,8 @@ const RootStack1 = createStackNavigator({
       header: null,  //隐藏导航栏标题
     }
   },
-  BGmusic: {
-    screen: BGmusic,
+  Settings: {
+    screen: Settings,
     navigationOptions:{
       header: null,
     }

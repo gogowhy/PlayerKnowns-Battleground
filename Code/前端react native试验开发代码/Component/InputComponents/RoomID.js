@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Item, Icon, Input, Label } from 'native-base';
+import base from '../../src/style/base';
 
 export default class Name extends Component {
   constructor() {
@@ -49,11 +50,7 @@ export default class Name extends Component {
       <Item style={{ borderBottomWidth: 0, flexDirection: 'column', width: 300 }}>
         <Item style={{ borderBottomWidth: 0, marginTop: 20 }}>
           <Item rounded
-            style={{
-              width: 300,
-              height: 38,
-              backgroundColor: '#fff',
-            }}>
+            style={base.inputBox}>
             <Icon
               name="md-home"
               style={{
@@ -63,13 +60,7 @@ export default class Name extends Component {
             <Input
               autoCorrect={false}
               maxLength={100}
-              style={{
-                paddingBottom: 6,
-                fontWeight: '400',
-                fontSize: 18,
-                height: 38,
-                paddingLeft: 14,
-              }}
+              style={base.input}
               blurOnSubmit={false}
               //returnKeyType="next"
               ref={(ref) => { this.state.inputRef = ref; }}
@@ -83,8 +74,8 @@ export default class Name extends Component {
             {checkMarksArray[this.state.isCorrect]}
           </Item>
         </Item>
-        <Item style={{ borderBottomWidth: 0, height: 14, justifyContent: 'center', alignSelf: 'flex-end' }}>
-          <Label style={{ fontSize: 15, color: 'black', fontWeight: 'bold' }}>{""}</Label>
+        <Item style={base.checkIcon}>
+          <Label style={base.checkInfo}>{""}</Label>
         </Item>
       </Item>
     );
