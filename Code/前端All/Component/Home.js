@@ -32,7 +32,7 @@ export default class Home extends Component {
             <ImageBackground style={base.background}
                 source={require('../src/img/ppp.png')}>
                 <View style={base.container}>
-                    <View style={{height: 120}}/>
+                    <View style={{ height: 120 }} />
                     <Button
                         rounded
                         bordered
@@ -41,11 +41,11 @@ export default class Home extends Component {
                         style={base.button}>
                         <Image
                             source={require('../src/img/start2.png')}
-                            style={{height: '180%', width:'180%',}}
+                            style={{ height: '180%', width: '180%', }}
                         />
                     </Button>
                 </View>
-                <BGmusic/>
+                <BGmusic />
             </ImageBackground>
         );
     }

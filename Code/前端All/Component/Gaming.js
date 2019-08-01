@@ -54,7 +54,7 @@ export default class Gaming extends Component {
             players: this.props.navigation.state.params.players,
             socketState: WebSocket.CLOSED,
             times: 1, //次数
-            stage: 3, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
+            stage: 0, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
             HP: 3,
             killamount: 0,
             teammates: this.props.navigation.state.params.amount_of_teammates,
@@ -75,7 +75,7 @@ export default class Gaming extends Component {
         this.ws = new WebSocket("ws://49.234.27.75:2003/myHandler/ID=" + this.state.username + "ROOMNUMBER=" + this.state.roomID);
         this.shoot = this.shoot.bind(this);
         this.timeOut = this.timeOut.bind(this);
-        this.gotoMap = this.gotoMap.bind(this);
+        this.ReturnToRoom = this.ReturnToRoom.bind(this);
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.SendAndReceivePosition = this.SendAndReceivePosition.bind(this);
 
@@ -135,7 +135,6 @@ export default class Gaming extends Component {
     }
 
     Use_Map() {
-        alert('111');
         this.setState({
             Using_map: true
         })
@@ -175,9 +174,8 @@ export default class Gaming extends Component {
             /** 下面这句到时候注释掉 */
             //if(this.ws.readyState == WebSocket.OPEN) return;
             //alert(e.data);
-            let res1 = JSON.parse(e.data);
             //alert(str);
-            let res = res1.pop();
+            let res = JSON.parse(e.data).pop();
 
             switch (res.code) {
                 case DONE: {
@@ -341,8 +339,7 @@ export default class Gaming extends Component {
             data: formData,
             processData: false,
             contentType: false,
-            timeout: 1000,//1秒超时时间
-
+            timeout: 1000,  //1秒超时时间
         })
             .then(function (response) {
                 // handle success
@@ -424,14 +421,17 @@ export default class Gaming extends Component {
 
     timeOut() {
         alert('时间耗尽! 游戏结束!');
-        const { navigate } = this.props.navigation;
-        navigate('Result', { username: this.state.username, team: this.state.team });
     }
 
-    /** 跳转到地图界面 */
-    gotoMap() {
+    ReturnToRoom() {
         const { navigate } = this.props.navigation;
-        navigate('Map');
+        navigate('Room', {
+            username: this.state.username,
+            team: this.state.team,
+            roomID: this.state.roomID,
+            players: this.state.players,
+            isReady: false,
+        });
     }
 
     render() {
@@ -441,7 +441,7 @@ export default class Gaming extends Component {
         if (this.state.socketState !== WebSocket.OPEN)
             return (
                 <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
-                    source={require('../src/img/room.jpeg')}>
+                    source={require('../src/img/waiting.png')}>
                     <View style={[base.container, { marginBottom: 25 }]}>
                         <Spinner
                             color={'white'}
@@ -454,7 +454,7 @@ export default class Gaming extends Component {
         if (this.state.stage == 2)
             return (
                 <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
-                    source={require('../src/img/room.jpeg')}>
+                    source={require('../src/img/waiting.png')}>
                     <View style={[base.container, { marginBottom: 25 }]}>
                         <Spinner
                             color={'white'}
@@ -532,69 +532,73 @@ export default class Gaming extends Component {
                             console.log(barcodes);
                         }}
                     />
-                    <View style={{flexDirection:'column',flex:0,justifyContent: 'flex-start', alignItems: 'center', margin: 15}}>
-                        <View style={{ flex: 2, alignItems: 'flex-start', margin: 15 }}>
-                            {/* <Icon
-                                        name={'md-exit'}
-                                        onPress={this.exit}
-                                        style={{ color: '#8A8A8A' }}
-                                /> */}
-                        </View>
-                        <View style={{ flex: 3, alignItems: 'center' }}>
-                            <TouchableOpacity style={[styles.style, styles.head]}>
-                                <Text style={styles.txt}>
-                                    {'  ' + this.state.teammates + ' vs ' + this.state.enemies + '  '}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.smallMap,{backgroundColor: '#000'}}>
 
-                            {/** 小地图按钮，单击打开大地图 */}
-                        {/* <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} /> */}
-                        </View>
-                    </View >
-                   
                     <View style={StyleSheet.absoluteFill}>
-                        <TouchableWithoutFeedback>
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Image
-                                    source={require('../src/img/aim.png')}
-                                    style={{ height: '50%', width: '50%' }}
-                                />
-                            </View>
-                        </TouchableWithoutFeedback>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Image
+                                source={require('../src/img/aim.png')}
+                                style={{ height: '50%', width: '50%' }}
+                            />
+                        </View>
                     </View>
 
-                    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={[styles.style, styles.info]}>
+                    <View style={StyleSheet.absoluteFill}>
+
+                        <View style={{ flex: 1, flexDirection: 'row', left: 0, right: 0, top: 0, alignItems: 'flex-start' }}>
+                            {/* <CountDown
+                                until={10}
+                                size={10}
+                                onFinish={this.timeOut}
+                                digitStyle={{ backgroundColor: '#FFF', marginTop: 5 }}
+                                digitTxtStyle={{ color: 'black', fontSize: 15 }}
+                                separatorStyle={{ color: 'black', fontSize: 20 }}
+                                timeToShow={['M', 'S']}
+                                timeLabels={{ m: null, s: null }}
+                                showSeparator
+                            /> */}
+                            <View style={{ flex: 1, alignItems: 'flex-start', margin: 15, marginLeft: 20 }}>
+
+                            </View>
+                            <View style={{ flex: 2, alignItems: 'center', marginTop: 15 }}>
+                                <TouchableOpacity style={[styles.style, { alignSelf: 'center' }]}>
+                                    <Text style={styles.txt}>
+                                        {' ' + this.state.teammates + ' vs ' + this.state.enemies + ' '}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity style={[styles.style, styles.killamount]}>
                                 <Text style={styles.txt}>
                                     {' 击杀人数：' + this.state.killamount + ' '}
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.style, styles.info]}>
-                                <Text style={styles.txt}>
-                                    {' 当前血量：' + this.state.HP * 33 + ' '}
-                                </Text>
-                            </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity
-                            rounded
-                            activeOpacity={0.5}
-                            style={[styles.style, styles.capture]}
-                            onPress={this.shoot}>
-                            <Feather
-                                name={'target'}
-                                size={36}
-                                color={'#EEC900'}
-                            />
-                        </TouchableOpacity>
-                        <View style={styles.smallMap,{backgroundColor: '#000'}}>
-                            {/** 小地图按钮，单击打开大地图 */}
-                            <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                            <View style={styles.smallMap}>
+                                <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
+                            </View>
+                            <View style={{ alignItems: 'flex-end' }}>
+                                <TouchableOpacity
+                                    rounded
+                                    activeOpacity={0.5}
+                                    style={[styles.style, styles.capture]}
+                                    onPress={this.shoot}>
+                                    <Feather
+                                        name={'target'}
+                                        size={46}
+                                        color={'#EEC900'}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.style, styles.HP]}>
+                                    <Text style={styles.txt}>
+                                        {' 当前血量：' + this.state.HP * 33 + ' '}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
+
                     </View>
+
 
                 </View >
             )
@@ -606,7 +610,7 @@ export default class Gaming extends Component {
 
             return (
                 <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
-                    source={require('../src/img/room.jpeg')}>
+                    source={require('../src/img/waiting.png')}>
                     <View style={[base.container, { marginBottom: 35 }]}>
                         <Text style={styles.waiting}>您已经被淘汰了</Text>
                     </View>
@@ -618,6 +622,20 @@ export default class Gaming extends Component {
             return (
                 <ImageBackground style={base.background}
                     source={require('../src/img/win.png')}>
+                    <View style={base.container}>
+                        <View style={{ height: 120 }} />
+                        <Button
+                            rounded
+                            bordered
+                            activeOpacity={0.5}
+                            onPress={this.ReturnToRoom} //-----------该属性需要保留！-------------
+                            style={base.button}>
+                            <Image
+                                source={require('../src/img/return.png')}
+                                style={{ height: '180%', width: '180%', }}
+                            />
+                        </Button>
+                    </View>
                 </ImageBackground>
             )
         }
@@ -626,6 +644,20 @@ export default class Gaming extends Component {
             return (
                 <ImageBackground style={base.background}
                     source={require('../src/img/lose.png')}>
+                    <View style={base.container}>
+                        <View style={{ height: 120 }} />
+                        <Button
+                            rounded
+                            bordered
+                            activeOpacity={0.5}
+                            onPress={this.ReturnToHome} //-----------该属性需要保留！-------------
+                            style={base.button}>
+                            <Image
+                                source={require('../src/img/return.png')}
+                                style={{ height: '180%', width: '180%', }}
+                            />
+                        </Button>
+                    </View>
                 </ImageBackground>
             )
         }
@@ -637,7 +669,6 @@ export default class Gaming extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
         backgroundColor: 'black',
     },
     preview: {
@@ -645,22 +676,24 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
-    head: {
-        alignSelf: 'center',
+    killamount: {
+        justifyContent: 'flex-end',
+        alignSelf: 'flex-start',
         marginTop: 15,
+        marginRight: 20,
     },
-    info: {
-        justifyContent: 'flex-start',
-        alignSelf: 'flex-end',
-        marginBottom: 15,
-        marginLeft: 15,
-    },
-    capture: {
-        borderRadius: 25,
+    HP: {
         justifyContent: 'flex-end',
         alignSelf: 'flex-end',
         marginBottom: 15,
         marginRight: 20,
+    },
+    capture: {
+        borderRadius: 25,
+        justifyContent: 'flex-end',
+        //alignSelf: 'center',
+        marginBottom: 35,
+        marginRight: 50,
     },
     waiting: {
         color: '#fff',
@@ -681,12 +714,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     smallMap: {
-        position: 'absolute',
-        alignItems: 'flex-end',
-        margin: 15,
-        marginRight: 20,
+        //alignItems: 'flex-end',
+        marginBottom: 15,
+        marginLeft: 20,
         width: 100,
         height: 100,
-        zIndex: 3
     }
 });

@@ -592,15 +592,23 @@ export default class Room extends Component {
         var teamA = [['',''],['',''],['',''],['',''],['','']];
         var teamB = [['',''],['',''],['',''],['',''],['','']];
 
+        var teamA_num = 0;
+        var teamB_num = 0;
+
+        // if(this.state.team == TEAM_A) teamA_num++;
+        // if(this.state.team == TEAM_B) teamB_num++;
+
         this.state.players.forEach((player) => {
             if (player.playerteam == TEAM_A) {
-                if (player.playerstatus) teamA.splice(['',''],1,[player.username, 'Ready']);
-                if (!player.playerstatus) teamA.splice(['',''],1,[player.username, 'UnReady']);
+                if (player.playerstatus) teamA.splice(teamA_num,1,[player.username, 'Ready']);
+                if (!player.playerstatus) teamA.splice(teamA_num,1,[player.username, 'UnReady']);
+                teamA_num++;
             }
 
             if (player.playerteam == TEAM_B) {
-                if (player.playerstatus) teamB.splice(['',''],1,[player.username, 'Ready']);
-                if (!player.playerstatus) teamB.splice(['',''],1,[player.username, 'UnReady']);
+                if (player.playerstatus) teamB.splice(teamB_num,1,[player.username, 'Ready']);
+                if (!player.playerstatus) teamB.splice(teamB_num,1,[player.username, 'UnReady']);
+                teamB_num++;
             }
         })
 

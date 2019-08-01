@@ -137,12 +137,10 @@ export default class BaiduMap extends Component {
                     }}
                     */
                     onMapClick={(e) => {
-                        alert('333');
                         if(!this.state.BigOrSmall)
                             this.Use_Map();
                     }}
                     onMapPoiClick={(e) => {
-                        alert('222');
                         if(!this.state.BigOrSmall)
                             this.Use_Map();
                     }}
