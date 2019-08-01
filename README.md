@@ -26,4 +26,6 @@ The summer project of a deep learning-AR FPS mobile game
 
 项目使用图片素材：document-PKBG——pictures
 
-拍照识别人物算法文档：PKBG前后端联通、环境部署、算法文档
+拍照识别人物算法文档：document-PKBG前后端联通、环境部署、算法文档
+
+修改密码前后端联通文档：document-PKBG前后端联通、环境部署、算法文档
