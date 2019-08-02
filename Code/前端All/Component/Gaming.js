@@ -79,7 +79,7 @@ export default class Gaming extends Component {
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.SendAndReceivePosition = this.SendAndReceivePosition.bind(this);
 
-        this.timer = setInterval(this.SendAndReceivePosition, 1000);
+        this.timer = setInterval(this.SendAndReceivePosition, 3000);
         this.Use_Map = this.Use_Map.bind(this);
         this.UnUse_Map = this.UnUse_Map.bind(this);
     }
@@ -271,18 +271,28 @@ export default class Gaming extends Component {
                 }
                 case POSITION: {
 
-                    cur_center = [];
+                    var temp_center = this.state.teammates_center;
 
-                    res.teammates_center.forEach((one_center) => {
-                        cur_center.push({ playername: one_center.playername, center: { longitude: one_center.longitude, latitude: one_center.latitude } });
+                    var flag = 0;
+
+                    temp_center.forEach((one_center) => {
+                        if (one_center.playername == res.playername) {
+                            one_center.longitude = res.longitude;
+                            one_center.latitude = res.latitude;
+                            flag = 1;
+                            return;
+                        }
                     })
 
+                    if(!flag)
+                        temp_center.push({playername : res.playername ,longitude : res.longitude , latitude : res.latitude});
 
                     this.setState({
-                        teammates_center: cur_center,
+                        teammates_center: temp_center,
                     })
                     break;
                 }
+
             }
 
             //alert(e.data);
@@ -424,19 +434,63 @@ export default class Gaming extends Component {
     }
 
     ReturnToRoom() {
-        const { navigate } = this.props.navigation;
-        navigate('Room', {
-            username: this.state.username,
-            team: this.state.team,
-            roomID: this.state.roomID,
-            players: this.state.players,
-            isReady: false,
+        this.ws.close();
+        this.setState({
+            socketState: this.ws.readyState
         });
+        const { goBack } = this.props.navigation;
+        goBack();
     }
 
     render() {
 
-        if (this.state.Using_map) return (<BaiduMap teammates_position={this.state.teammates_position} UnUse_Map={this.UnUse_Map} center={this.state.center} BigOrSmall={true} />);
+        if (this.state.win) {
+            clearInterval(this.timer);
+            return (
+                <ImageBackground style={base.background}
+                    source={require('../src/img/win.png')}>
+                    <View style={base.container}>
+                        <View style={{ height: 160 }} />
+                        <Button
+                            rounded
+                            bordered
+                            activeOpacity={0.5}
+                            onPress={this.ReturnToRoom} //-----------该属性需要保留！-------------
+                            style={[base.button,styles.style]}>
+                            <Image
+                                source={require('../src/img/return.png')}
+                                style={{ height: '250%', width: '250%', }}
+                            />
+                        </Button>
+                    </View>
+                </ImageBackground>
+            )
+        }
+
+        if (this.state.lose) {
+            clearInterval(this.timer);
+            return (
+                <ImageBackground style={base.background}
+                    source={require('../src/img/lose.png')}>
+                    <View style={base.container}>
+                        <View style={{ height: 160 }} />
+                        <Button
+                            rounded
+                            bordered
+                            activeOpacity={0.5}
+                            onPress={this.ReturnToRoom} //-----------该属性需要保留！-------------
+                            style={[base.button,styles.style]}>
+                            <Image
+                                source={require('../src/img/return.png')}
+                                style={{ height: '250%', width: '250%', }}
+                            />
+                        </Button>
+                    </View>
+                </ImageBackground>
+            )
+        }
+
+        if (this.state.Using_map) return (<BaiduMap teammates_position={this.state.teammates_center} UnUse_Map={this.UnUse_Map} center={this.state.center} BigOrSmall={true} />);
 
         if (this.state.socketState !== WebSocket.OPEN)
             return (
@@ -556,9 +610,7 @@ export default class Gaming extends Component {
                                 timeLabels={{ m: null, s: null }}
                                 showSeparator
                             /> */}
-                            <View style={{ flex: 1, alignItems: 'flex-start', margin: 15, marginLeft: 20 }}>
-
-                            </View>
+                            <View style={{ flex: 1, alignItems: 'flex-start', margin: 15, marginLeft: 20 }} />
                             <View style={{ flex: 2, alignItems: 'center', marginTop: 15 }}>
                                 <TouchableOpacity style={[styles.style, { alignSelf: 'center' }]}>
                                     <Text style={styles.txt}>
@@ -566,11 +618,13 @@ export default class Gaming extends Component {
                                     </Text>
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity style={[styles.style, styles.killamount]}>
-                                <Text style={styles.txt}>
-                                    {' 击杀人数：' + this.state.killamount + ' '}
-                                </Text>
-                            </TouchableOpacity>
+                            <View style={[{ flex: 1 }, styles.killamount]}>
+                                <TouchableOpacity style={[styles.style]}>
+                                    <Text style={styles.txt}>
+                                        {' 击杀人数：' + this.state.killamount + ' '}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
 
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -613,50 +667,6 @@ export default class Gaming extends Component {
                     source={require('../src/img/waiting.png')}>
                     <View style={[base.container, { marginBottom: 35 }]}>
                         <Text style={styles.waiting}>您已经被淘汰了</Text>
-                    </View>
-                </ImageBackground>
-            )
-        }
-
-        if (this.state.win) {
-            return (
-                <ImageBackground style={base.background}
-                    source={require('../src/img/win.png')}>
-                    <View style={base.container}>
-                        <View style={{ height: 120 }} />
-                        <Button
-                            rounded
-                            bordered
-                            activeOpacity={0.5}
-                            onPress={this.ReturnToRoom} //-----------该属性需要保留！-------------
-                            style={base.button}>
-                            <Image
-                                source={require('../src/img/return.png')}
-                                style={{ height: '180%', width: '180%', }}
-                            />
-                        </Button>
-                    </View>
-                </ImageBackground>
-            )
-        }
-
-        if (this.state.lose) {
-            return (
-                <ImageBackground style={base.background}
-                    source={require('../src/img/lose.png')}>
-                    <View style={base.container}>
-                        <View style={{ height: 120 }} />
-                        <Button
-                            rounded
-                            bordered
-                            activeOpacity={0.5}
-                            onPress={this.ReturnToHome} //-----------该属性需要保留！-------------
-                            style={base.button}>
-                            <Image
-                                source={require('../src/img/return.png')}
-                                style={{ height: '180%', width: '180%', }}
-                            />
-                        </Button>
                     </View>
                 </ImageBackground>
             )

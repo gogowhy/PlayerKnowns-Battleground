@@ -199,7 +199,7 @@ export default class Register extends Component {
                             bordered    
                             activeOpacity={0.5}
                             onPress={this.register} //-----------该属性需要保留！-------------
-                            style={[base.button,{height: 38}]}
+                            style={[base.button,{height: 37}]}
                             clear={this.clearAllInputs}>
                             <Image
                                 source={require('../src/img/signup.png')}

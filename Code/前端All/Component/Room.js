@@ -373,13 +373,17 @@ export default class Room extends Component {
 
     /** 进入游戏 */
     enterGame() {
-        this.ws.close();
-        this.setState({
-            socketState: this.ws.readyState
-        });
+        
+        var amount_of_teamA = 0;
+        var amount_of_teamB = 0;
+        this.state.players.forEach((player) => {
+            if (player.playerteam == TEAM_A) amount_of_teamA++;
+            else amount_of_teamB++;
+        })
         const { navigate } = this.props.navigation;
-        navigate('Gaming', { username: this.state.username, team: this.state.team, roomID: this.state.roomID });
+        navigate('Gaming', { username: this.state.username, team: this.state.team, roomID: this.state.roomID, players: this.state.players, amount_of_teammates: (this.state.team == TEAM_A) ? amount_of_teamA : amount_of_teamB, amount_of_enemies: (this.state.team == TEAM_B) ? amount_of_teamA : amount_of_teamB });
     }
+
 
     /** 
      * 功能 ： 开始游戏
@@ -580,7 +584,7 @@ export default class Room extends Component {
     }
 
     render() {
-
+        
         if (this.state.socketState !== WebSocket.OPEN)
             return (
                 <View style={base.container}>
@@ -631,7 +635,7 @@ export default class Room extends Component {
                 style={base.button}>
                 <Image
                     source={require('../src/img/cancel.png')}
-                    style={{height: '200%', width:'200%',}}
+                    style={{height: '250%', width:'250%',}}
                 />
             </Button> 
 

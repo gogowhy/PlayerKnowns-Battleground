@@ -6,11 +6,27 @@ import {
     ScrollView,
     Platform,
     FlatList,
+    Dimensions
 } from 'react-native';
 import { MapView, MapTypes, Geolocation, Overlay } from 'react-native-baidu-map';
 const { Marker } = Overlay;
-import Dimensions from 'Dimensions';
-const { width, height } = Dimensions.get('window');
+
+/**
+ * 获取横屏时的屏幕宽度和高度
+ * 
+ */
+let windowWidth = Dimensions.get('window').width;
+let windowHeight = Dimensions.get('window').height;
+
+if (windowHeight > windowWidth) {
+    console.log("初始竖屏");
+    var width = windowHeight;
+    var height = windowWidth;
+} else {
+    console.log("初始横屏");
+    var width = windowWidth;
+    var height = windowHeight;
+}
 
 export default class BaiduMap extends Component {
     constructor(props) {
@@ -27,7 +43,7 @@ export default class BaiduMap extends Component {
             clickMessageData: [], //空⽩区域附近数据
             poiMessageData: [], //已有点附近数据
 
-            teammate_position: this.props.teammate_position, //队友坐标
+            teammate_position: this.props.teammates_position, //队友坐标
             BigOrSmall: this.props.BigOrSmall,
             //username : this.props.username,
         };
@@ -47,30 +63,31 @@ export default class BaiduMap extends Component {
     render() {
 
         const markers = [];
-        markers.push(<Marker
-            title={'A'}
-            location={{ longitude: this.state.center.longitude + 0.00005, latitude: this.state.center.latitude + 0.00005 }}
-            alpha={0.5}
-        ></Marker>
-        );
-        markers.push(<Marker
-            title={'A'}
-            location={{ longitude: this.state.center.longitude + 0.0001, latitude: this.state.center.latitude + 0.0001 }}
-            alpha={0.5}
-        ></Marker>
-        );
+        // markers.push(<Marker
+        //     title={'A'}
+        //     location={{ longitude: this.state.center.longitude + 0.00005, latitude: this.state.center.latitude + 0.00005 }}
+        //     alpha={0.5}
+        // ></Marker>
+        // );
+        // markers.push(<Marker
+        //     title={'A'}
+        //     location={{ longitude: this.state.center.longitude + 0.0001, latitude: this.state.center.latitude + 0.0001 }}
+        //     alpha={0.5}
+        // ></Marker>
+        // );
 
-        /*
-        if (this.state.BigOrSmall)
-            this.state.teammate_position.forEach(one_position => {
+        if (this.state.BigOrSmall){
+            this.state.teammate_position.forEach((one_position) => {
                 markers.push(<Marker
                     title={one_position.playername}
-                    location={one_position.center}
+                    location={ { longitude : one_position.longitude , latitude : one_position.latitude } }
                     alpha={0.5}
                 ></Marker>
                 );
             });
-            */
+
+        
+        }
         return (
             <View style={styles.container}>
                 <MapView
