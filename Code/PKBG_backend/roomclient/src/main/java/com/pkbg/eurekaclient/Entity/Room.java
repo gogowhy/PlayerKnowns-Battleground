@@ -15,6 +15,26 @@ public class Room {
 
     public Integer roompassword;
 
+    public Integer teama;
+
+    public Integer teamb;
+
+    public Integer getTeama() {
+        return teama;
+    }
+
+    public void setTeama(Integer teama) {
+        this.teama = teama;
+    }
+
+    public Integer getTeamb() {
+        return teamb;
+    }
+
+    public void setTeamb(Integer teamb) {
+        this.teamb = teamb;
+    }
+
     public Integer getRoomnumber() {
         return roomnumber;
     }

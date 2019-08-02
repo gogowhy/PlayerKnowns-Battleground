@@ -100,7 +100,7 @@ public class MyHandler implements WebSocketHandler {
             if (players.get(i).getPlayername().equals(ID)) break;
         StringBuffer targetn = new StringBuffer();
         if (i!=players.size()-1) targetn.append(players.get(i+1).getPlayername());
-            else targetn.append(players.get(0).getPlayername());
+        else targetn.append(players.get(0).getPlayername());
         String target = new String(targetn);
         Map <String,Object> map = new HashMap<String,Object>();
         map.put("code",9);
@@ -135,7 +135,7 @@ public class MyHandler implements WebSocketHandler {
                     Integer lowerg = new Integer((Integer) jsonobject.get("lower_body_cloth_color_g"));
                     Integer lowerb = new Integer((Integer) jsonobject.get("lower_body_cloth_color_b"));
                     System.out.println(code);
-                    String Result0 = gameService.start(target,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
+                    String Result0 = gameService.start(playername,target,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
                     if (!Result0.equals("Success!"))
                     {
                         Map<String, Object> map = new HashMap<String, Object>();
