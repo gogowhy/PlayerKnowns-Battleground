@@ -56,6 +56,8 @@ public class RoomDaoImpl implements RoomDao {
         String collectionname = "room";
         Update update = new Update();
         update.set("gamestatus",room.getGamestatus());
+        update.set("teama",room.getTeama());
+        update.set("teamb",room.getTeamb());
         mongoTemplate.updateFirst(query,update,collectionname);
     }
 
@@ -295,6 +297,7 @@ public class RoomDaoImpl implements RoomDao {
         player.setPlayername(username);
         player.setMale(999.9);
         player.setTimes(0);
+        player.setKill(0);
         playerRepository.save(player);
         /*List<Player> playerss =playerRepository.findByRoomnumber(roomnumber);
 
@@ -521,18 +524,20 @@ public class RoomDaoImpl implements RoomDao {
         if (Math.abs(a-b)>1) return ("Team Not Equal!");
 
         room.setGamestatus(1);
+        room.setTeama(a);
+        room.setTeamb(b);
         updatestatus(room);
 
         MyHandler myHandler = new MyHandler();
         for(int i=0;i<players.size();i++)
         {
-                Player player_temp=players.get(i);
-                String playername = player_temp.getPlayername();
-                Map <String,Object> map = new HashMap<String,Object>();
-                map.put("code",0);
-                JSONArray json2 = JSONArray.fromObject(map);
-                String message = json2.toString();
-                myHandler.sendMessageToUser(playername, new TextMessage(message));
+            Player player_temp=players.get(i);
+            String playername = player_temp.getPlayername();
+            Map <String,Object> map = new HashMap<String,Object>();
+            map.put("code",0);
+            JSONArray json2 = JSONArray.fromObject(map);
+            String message = json2.toString();
+            myHandler.sendMessageToUser(playername, new TextMessage(message));
         }
         return "Success!";
     }

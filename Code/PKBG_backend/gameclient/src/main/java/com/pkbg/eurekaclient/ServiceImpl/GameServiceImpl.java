@@ -21,9 +21,9 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public String start(String playername,Integer times, Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
+    public String start(String playername,String target,Integer times, Double male,Integer upperr,Integer upperg,Integer upperb,Integer lowerr,Integer lowerg,Integer lowerb)
     {
-        return gameDao.start(playername,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
+        return gameDao.start(playername,target,times,male,upperr,upperg,upperb,lowerr,lowerg,lowerb);
     }
 
     @Override
