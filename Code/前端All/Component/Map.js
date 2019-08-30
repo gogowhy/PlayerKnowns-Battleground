@@ -53,24 +53,24 @@ export default class BaiduMap extends Component {
             alpha={0.5}
         ></Marker>
         );
-        markers.push(<Marker
+        markers.push(<Marker 
             title={'A'}
             location={{ longitude: this.state.center.longitude + 0.0001, latitude: this.state.center.latitude + 0.0001 }}
             alpha={0.5}
         ></Marker>
         );
 
-        /*
+        
         if (this.state.BigOrSmall)
-            this.state.teammate_position.forEach(one_position => {
+            this.state.teammate_position.forEach((one_position) => {
                 markers.push(<Marker
                     title={one_position.playername}
-                    location={one_position.center}
+                    location={ { longitude : one_position.longitude , latitude : one_position.latitude } }
                     alpha={0.5}
                 ></Marker>
                 );
             });
-            */
+            
         return (
             <View style={styles.container}>
                 <MapView

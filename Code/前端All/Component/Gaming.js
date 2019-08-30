@@ -245,7 +245,7 @@ export default class Gaming extends Component {
                     alert("您的队伍失败了。");
                     this.setState({
                         lose: true
-                    })
+                    }) 
                     break;
                 }
                 case BE_SHOT: {
@@ -273,15 +273,24 @@ export default class Gaming extends Component {
                 }
                 case POSITION: {
 
-                    cur_center = [];
+                    var temp_center = this.state.teammates_center;
 
-                    res.teammates_center.forEach((one_center) => {
-                        cur_center.push({ playername: one_center.playername, center: { longitude: one_center.longitude, latitude: one_center.latitude } });
+                    var flag = 0;
+
+                    temp_center.forEach((one_center) => {
+                        if (one_center.playername == res.playername) {
+                            one_center.longitude = res.longitude;
+                            one_center.latitude = res.latitude;
+                            flag = 1;
+                            return;
+                        }
                     })
 
+                    if(!flag)
+                        temp_center.push({playername : res.playername ,longitude : res.longitude , latitude : res.latitude});
 
                     this.setState({
-                        teammates_center: cur_center,
+                        teammates_center: temp_center,
                     })
                     break;
                 }
@@ -532,7 +541,7 @@ export default class Gaming extends Component {
                             console.log(barcodes);
                         }}
                     />
-                    <View style={{flexDirection:'column',flex:0,justifyContent: 'flex-start', alignItems: 'center', margin: 15}}>
+                    <View style={{ flexDirection: 'column', flex: 0, justifyContent: 'flex-start', alignItems: 'center', margin: 15 }}>
                         <View style={{ flex: 2, alignItems: 'flex-start', margin: 15 }}>
                             {/* <Icon
                                         name={'md-exit'}
@@ -551,50 +560,50 @@ export default class Gaming extends Component {
 
                             {/** 小地图按钮，单击打开大地图 */}
                         {/* <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} /> */}
-                        </View>
-                    </View >
-                   
-                    <View style={StyleSheet.absoluteFill}>
-                        <TouchableWithoutFeedback>
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Image
-                                    source={require('../src/img/aim.png')}
-                                    style={{ height: '50%', width: '50%' }}
-                                />
-                            </View>
-                        </TouchableWithoutFeedback>
                     </View>
+                </View >
 
-                    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={[styles.style, styles.info]}>
-                                <Text style={styles.txt}>
-                                    {' 击杀人数：' + this.state.killamount + ' '}
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.style, styles.info]}>
-                                <Text style={styles.txt}>
-                                    {' 当前血量：' + this.state.HP * 33 + ' '}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <TouchableOpacity
-                            rounded
-                            activeOpacity={0.5}
-                            style={[styles.style, styles.capture]}
-                            onPress={this.shoot}>
-                            <Feather
-                                name={'target'}
-                                size={36}
-                                color={'#EEC900'}
+                <View style={StyleSheet.absoluteFill}>
+                    <TouchableWithoutFeedback>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Image
+                                source={require('../src/img/aim.png')}
+                                style={{ height: '50%', width: '50%' }}
                             />
-                        </TouchableOpacity>
-                        <View style={styles.smallMap,{backgroundColor: '#000'}}>
-                            {/** 小地图按钮，单击打开大地图 */}
-                            <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
                         </View>
+                    </TouchableWithoutFeedback>
+                </View>
+
+                <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity style={[styles.style, styles.info]}>
+                            <Text style={styles.txt}>
+                                {' 击杀人数：' + this.state.killamount + ' '}
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.style, styles.info]}>
+                            <Text style={styles.txt}>
+                                {' 当前血量：' + this.state.HP * 33 + ' '}
+                            </Text>
+                        </TouchableOpacity>
                     </View>
+
+                    <TouchableOpacity
+                        rounded
+                        activeOpacity={0.5}
+                        style={[styles.style, styles.capture]}
+                        onPress={this.shoot}>
+                        <Feather
+                            name={'target'}
+                            size={36}
+                            color={'#EEC900'}
+                        />
+                    </TouchableOpacity>
+                    <View style={styles.smallMap,{backgroundColor: '#000'}}>
+                            {/** 小地图按钮，单击打开大地图 */}
+                    <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
+                </View>
+                    </View >
 
                 </View >
             )
