@@ -31,3 +31,5 @@ The summer project of a deep learning-AR FPS mobile game
 修改密码前后端联通文档：document-PKBG前后端联通、环境部署、算法文档
 
 PKBG枪械数据库：document-PKBG枪械数据库
+
+PKBG枪械数据图：document-PKBG枪械数据库
