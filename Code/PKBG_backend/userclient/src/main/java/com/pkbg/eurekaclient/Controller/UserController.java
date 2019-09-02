@@ -1,6 +1,7 @@
 package com.pkbg.eurekaclient.Controller;
 
 
+import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
 
 import com.pkbg.eurekaclient.Repository.UserRepository;
@@ -64,11 +65,40 @@ public class UserController {
     {
         return userService.banUser(user);
     }
+
     @RequestMapping("/unbanUser")
     @ResponseBody
     public Integer unbanUser(@RequestBody User user)
     {
         return userService.unbanUser(user);
+    }
+
+    @RequestMapping("/buy")
+    @ResponseBody
+    public Integer buy(@RequestBody Storage storage)
+    {
+        return userService.buy(storage);
+    }
+
+    @RequestMapping("/equip")
+    @ResponseBody
+    public Integer equip(@RequestBody Storage storage)
+    {
+        return userService.equip(storage);
+    }
+
+    @RequestMapping("/getstorage")
+    @ResponseBody
+    public Map<String,Object> getstorage(@RequestBody String username)
+    {
+        return userService.getstorage(username);
+    }
+
+    @RequestMapping("/getmarket")
+    @ResponseBody
+    public Map<String,Object> getmarket(@RequestBody String username)
+    {
+        return userService.getmarket(username);
     }
 
     @RequestMapping("add/{username}/{state}/{tele}/{pass}/{coins}/{email}")

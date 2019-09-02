@@ -1,12 +1,14 @@
 package com.pkbg.eurekaclient.ServiceImpl;
 
 import com.pkbg.eurekaclient.Dao.UserDao;
+import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
 import com.pkbg.eurekaclient.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,6 +45,21 @@ public class UserServiceImpl implements UserService {
         return  userDao.unbanUser(user);
     }
 
+    @Override
+    public  Integer buy(Storage storage)
+    {
+        return  userDao.buy(storage);
+    }
 
+    @Override
+    public  Integer equip(Storage storage)
+    {
+        return  userDao.equip(storage);
+    }
 
+    @Override
+    public Map<String,Object> getstorage(String username) {return userDao.getstorage(username);}
+
+    @Override
+    public Map<String,Object> getmarket(String username) { return userDao.getmarket(username); }
 }
