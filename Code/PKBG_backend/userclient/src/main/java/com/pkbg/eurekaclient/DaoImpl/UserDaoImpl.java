@@ -1,8 +1,12 @@
 package com.pkbg.eurekaclient.DaoImpl;
 
 import com.pkbg.eurekaclient.Dao.UserDao;
+import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
+import com.pkbg.eurekaclient.Entity.Weapon;
+import com.pkbg.eurekaclient.Repository.StorageRepository;
 import com.pkbg.eurekaclient.Repository.UserRepository;
+import com.pkbg.eurekaclient.Repository.WeaponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoDbUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,6 +18,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Repository
@@ -21,6 +28,12 @@ public class UserDaoImpl implements UserDao {
 
     @Autowired
     public UserRepository userRepository;
+
+    @Autowired
+    public StorageRepository storageRepository;
+
+    @Autowired
+    public WeaponRepository weaponRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -55,6 +68,7 @@ public class UserDaoImpl implements UserDao {
             user.setUsertele(tele);
             user.setCoins(0);
             user.setState(0);
+            user.setWeapon("M16");
             userRepository.save(user);
             return 1;//return "Register Successfully! Welcome " + username;
         }
@@ -154,6 +168,87 @@ public class UserDaoImpl implements UserDao {
         if (s == 0) return 1;//return "Error! User Already Unbanned!";
         return 2;//return "Cannot Unban Admin!";
 
+    }
+
+    @Override
+    public Integer buy(Storage storage)
+    {
+        String username = storage.getUsername();
+        String weapon = storage.getWeapon();
+        List<Storage> storages = storageRepository.findByUsername(username);
+        for (int i=0; i<storages.size(); i++)
+        {
+            Storage storage_temp = storages.get(i);
+            String weapon_temp = storage_temp.getWeapon();
+            if (weapon_temp.equals(weapon)) return -1;//already possess
+        }
+        User user = userRepository.findByUsername(username);
+        Integer coins = user.getCoins();
+        Weapon weapon1 = weaponRepository.findByName(weapon);
+        Integer price = weapon1.getPrice();
+        if (coins<price) return -1;//not enough coins
+        storageRepository.save(storage);
+        Integer newcoins = coins-price;
+        user.setCoins(newcoins);
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("username").is(username));
+        String collectionname = "PKBG";
+        Update update = new Update();
+        update.set("coins",user.getCoins());
+        mongoTemplate.updateFirst(query,update,collectionname);
+        return 0;//success
+    }
+
+    @Override
+    public Integer equip(Storage storage)
+    {
+        String username = storage.getUsername();
+        String weapon = storage.getWeapon();
+        List<Storage> storages = storageRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+        for (int i=0; i<storages.size(); i++)
+        {
+            Storage storage_temp = storages.get(i);
+            String weapon_temp = storage_temp.getWeapon();
+            if (weapon_temp.equals(weapon))
+            {
+                user.setWeapon(weapon);
+                Query query = new Query();
+                Criteria criteria = new Criteria();
+                query.addCriteria(Criteria.where("username").is(username));
+                String collectionname = "PKBG";
+                Update update = new Update();
+                update.set("weapon",user.getWeapon());
+                mongoTemplate.updateFirst(query,update,collectionname);
+                return 0;//success
+            }
+        }
+        return 1;//not have this
+    }
+
+    @Override
+    public Map<String,Object> getstorage(String username)
+    {
+        List<Storage> storages = storageRepository.findByUsername(username);
+        Map<String,Object> map = new HashMap<>();
+        User user = userRepository.findByUsername(username);
+        String weapon = user.getWeapon();
+        map.put("guns",storages);
+        map.put("using_gun",weapon);
+        return map;
+    }
+
+    @Override
+    public Map<String,Object> getmarket(String username)
+    {
+        List<Weapon> market = weaponRepository.findAll();
+        User user = userRepository.findByUsername(username);
+        Integer coins = user.getCoins();
+        Map<String,Object> map = new HashMap<>();
+        map.put("guns",market);
+        map.put("gold",coins);
+        return map;
     }
 
 }

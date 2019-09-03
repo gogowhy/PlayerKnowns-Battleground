@@ -1,9 +1,11 @@
 package com.pkbg.eurekaclient.Dao;
 
+import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Repository
 public interface UserDao {
@@ -12,4 +14,8 @@ public interface UserDao {
     public Integer resetPass(User user);
     public Integer banUser(User user);
     public Integer unbanUser(User user);
+    public Integer buy(Storage storage);
+    public Integer equip(Storage storage);
+    public Map<String,Object> getstorage(String username);
+    public Map<String,Object> getmarket(String username);
 }

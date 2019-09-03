@@ -24,6 +24,16 @@ public class User implements Serializable {
 
     public Integer coins;
 
+    public String weapon;
+
+    public String getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(String weapon) {
+        this.weapon = weapon;
+    }
+
     public String getUsername() {
         return username;
     }
