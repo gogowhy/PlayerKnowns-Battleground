@@ -32,17 +32,17 @@ export default class Shop extends Component {
         super(props);
         this.state = {
             username: this.props.navigation.state.params.username,
-            guns: [{name : 'M4A1',price :450},{name : 'AK47',price :700},{name : 'AWM',price :1320}],
+            guns: [],
             gold: 1000
         }
         this.Buy_Gun = this.Buy_Gun.bind(this);
     }
-/*
+
     async componentDidMount() {
         
         const _this = this;
 
-        const url = "http://49.234.27.75:2001/getShop";
+        const url = "http://49.234.27.75:2001/user/getmarket";
 
         let data = {
             username: _this.state.username
@@ -72,9 +72,9 @@ export default class Shop extends Component {
                 case -2: alert("服务器异常！"); break;
             }
     }
-*/
 
-    Buy_Gun(gun_name){
+
+    async Buy_Gun(gun_name){
         
         var price = 0;
         var gold = this.state.gold;
@@ -88,14 +88,14 @@ export default class Shop extends Component {
         if(price == 0) { alert("出错了！请稍后重试。");return; }
 
         if(gold < price) { alert("余额不足!您仍需"+(price-gold)+"金币。");return; }
-/*
+
         const _this = this;
 
-        const url = "http://49.234.27.75:2001/buyGun";
+        const url = "http://49.234.27.75:2001/user/buy";
 
         let data = {
             username: _this.state.username,
-            gun:gun_name
+            weapon:gun_name
         }
 
         var code = 1;
@@ -121,8 +121,7 @@ export default class Shop extends Component {
             case -1: alert("购买失败。该物品您已拥有。");break;
             
         }
-        */
-        this.setState({ gold : gold - price });
+        
     }
 
     render() {

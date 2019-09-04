@@ -21,31 +21,29 @@ import RoomID from './InputComponents/RoomID';
 import Password from './InputComponents/Password';
 import Gun from './Gun';
 
-/** 测试用枪械列表 */
-const guns = [{name : 'M4A1',price :450},{name : 'AK47',price :700},{name : 'AWM',price :1320}];
 
 /** 定义了同后端传递和接收指令的 Code 用来处理不同种类的 登录的响应状态 */
 
 
-/* 组件 : EnterRoom_inputID
--- 作用 : 收集用户加入某房间的ID及Password，使其加入房间
+/* 组件 : Warehouse
+-- 作用 : 展示个人仓库
 */
 export default class Warehouse extends Component {
     constructor(props) {
         super(props);
         this.state = {
             username: this.props.navigation.state.params.username,
-            guns: [{name : 'M4A1',price :450},{name : 'AK47',price :700},{name : 'AWM',price :1320}],
+            guns: [],
             using_gun:'M16',
         }
         this.set_Using_Gun = this.set_Using_Gun.bind(this);
     }
-/*
+
     async componentDidMount() {
         
         const _this = this;
 
-        const url = "http://49.234.27.75:2001/getWarehouse";
+        const url = "http://49.234.27.75:2001/user/getstorage";
 
         let data = {
             username: _this.state.username
@@ -76,17 +74,17 @@ export default class Warehouse extends Component {
                 case -2: alert("服务器异常！"); break;
             }
     }
-*/  
+
 
     async set_Using_Gun(gun_name){
-        /*
+        
         const _this = this;
 
-        const url = "http://49.234.27.75:2001/setUsingGun";
+        const url = "http://49.234.27.75:2001/user/equip";
 
         let data = {
             username: _this.state.username,
-            gun:gun_name
+            weapon:gun_name
         }
 
         var code = 1;
@@ -113,9 +111,7 @@ export default class Warehouse extends Component {
             case -1: alert("设置错误，请稍后重试。");break;
             
         }
-        */
         
-       this.setState({ using_gun : gun_name });
     }
 
     render() {
@@ -123,7 +119,7 @@ export default class Warehouse extends Component {
         var all_guns = [];
         
         this.state.guns.forEach((gun) => {
-            all_guns.push(<Gun name={gun.name} price={gun.price} Click_Gun={this.set_Using_Gun} />)
+            all_guns.push(<Gun name={gun.weapon} Click_Gun={this.set_Using_Gun} />)
             //all_guns.push(gun.name);
         })
 
