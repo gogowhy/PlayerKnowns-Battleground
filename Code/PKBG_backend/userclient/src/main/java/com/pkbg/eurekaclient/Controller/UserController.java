@@ -1,6 +1,7 @@
 package com.pkbg.eurekaclient.Controller;
 
 
+import com.pkbg.eurekaclient.Entity.Name;
 import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
 
@@ -89,16 +90,16 @@ public class UserController {
 
     @RequestMapping("/getstorage")
     @ResponseBody
-    public Map<String,Object> getstorage(@RequestBody String username)
+    public Map<String,Object> getstorage(@RequestBody Name name)
     {
-        return userService.getstorage(username);
+        return userService.getstorage(name);
     }
 
     @RequestMapping("/getmarket")
     @ResponseBody
-    public Map<String,Object> getmarket(@RequestBody String username)
+    public Map<String,Object> getmarket(@RequestBody Name name)
     {
-        return userService.getmarket(username);
+        return userService.getmarket(name);
     }
 
     @RequestMapping("add/{username}/{state}/{tele}/{pass}/{coins}/{email}")

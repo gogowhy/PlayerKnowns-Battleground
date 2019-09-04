@@ -1,6 +1,7 @@
 package com.pkbg.eurekaclient.DaoImpl;
 
 import com.pkbg.eurekaclient.Dao.UserDao;
+import com.pkbg.eurekaclient.Entity.Name;
 import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
 import com.pkbg.eurekaclient.Entity.Weapon;
@@ -228,8 +229,9 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Map<String,Object> getstorage(String username)
+    public Map<String,Object> getstorage(Name name)
     {
+        String username = name.getUsername();
         List<Storage> storages = storageRepository.findByUsername(username);
         Map<String,Object> map = new HashMap<>();
         User user = userRepository.findByUsername(username);
@@ -240,8 +242,9 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Map<String,Object> getmarket(String username)
+    public Map<String,Object> getmarket(Name name)
     {
+        String username = name.getUsername();
         List<Weapon> market = weaponRepository.findAll();
         User user = userRepository.findByUsername(username);
         Integer coins = user.getCoins();

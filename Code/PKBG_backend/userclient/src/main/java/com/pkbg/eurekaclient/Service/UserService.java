@@ -1,5 +1,6 @@
 package com.pkbg.eurekaclient.Service;
 
+import com.pkbg.eurekaclient.Entity.Name;
 import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public interface UserService {
     public Integer buy(Storage storage);
     public Integer equip(Storage storage);
 
-    public Map<String,Object> getstorage(String username);
-    public Map<String,Object> getmarket(String username);
+    public Map<String,Object> getstorage(Name name);
+    public Map<String,Object> getmarket(Name name);
 
 }

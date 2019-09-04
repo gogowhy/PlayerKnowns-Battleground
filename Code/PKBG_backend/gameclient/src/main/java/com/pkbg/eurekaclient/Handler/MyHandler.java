@@ -1,8 +1,10 @@
 package com.pkbg.eurekaclient.Handler;
 
 import com.pkbg.eurekaclient.Entity.Player;
+import com.pkbg.eurekaclient.Entity.User;
 import com.pkbg.eurekaclient.Repository.PlayerRepository;
 import com.pkbg.eurekaclient.Repository.RoomRepository;
+import com.pkbg.eurekaclient.Repository.UserRepository;
 import com.pkbg.eurekaclient.Service.GameService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,6 +37,14 @@ public class MyHandler implements WebSocketHandler {
     @Autowired
     public void setRoomRepository(RoomRepository roomRepository) {
         MyHandler.roomRepository = roomRepository;
+    }
+
+    private static UserRepository userRepository;
+
+    // 注入的时候，给类的 service 注入
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        MyHandler.userRepository = userRepository;
     }
 
     private static PlayerRepository playerRepository;
@@ -81,6 +91,9 @@ public class MyHandler implements WebSocketHandler {
         System.out.println(ID);
         System.out.println(roomnum);
 
+        User user = userRepository.findByUsername(ID);
+        String weapon = user.getWeapon();
+
         Integer roomnumber = Integer.valueOf(roomnum);
         System.out.println(roomnumber);
 
@@ -105,6 +118,7 @@ public class MyHandler implements WebSocketHandler {
         Map <String,Object> map = new HashMap<String,Object>();
         map.put("code",9);
         map.put("target",target);
+        map.put("weapon",weapon);
         JSONArray json2 = JSONArray.fromObject(map);
         String message = json2.toString();
         sendMessageToUser(ID, new TextMessage(message));
