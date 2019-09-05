@@ -1,6 +1,7 @@
 package com.pkbg.eurekaclient.ServiceImpl;
 
 import com.pkbg.eurekaclient.Dao.UserDao;
+import com.pkbg.eurekaclient.Entity.Name;
 import com.pkbg.eurekaclient.Entity.Storage;
 import com.pkbg.eurekaclient.Entity.User;
 import com.pkbg.eurekaclient.Service.UserService;
@@ -58,8 +59,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String,Object> getstorage(String username) {return userDao.getstorage(username);}
+    public Map<String,Object> getstorage(Name name) {return userDao.getstorage(name);}
 
     @Override
-    public Map<String,Object> getmarket(String username) { return userDao.getmarket(username); }
+    public Map<String,Object> getmarket(Name name) { return userDao.getmarket(name); }
 }

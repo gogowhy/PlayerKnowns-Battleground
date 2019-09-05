@@ -1,11 +1,14 @@
 package com.pkbg.eurekaclient.Entity;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
+
 @Document(collection = "PKBG")
 public class User implements Serializable {
+
 
     public String username;
 
@@ -18,6 +21,16 @@ public class User implements Serializable {
     public Integer state;
 
     public Integer coins;
+
+    public String weapon;
+
+    public String getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(String weapon) {
+        this.weapon = weapon;
+    }
 
     public String getUsername() {
         return username;

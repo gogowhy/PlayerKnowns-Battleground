@@ -4,10 +4,12 @@ import com.pkbg.eurekaclient.Dao.GameDao;
 import com.pkbg.eurekaclient.Entity.Player;
 import com.pkbg.eurekaclient.Entity.Room;
 import com.pkbg.eurekaclient.Entity.User;
+import com.pkbg.eurekaclient.Entity.Weapon;
 import com.pkbg.eurekaclient.Handler.MyHandler;
 import com.pkbg.eurekaclient.Repository.PlayerRepository;
 import com.pkbg.eurekaclient.Repository.RoomRepository;
 import com.pkbg.eurekaclient.Repository.UserRepository;
+import com.pkbg.eurekaclient.Repository.WeaponRepository;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -31,6 +33,9 @@ public class GameDaoImpl implements GameDao {
 
     @Autowired
     public RoomRepository roomRepository;
+
+    @Autowired
+    public WeaponRepository weaponRepository;
 
     @Autowired
     public MongoTemplate mongoTemplate;
@@ -142,6 +147,10 @@ public class GameDaoImpl implements GameDao {
     {
         MyHandler myHandler = new MyHandler();
         Player player1 = playerRepository.findByPlayername(playername);
+        User user = userRepository.findByUsername(playername);
+        String weapon = user.getWeapon();
+        Weapon gun = weaponRepository.findByName(weapon);
+        Integer damage = gun.getDamage();
         Integer team1 = player1.getPlayerteam();
         Integer roomnumber = player1.getRoomnumber();
         List<Player> players = playerRepository.findByRoomnumber(roomnumber);
@@ -177,7 +186,7 @@ public class GameDaoImpl implements GameDao {
                 return "Hit Teammate!";
             }
             Integer HP = player2.getHP();
-            Integer newHP = HP-34;
+            Integer newHP = HP-damage;
             Map<String,Object> map1 = new HashMap<>();
             map1.put("code",7);
             map1.put("victim",player2.getPlayername());
