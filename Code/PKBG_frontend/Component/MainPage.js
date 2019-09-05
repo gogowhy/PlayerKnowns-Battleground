@@ -10,8 +10,7 @@ import {
 import { Icon, Button } from 'native-base';
 import base from '../src/style/base';
 import header from '../src/style/header';
-//import Ionicons from "react-native-vector-icons/Ionicons";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from "react-native-vector-icons/Entypo";
 
 import axios from 'axios';
@@ -21,16 +20,13 @@ export default class MainPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: this.props.navigation.state.params.username,
-            paused: false  // false: 表示播放，true: 表示暂停
+            username: this.props.navigation.state.params.username
         }
         this.createRoom = this.createRoom.bind(this);
         this.enterRoom = this.enterRoom.bind(this);
         this.exit = this.exit.bind(this);
         this.warehouse = this.warehouse.bind(this);
         this.shop = this.shop.bind(this);
-        this.settings = this.settings.bind(this);
-        this.help = this.help.bind(this);
     }
 
     /* 退出登录 */
@@ -127,15 +123,6 @@ export default class MainPage extends Component {
         navigate('Shop', { username: this.state.username });
     }
 
-    settings() {
-        const { navigate } = this.props.navigation;
-        navigate('Settings');
-    }
-
-    help() {
-
-    }
-
     render() {
         return (
             <ImageBackground style={base.background}
@@ -153,16 +140,17 @@ export default class MainPage extends Component {
                                 />
                             </View>
                             <View style={header.End}>
-                                <Icon
-                                    name={'md-settings'}
-                                    onPress={this.settings}
-                                    style={{ color: '#8A8A8A', marginRight: 10 }}
+                                <Fontisto
+                                    style={{ color: '#8A8A8A', marginRight: 10, marginTop: 2 }}
+                                    name={'shopify'}
+                                    size={26}
+                                    onPress={this.shop}
                                 />
                                 <Entypo
-                                    name={'help-with-circle'}
-                                    size={26}
                                     style={{ color: '#8A8A8A' }}
-                                    onPress={this.help}
+                                    name={'shop'}
+                                    size={30}
+                                    onPress={this.warehouse}
                                 />
                             </View>
                         </View>
@@ -170,13 +158,6 @@ export default class MainPage extends Component {
 
                     <View style={styles.container}>
                         <View style={styles.containerRow}>
-                            {/* <FontAwesome5
-                                style={{ marginRight: 10 }}
-                                name={'warehouse'}
-                                size={40}
-                                onPress={this.warehouse}
-                                color={'yellow'}
-                            /> */}
                             <Button
                                 rounded
                                 bordered
@@ -191,13 +172,6 @@ export default class MainPage extends Component {
                         </View>
 
                         <View style={styles.containerRow}>
-                            {/* <Entypo
-                                style={{ marginRight: 8 }}
-                                name={'shop'}
-                                size={55}
-                                onPress={this.shop}
-                                color={'yellow'}
-                            /> */}
                             <Button
                                 rounded
                                 bordered
@@ -210,43 +184,6 @@ export default class MainPage extends Component {
                                 />
                             </Button>
                         </View>
-
-                        <View style={styles.containerRow}>
-                            {/* <Entypo
-                                style={{ marginRight: 8 }}
-                                name={'shop'}
-                                size={55}
-                                onPress={this.shop}
-                                color={'yellow'}
-                            /> */}
-                            <Button
-                                rounded
-                                bordered
-                                activeOpacity={0.5}
-                                onPress={this.shop} //-----------该属性需要保留！-------------
-                                style={[base.button, { height: 70, marginLeft: 40, width: 220, borderWidth: 8 }]}>
-                                <Text>商城</Text>
-                            </Button>
-                        </View>
-
-                        <View style={styles.containerRow}>
-                            {/* <Entypo
-                                style={{ marginRight: 8 }}
-                                name={'shop'}
-                                size={55}
-                                onPress={this.shop}
-                                color={'yellow'}
-                            /> */}
-                            <Button
-                                rounded
-                                bordered
-                                activeOpacity={0.5}
-                                onPress={this.warehouse} //-----------该属性需要保留！-------------
-                                style={[base.button, { height: 70, marginLeft: 40, width: 220, borderWidth: 8 }]}>
-                                <Text>仓库</Text>
-                            </Button>
-                        </View>
-
                     </View>
 
                 </TouchableOpacity>
