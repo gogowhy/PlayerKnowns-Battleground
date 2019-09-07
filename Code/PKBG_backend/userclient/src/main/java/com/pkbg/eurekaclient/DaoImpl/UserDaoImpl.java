@@ -71,6 +71,10 @@ public class UserDaoImpl implements UserDao {
             user.setState(0);
             user.setWeapon("M16");
             userRepository.save(user);
+            Storage storage = new Storage();
+            storage.setUsername(username);
+            storage.setWeapon("M16");
+            storageRepository.save(storage);
             return 1;//return "Register Successfully! Welcome " + username;
         }
         return 0;//return "Username Already Used!";
