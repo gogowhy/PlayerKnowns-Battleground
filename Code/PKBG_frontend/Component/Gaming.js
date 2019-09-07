@@ -5,7 +5,9 @@ import {
     StyleSheet,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    Platform,
+    ImageBackground,
+    Image,
+    Dimensions
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
@@ -16,11 +18,28 @@ import Feather from "react-native-vector-icons/Feather";
 import axios from 'axios';
 import base from '../src/style/base';
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { Button, Spinner, Icon } from 'native-base';
 
 import { MapView, MapTypes, Geolocation, Overlay } from 'react-native-baidu-map';
 const { Marker } = Overlay;
 import BaiduMap from './Map';
 
+/**
+ * 获取横屏时的屏幕宽度和高度
+ * 
+ */
+let windowWidth = Dimensions.get('window').width;
+let windowHeight = Dimensions.get('window').height;
+
+if (windowHeight > windowWidth) {
+    console.log("初始竖屏");
+    var width = windowHeight;
+    var height = windowWidth;
+} else {
+    console.log("初始横屏");
+    var width = windowWidth;
+    var height = windowHeight;
+}
 
 const DONE = 101, NOT_DONE = 102, ALL_DONE = 103, HIT = 7, BE_SHOT = 8, ONE_KILLED = 6, WIN = 4, LOSE = 5, TAKE_PHOTO_AIM = 9, POSITION = 10;
 
@@ -36,12 +55,14 @@ export default class Gaming extends Component {
             socketState: WebSocket.CLOSED,
             times: 1, //次数
             stage: 0, //阶段，包括录入信息、录入完成/录入不完成、等待他人录入完毕、游戏状态
-            HP: 3,
+            HP: 100,
             killamount: 0,
             teammates: this.props.navigation.state.params.amount_of_teammates,
             enemies: this.props.navigation.state.params.amount_of_enemies,
             take_photo_aim: null,
-
+            win: false,
+            lose: false,
+            gun : null,
             /**以下是Map需要用到的 */
             Using_map: false,
             center: {
@@ -58,9 +79,12 @@ export default class Gaming extends Component {
         this.ConnectWebSocket = this.ConnectWebSocket.bind(this);
         this.SendAndReceivePosition = this.SendAndReceivePosition.bind(this);
 
-        this.timer = setInterval(this.SendAndReceivePosition, 1500);
+        this.timer = setInterval(this.SendAndReceivePosition, 3000);
         this.Use_Map = this.Use_Map.bind(this);
         this.UnUse_Map = this.UnUse_Map.bind(this);
+
+        this.photo_empty = true;
+        this.photo = null;
     }
 
     componentDidMount() {
@@ -84,22 +108,15 @@ export default class Gaming extends Component {
     }
 
     SendAndReceivePosition() {
-        if (this.socketState !== WebSocket.OPEN) return;
-        ki = this.state.killamount + 1;
-        this.setState({
-            killamount: ki
-        })
 
         Geolocation.getCurrentPosition()
             .then(data => {
                 console.log(data);
-
                 this.setState({
                     center: {
                         longitude: data.longitude,
                         latitude: data.latitude
                     },
-
                 })
 
                 let data1 = {
@@ -111,7 +128,7 @@ export default class Gaming extends Component {
 
                 if (this.state.socketState == WebSocket.OPEN) {
                     this.ws.send(JSON.stringify(data1));
-                    alert(JSON.stringify(data1));
+                    //alert(JSON.stringify(data1));
                 }
             })
             .catch(e => {
@@ -121,6 +138,7 @@ export default class Gaming extends Component {
     }
 
     Use_Map() {
+        
         this.setState({
             Using_map: true
         })
@@ -221,15 +239,21 @@ export default class Gaming extends Component {
                 }
                 case WIN: {
                     alert("您的队伍获胜了！");
+                    this.setState({
+                        win: true
+                    })
                     break;
                 }
                 case LOSE: {
                     alert("您的队伍失败了。");
+                    this.setState({
+                        lose: true
+                    })
                     break;
                 }
                 case BE_SHOT: {
                     alert("您被" + res.shooter + "击中了。");
-                    var HP = this.state.HP - 1;
+                    var HP = this.state.HP - res.damage;
                     this.setState({
                         HP: HP
                     });
@@ -246,37 +270,28 @@ export default class Gaming extends Component {
                 case TAKE_PHOTO_AIM: {
                     alert("请在光线明亮的地方拍摄" + res.target + "全身像，以录入信息。");
                     this.setState({
-                        take_photo_aim: res.target
+                        take_photo_aim: res.target,
+                        gun : res.weapon
                     })
                     break;
                 }
                 case POSITION: {
 
-                    temp_center = this.state.teammates_center;
-                    var flag = 0;
+                    cur_center = [];
 
-                    temp_center.forEach((one_center) => {
-                        if (one_center.playername == res.playername) {
-                            one_center.center.longitude = res.longitude;
-                            one_center.center.latitude = res.latitude;
-                            flag = 1;
-                            return;
-                        }
+                    res.teammates_center.forEach((one_center) => {
+                        cur_center.push({ playername: one_center.playername, center: { longitude: one_center.longitude, latitude: one_center.latitude } });
                     })
-
-                    if (!flag) {
-                        temp_center.push({ playername: res.playername, center: { longitude: res.longitude, latitude: res.latitude } })
-                    }
 
 
                     this.setState({
-                        teammates_center: temp_center,
+                        teammates_center: cur_center,
                     })
                     break;
                 }
             }
 
-            alert(e.data);
+            //alert(e.data);
 
         };
 
@@ -293,13 +308,24 @@ export default class Gaming extends Component {
     }
 
     async shoot() {
-        if (this.camera) {
-            const options = { quality: 1, base64: true, width: 1280 };
-            const photo = await this.camera.takePictureAsync(options);
-            //console.log(photo.uri);
-            //alert("h: " + photo.height +"w: " + photo.width);
-            //console.warn(photo);
-            this.sendphoto(photo);
+        if(this.photo_empty){
+            if (this.camera) {
+
+                this.photo_empty = false;
+                setTimeout( () => { this.photo_empty = true, this.photo = null} , 2 );
+
+                const options = { quality: 1, base64: true, width: 1280 };
+                this.photo = await this.camera.takePictureAsync(options);
+                
+                //console.log(photo.uri);
+                //alert("h: " + photo.height +"w: " + photo.width);
+                //console.warn(photo);
+                this.sendphoto(this.photo);
+            }
+            
+        }
+        else{
+            this.sendphoto(this.photo);
         }
     };
 
@@ -373,7 +399,7 @@ export default class Gaming extends Component {
                             };
                             if (this.state.socketState == WebSocket.OPEN) {
                                 this.ws.send(JSON.stringify(data));
-                                alert(JSON.stringify(data));
+                                //alert(JSON.stringify(data));
                             }
 
                             var times = this.state.times;
@@ -399,7 +425,7 @@ export default class Gaming extends Component {
                             };
                             if (this.state.socketState == WebSocket.OPEN) {
                                 this.ws.send(JSON.stringify(data));
-                                alert(JSON.stringify(data));
+                                //alert(JSON.stringify(data));
                             }
 
                         }
@@ -429,26 +455,28 @@ export default class Gaming extends Component {
 
         if (this.state.socketState !== WebSocket.OPEN)
             return (
-                <View style={base.container}>
-                    <AntDesign
-                        style={{ marginBottom: 20 }}
-                        name={'loading1'}
-                        size={30}
-                    />
-                    <Text style={styles.waiting}>正在建立连接...</Text>
-                </View>
+                <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
+                    source={require('../src/img/room.jpeg')}>
+                    <View style={[base.container, { marginBottom: 25 }]}>
+                        <Spinner
+                            color={'white'}
+                        />
+                        <Text style={styles.waiting}>正在建立连接...</Text>
+                    </View>
+                </ImageBackground>
             )
 
         if (this.state.stage == 2)
             return (
-                <View style={base.container}>
-                    <AntDesign
-                        style={{ marginBottom: 20 }}
-                        name={'loading1'}
-                        size={30}
-                    />
-                    <Text style={styles.waiting}>等待其他玩家录入信息...</Text>
-                </View>
+                <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
+                    source={require('../src/img/room.jpeg')}>
+                    <View style={[base.container, { marginBottom: 25 }]}>
+                        <Spinner
+                            color={'white'}
+                        />
+                        <Text style={styles.waiting}>等待其他玩家录入信息...</Text>
+                    </View>
+                </ImageBackground>
             )
 
         if (this.state.stage == 0 || this.state.stage == 1)
@@ -477,12 +505,19 @@ export default class Gaming extends Component {
                             console.log(barcodes);
                         }}
                     />
-                    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-                        <TouchableOpacity onPress={this.shoot} style={styles.capture}>
-                            <Text style={{ fontSize: 20 }}> {'第' + this.state.times + '次录入'} </Text>
-                        </TouchableOpacity>
+                    <ImageBackground style={[base.background, { justifyContent: 'flex-end', zIndex: 1 }]}
+                        source={require('../src/img/picture.png')}>
+                        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                            <Button
+                                rounded
+                                activeOpacity={0.5}
+                                onPress={this.shoot}
+                                style={[styles.capture, styles.style, { marginRight: 30 }]}>
+                                <Text style={styles.txt}> {'  第' + this.state.times + '次录入  '} </Text>
+                            </Button>
+                        </View>
 
-                    </View>
+                    </ImageBackground>
                 </View>
             );
 
@@ -512,45 +547,34 @@ export default class Gaming extends Component {
                             console.log(barcodes);
                         }}
                     />
-                    <View style={[StyleSheet.absoluteFill, { flexDirection: 'column' }]}>
-                        <View>
-                            {/* <CountDown
-                                until={10}
-                                size={10}
-                                onFinish={this.timeOut}
-                                digitStyle={{ backgroundColor: '#FFF', marginTop: 5 }}
-                                digitTxtStyle={{ color: 'black', fontSize: 15 }}
-                                separatorStyle={{ color: 'black', fontSize: 20 }}
-                                timeToShow={['M', 'S']}
-                                timeLabels={{ m: null, s: null }}
-                                showSeparator
-                            /> */}
-                            <View style={{ flex: 0, justifyContent: 'flex-start', alignItems: 'center', margin: 15 }}>
-                                <Foundation
-                                    name={'map'}
-                                    size={26}
-                                    color={'black'}
-                                    onPress={() => { this.setState({ Using_map: true }) }}
-                                    style
-                                />
-                            </View>
-                            <View style={{ flex: 0, justifyContent: 'center', alignItems: 'center' }}>
-                                <TouchableOpacity style={styles.head}>
-                                    <Text style={{ fontSize: 20 }}>
-                                        {' ' + this.state.teammates + ' vs ' + this.state.enemies + ' '}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
+                    <View style={{flexDirection:'column',flex:0,justifyContent: 'flex-start', alignItems: 'center', margin: 15}}>
+                        <View style={{ flex: 2, alignItems: 'flex-start', margin: 15 }}>
+                            {/* <Icon
+                                        name={'md-exit'}
+                                        onPress={this.exit}
+                                        style={{ color: '#8A8A8A' }}
+                                /> */}
                         </View>
-                    </View>
+                        <View style={{ flex: 3, alignItems: 'center' }}>
+                            <TouchableOpacity style={[styles.style, styles.head]}>
+                                <Text style={styles.txt}>
+                                    {'  ' + this.state.teammates + ' vs ' + this.state.enemies + '  '}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.smallMap,{backgroundColor: '#000'}}>
 
+                            {/** 小地图按钮，单击打开大地图 */}
+                        {/* <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} /> */}
+                        </View>
+                    </View >
+                   
                     <View style={StyleSheet.absoluteFill}>
                         <TouchableWithoutFeedback>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Feather
-                                    name={'crosshair'}
-                                    size={76}
-                                    color={'black'}
+                                <Image
+                                    source={require('../src/img/aim.png')}
+                                    style={{ height: '50%', width: '50%' }}
                                 />
                             </View>
                         </TouchableWithoutFeedback>
@@ -558,50 +582,68 @@ export default class Gaming extends Component {
 
                     <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={styles.info}>
-                                <Text style={{ fontSize: 20 }}>
-                                    {'击杀人数：' + this.state.killamount}
+                            <TouchableOpacity style={[styles.style, styles.info]}>
+                                <Text style={styles.txt}>
+                                    {' 击杀人数：' + this.state.killamount + ' '}
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.info}>
-                                <Text style={{ fontSize: 20 }}>
-                                    {'当前血量：' + this.state.HP * 33}
+                            <TouchableOpacity style={[styles.style, styles.info]}>
+                                <Text style={styles.txt}>
+                                    {' 当前血量：' + this.state.HP  + ' '}
                                 </Text>
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={styles.capture}>
+                        <TouchableOpacity
+                            rounded
+                            activeOpacity={0.5}
+                            style={[styles.style, styles.capture]}
+                            onPress={this.shoot}>
                             <Feather
                                 name={'target'}
                                 size={36}
-                                color={'black'}
-                                onPress={this.shoot}
+                                color={'#EEC900'}
                             />
                         </TouchableOpacity>
-
-                        {/** 小地图按钮，单击打开大地图 */}
-                        <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
+                        <View style={styles.smallMap,{backgroundColor: '#000'}}>
+                            {/** 小地图按钮，单击打开大地图 */}
+                            <BaiduMap Use_Map={this.Use_Map} center={this.state.center} BigOrSmall={false} />
+                        </View>
                     </View>
-                </View>
+
+                </View >
             )
         }
+
         if (this.state.stage == 4) {
 
             clearInterval(this.timer);
 
             return (
-                <View style={base.container}>
-                    <AntDesign
-                        style={{ marginBottom: 20 }}
-                        name={'loading1'}
-                        size={30}
-                    />
-                    <Text style={styles.waiting}>您已经被淘汰了</Text>
-                </View>
+                <ImageBackground style={[base.background, { flexDirection: 'row', alignItems: 'flex-end' }]}
+                    source={require('../src/img/room.jpeg')}>
+                    <View style={[base.container, { marginBottom: 35 }]}>
+                        <Text style={styles.waiting}>您已经被淘汰了</Text>
+                    </View>
+                </ImageBackground>
             )
         }
 
+        if (this.state.win) {
+            return (
+                <ImageBackground style={base.background}
+                    source={require('../src/img/win.png')}>
+                </ImageBackground>
+            )
+        }
 
+        if (this.state.lose) {
+            return (
+                <ImageBackground style={base.background}
+                    source={require('../src/img/lose.png')}>
+                </ImageBackground>
+            )
+        }
     }
 
 
@@ -619,32 +661,47 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     head: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 5,
         alignSelf: 'center',
-        marginTop: 10,
+        marginTop: 15,
     },
     info: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 5,
         justifyContent: 'flex-start',
         alignSelf: 'flex-end',
-        marginBottom: 20,
+        marginBottom: 15,
         marginLeft: 15,
     },
     capture: {
-        backgroundColor: '#fff',
         borderRadius: 25,
-        padding: 5,
         justifyContent: 'flex-end',
         alignSelf: 'flex-end',
-        marginRight: 40,
-        marginBottom: 20,
+        marginBottom: 15,
+        marginRight: 20,
     },
-    focus: {
-        justifyContent: 'center',
-        alignSelf: 'center',
+    waiting: {
+        color: '#fff',
+        fontSize: 18,
+        textAlignVertical: 'center',
+        textAlign: 'center',
+    },
+    style: {
+        backgroundColor: '#021f3c', //深蓝
+        borderColor: '#CD9B1D', //深金
+        borderWidth: 2,
+        padding: 5,
+        borderRadius: 15,
+    },
+    txt: {
+        fontSize: 20,
+        color: '#EEC900', //淡金
+        fontWeight: 'bold',
+    },
+    smallMap: {
+        position: 'absolute',
+        alignItems: 'flex-end',
+        margin: 15,
+        marginRight: 20,
+        width: 100,
+        height: 100,
+        zIndex: 3
     }
 });

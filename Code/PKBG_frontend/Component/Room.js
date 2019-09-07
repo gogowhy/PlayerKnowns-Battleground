@@ -8,16 +8,16 @@ import {
     SectionList,
     FlatList,
     ImageBackground,
+    Image,
     Dimensions,
     Platform,
     BackHandler
 } from 'react-native';
-import { Spinner } from 'native-base';
+import { Spinner, Button, Icon } from 'native-base';
 
 import base from '../src/style/base';
 import header from '../src/style/header';
-import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from "react-native-vector-icons/Entypo";
 
 /**
@@ -85,8 +85,8 @@ export default class Room extends Component {
         this.exitRoom = this.exitRoom.bind(this);
         this.enterGame = this.enterGame.bind(this);
         this.changeTeam = this.changeTeam.bind(this);
-        this.settings = this.settings.bind(this);
-        this.help = this.help.bind(this);
+        this.warehouse = this.warehouse.bind(this);
+        this.shop = this.shop.bind(this);
     }
 
     componentDidMount() {
@@ -372,10 +372,7 @@ export default class Room extends Component {
 
     /** 进入游戏 */
     enterGame() {
-        this.ws.close();
-        this.setState({
-            socketState: this.ws.readyState
-        });
+
         var amount_of_teamA = 0;
         var amount_of_teamB = 0;
         this.state.players.forEach((player) => {
@@ -385,6 +382,7 @@ export default class Room extends Component {
         const { navigate } = this.props.navigation;
         navigate('Gaming', { username: this.state.username, team: this.state.team, roomID: this.state.roomID, players: this.state.players, amount_of_teammates: (this.state.team == TEAM_A) ? amount_of_teamA : amount_of_teamB, amount_of_enemies: (this.state.team == TEAM_B) ? amount_of_teamA : amount_of_teamB });
     }
+
 
     /** 
      * 功能 ： 开始游戏
@@ -576,12 +574,32 @@ export default class Room extends Component {
         }
     }
 
-    settings() {
-
+    /** 
+     * 功能 ：进入仓库
+     * 触发 ：点击“warehouse”图标
+     * 
+     * 跳转到仓库页面（...js)
+     * 
+     */
+    warehouse() {
+        const { navigate } = this.props.navigation;
+        navigate('Warehouse', { username: this.state.username });
+        if (!this.state.host)  //如果不是房主，进仓库状态变成unready
+        {
+            this.unready();
+        }
     }
 
-    help() {
-
+    /** 
+     * 功能 ：进入商店
+     * 触发 ：点击“shop”图标
+     * 
+     * 跳转到商店页面（...js)
+     * 
+     */
+    shop() {
+        const { navigate } = this.props.navigation;
+        navigate('Shop', { username: this.state.username });
     }
 
     render() {
@@ -594,72 +612,90 @@ export default class Room extends Component {
                 </View>
             )
 
-        const teamA = [];
-        const teamB = [];
+        var teamA = [['', ''], ['', ''], ['', ''], ['', ''], ['', '']];
+        var teamB = [['', ''], ['', ''], ['', ''], ['', ''], ['', '']];
 
-        const T = (this.state.team == TEAM_B) ? "B->A" : "A->B"; //更换队伍按钮的文字说明
+        var teamA_num = 0;
+        var teamB_num = 0;
+
+        // if(this.state.team == TEAM_A) teamA_num++;
+        // if(this.state.team == TEAM_B) teamB_num++;
 
         this.state.players.forEach((player) => {
             if (player.playerteam == TEAM_A) {
-                if (player.playerstatus) teamA.push([player.username, 'Ready']);
-                if (!player.playerstatus) teamA.push([player.username, 'UnReady']);
+                if (player.playerstatus) teamA.splice(teamA_num, 1, [player.username, 'Ready']);
+                if (!player.playerstatus) teamA.splice(teamA_num, 1, [player.username, 'UnReady']);
+                teamA_num++;
             }
 
             if (player.playerteam == TEAM_B) {
-                if (player.playerstatus) teamB.push([player.username, 'Ready']);
-                if (!player.playerstatus) teamB.push([player.username, 'UnReady']);
+                if (player.playerstatus) teamB.splice(teamB_num, 1, [player.username, 'Ready']);
+                if (!player.playerstatus) teamB.splice(teamB_num, 1, [player.username, 'UnReady']);
+                teamB_num++;
             }
-        }
-        )
+        })
 
-        const ReadyOrNot = !this.state.isReady ? <TouchableOpacity
+        const ReadyOrNot = !this.state.isReady ? <Button
+            rounded
+            bordered
             activeOpacity={0.5}
             onPress={this.ready} //-----------该属性需要保留！-------------
             style={base.button}>
-            <Text
-                style={base.btText}>准备</Text>
-        </TouchableOpacity>
-            : <TouchableOpacity
+            <Image
+                source={require('../src/img/ready.png')}
+                style={{ height: '180%', width: '180%', }}
+            />
+        </Button>
+            : <Button
+                rounded
+                bordered
                 activeOpacity={0.5}
                 onPress={this.unready} //-----------该属性需要保留！-------------
                 style={base.button}>
-                <Text
-                    style={base.btText}>取消准备</Text>
-            </TouchableOpacity>;
+                <Image
+                    source={require('../src/img/cancel.png')}
+                    style={{ height: '250%', width: '250%', }}
+                />
+            </Button>
 
-        const StartOrReady = this.state.host ? <TouchableOpacity
+        const StartOrReady = this.state.host ? <Button
+            rounded
+            bordered
             activeOpacity={0.5}
             onPress={this.startGame} //-----------该属性需要保留！-------------
             style={base.button}>
-            <Text
-                style={base.btText}>开始游戏</Text>
-        </TouchableOpacity>
+            <Image
+                source={require('../src/img/start2.png')}
+                style={{ height: '180%', width: '180%', }}
+            />
+        </Button>
             : ReadyOrNot;
 
         return (
             <ImageBackground style={base.background}
-                source={require('../src/img/bg1.png')}>
+                source={require('../src/img/room.jpeg')}>
                 <View style={{ flex: 1 }}>
                     <View style={header.container}>
                         <View style={header.header}>
                             <View style={header.Head}>
-                                <Ionicons
-                                    name={'md-arrow-round-back'}
-                                    size={30}
+                                <Icon
+                                    name={'md-exit'}
                                     onPress={this.exitRoom}
+                                    style={{ color: '#8A8A8A' }}
                                 />
                             </View>
                             <View style={header.End}>
-                                <Ionicons
-                                    name={'md-settings'}
-                                    size={31}
-                                    onPress={this.settings}
-                                    style={{ marginRight: 6 }}
+                                <Fontisto
+                                    style={{ color: '#8A8A8A', marginRight: 10, marginTop: 2 }}
+                                    name={'shopify'}
+                                    size={26}
+                                    onPress={this.shop}
                                 />
                                 <Entypo
-                                    name={'help-with-circle'}
-                                    size={28}
-                                    onPress={this.help}
+                                    style={{ color: '#8A8A8A' }}
+                                    name={'shop'}
+                                    size={30}
+                                    onPress={this.warehouse}
                                 />
                             </View>
                         </View>
@@ -672,7 +708,7 @@ export default class Room extends Component {
                         </Text>
                         <Text
                             style={styles.Text}>
-                            {'  '}房间密码：{this.state.password}
+                            {'   '}房间密码：{this.state.password}
                         </Text>
                     </View>
 
@@ -680,21 +716,30 @@ export default class Room extends Component {
                     <View style={base.containerTop}>
                         {StartOrReady}
 
-                        <TouchableOpacity
+                        <Button
+                            rounded
+                            bordered
                             activeOpacity={0.5}
                             onPress={this.changeTeam} //-----------该属性需要保留！-------------
                             style={base.button}>
-                            <Text
-                                style={base.btText}>{T}</Text>
-                        </TouchableOpacity>
+                            <Image
+                                source={require('../src/img/change.png')}
+                                style={{ height: '180%', width: '180%', }}
+                            />
+                        </Button>
 
-                        <TouchableOpacity
+                        <Button
+                            rounded
+                            bordered
                             activeOpacity={0.5}
                             onPress={this.exitRoom} //-----------该属性需要保留！-------------
                             style={base.button}>
-                            <Text
-                                style={base.btText}>退出房间</Text>
-                        </TouchableOpacity>
+                            <Image
+                                source={require('../src/img/exit.png')}
+                                style={{ height: '180%', width: '180%', }}
+                            />
+                        </Button>
+
                     </View>
 
                     <View style={styles.containerRow}>
@@ -706,10 +751,10 @@ export default class Room extends Component {
                                 keyExtractor={(item, index) => item + index}
                                 renderItem={this._renderSectionListItem}
                                 renderSectionHeader={this._renderSectionHeader}
-                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
-                                numColumns={2}
-                                columnWrapperStyle={{ borderWidth: 3, borderColor: '#f4f4f4' }}
-                                style={{ marginTop: 10, marginLeft: 5 }}
+                                //ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
+                                //numColumns={2}
+                                //columnWrapperStyle={{ borderWidth: 3, borderColor: '#f4f4f4' }}
+                                style={{ margin: 4, borderWidth: 2, borderColor: '#EEC900', borderRadius: 2 }}
                             />
                             <SectionList
                                 sections={[
@@ -718,10 +763,10 @@ export default class Room extends Component {
                                 keyExtractor={(item, index) => item + index}
                                 renderItem={this._renderSectionListItem}
                                 renderSectionHeader={this._renderSectionHeader}
-                                ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
-                                numColumns={2}
-                                columnWrapperStyle={{ borderWidth: 3, borderColor: 'black' }}
-                                style={{ marginTop: 10, marginRight: 5 }}
+                                //ItemSeparatorComponent={() => <View style={{ backgroundColor: '#000', height: 2 }}></View>}  //分割线
+                                //numColumns={2}
+                                //columnWrapperStyle={{ borderWidth: 3, borderRadius:18, borderColor: 'black' }}
+                                style={{ margin: 4, borderWidth: 2, borderColor: '#EEC900', borderRadius: 2 }}
                             />
                         </View>
                     </View>
@@ -743,7 +788,7 @@ export default class Room extends Component {
             numColumns={2}
             renderItem={this._renderItem}
             keyExtractor={this._keyExtractor}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
+        //ItemSeparatorComponent={this._ItemSeparatorComponent}
         />
     )
 
@@ -759,8 +804,8 @@ export default class Room extends Component {
     _renderSectionHeader = ({ section }) => {
         var txt = ' Team ' + section.title;
         return (
-            <View style={{ height: 30, justifyContent: 'center' }}>
-                <Text style={styles.SectionHeader}>{txt}</Text>
+            <View style={styles.SectionHeader}>
+                <Text style={styles.SectionHeaderText}>{txt}</Text>
             </View>
         )
     }
@@ -768,7 +813,7 @@ export default class Room extends Component {
 
 const styles = StyleSheet.create({
     Text: {
-        color: '#000',
+        color: '#8A8A8A',
         fontWeight: 'bold',
         fontSize: 20,
     },
@@ -783,11 +828,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
     },
-    Table: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     waiting: {
         color: '#000',
         fontSize: 18,
@@ -795,37 +835,52 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     list: {
-        height: height - 150,
-        width: width - 80,
+        height: height - 140,
+        width: width - 70,
         flexDirection: 'row',
-        backgroundColor: '#DEDEDE',
-        marginTop: 8,
+        backgroundColor: '#5d758e',//灰蓝
         justifyContent: 'center',
+        borderRadius: 5,
     },
     cell: {
-        width: (width - 94) / 4,
+        width: (width - 100) / 4 - 7,
+        height: (height - 140 - 78) / 5,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#607B8B',
-        marginTop: 2,
+        backgroundColor: '#03172b', //黑蓝
+        borderWidth: 2,
+        borderColor: '#CD9B1D', //深金
+        borderRadius: 2,
+        marginLeft: 4,
+        marginRight: 4,
+        marginTop: 1,
+        marginBottom: 2,
     },
     cellText: {
-        height: 30,
         textAlign: 'center',
         textAlignVertical: 'center',
         color: '#fff',
+        fontWeight: 'bold',
         fontSize: 15,
-        marginLeft: 10,
-        marginRight: 10,
     },
     SectionHeader: {
-        height: 30,
-        width: (width - 94) / 2,
+        height: 40,
+        width: (width - 100) / 2 - 6,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#021f3c', //深蓝
+        borderWidth: 2,
+        borderRadius: 2,
+        borderColor: '#EEC900', //淡金
+        margin: 4,
+        marginTop: 4,
+    },
+    SectionHeaderText: {
         textAlign: 'center',
         textAlignVertical: 'center',
-        backgroundColor: '#473C8B',
+        fontWeight: 'bold',
         color: 'white',
-        fontSize: 20
+        fontSize: 20,
     },
 });

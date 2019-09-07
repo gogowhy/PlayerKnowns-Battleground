@@ -31,6 +31,11 @@ export default class MainPage extends Component {
         this.shop = this.shop.bind(this);
         this.settings = this.settings.bind(this);
         this.help = this.help.bind(this);
+
+        this.picture = {
+            "create":require('../src/img/create.png'),
+            "join":require('../src/img/join.png'),
+        };
     }
 
     /* 退出登录 */
@@ -184,7 +189,7 @@ export default class MainPage extends Component {
                                 onPress={this.createRoom} //-----------该属性需要保留！-------------
                                 style={[base.button, { height: 70, marginLeft: 40, width: 220 }]}>
                                 <Image
-                                    source={require('../src/img/create.png')}
+                                    source={this.picture.create}
                                     style={{ height: '220%', width: '220%', }}
                                 />
                             </Button>
@@ -205,7 +210,7 @@ export default class MainPage extends Component {
                                 onPress={this.enterRoom} //-----------该属性需要保留！-------------
                                 style={[base.button, { height: 70, marginLeft: 40, width: 220, borderWidth: 8 }]}>
                                 <Image
-                                    source={require('../src/img/join.png')}
+                                    source={this.picture.join}
                                     style={{ height: '220%', width: '220%', }}
                                 />
                             </Button>
