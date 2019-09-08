@@ -26,6 +26,16 @@ public class User implements Serializable {
 
     public String weapon;
 
+    public String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getWeapon() {
         return weapon;
     }

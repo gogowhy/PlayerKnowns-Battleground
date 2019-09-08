@@ -22,5 +22,5 @@ public interface UserService {
 
     public Map<String,Object> getstorage(Name name);
     public Map<String,Object> getmarket(Name name);
-
+    public String mailReset(String name);
 }

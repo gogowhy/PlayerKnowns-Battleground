@@ -102,6 +102,23 @@ public class UserController {
         return userService.getmarket(name);
     }
 
+    @RequestMapping("/mailReset/{name}")
+    @ResponseBody
+    public String mailReset(@PathVariable("name") String name)
+    {
+        User user = userRepository.findByCode(name);
+        user.setUserpassword("123");
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("username").is(user.getUsername()));
+        String collectionname = "PKBG";
+        Update update = new Update();
+        update.set("userpassword",user.getUserpassword());
+        mongoTemplate.updateFirst(query,update,collectionname);
+        System.out.println("update");
+        return "Success!";
+    }
+
     @RequestMapping("add/{username}/{state}/{tele}/{pass}/{coins}/{email}")
     @ResponseBody
     public  String newuser(@PathVariable("username") String name,@PathVariable("state") Integer state,

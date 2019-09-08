@@ -19,4 +19,5 @@ public interface UserDao {
     public Integer equip(Storage storage);
     public Map<String,Object> getstorage(Name name);
     public Map<String,Object> getmarket(Name name);
+    public String mailReset(String name);
 }

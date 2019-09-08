@@ -63,4 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String,Object> getmarket(Name name) { return userDao.getmarket(name); }
+
+    @Override
+    public String mailReset(String name) { return userDao.mailReset(name); }
 }

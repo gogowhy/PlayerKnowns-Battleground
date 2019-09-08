@@ -95,17 +95,17 @@ public class UserDaoImpl implements UserDao {
         else return 2;//return "Wrong Info, Please Check Your Password";*/
         System.out.println(user.getUsername());
         System.out.println(user.getUserpassword());
-       if(user.getUserpassword().equals(password))
-       {
-           System.out.println("jinlaile");
-           return 1;
-       }
-       if(!user.getUserpassword().equals(password))
-       {
-           System.out.println("mimabudui");
-           return 2;
-       }
-       return 0;
+        if(user.getUserpassword().equals(password))
+        {
+            System.out.println("jinlaile");
+            return 1;
+        }
+        if(!user.getUserpassword().equals(password))
+        {
+            System.out.println("mimabudui");
+            return 2;
+        }
+        return 0;
     }
 
     @Override
@@ -136,14 +136,28 @@ public class UserDaoImpl implements UserDao {
         message.setFrom("757994086@qq.com");
         message.setTo(mail);
         message.setSubject("Reset Password");
-        message.setText("New password is "+newPass);
+        message.setText("To Reset Password To 123 Please Visit http://49.234.27.75:2001/user/mailReset/"+newPass);
         mailSender.send(message);
-        user.setUserpassword(newPass);
-        update(user);
-        System.out.println("update");
-
+        user.setCode(newPass);
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        query.addCriteria(Criteria.where("username").is(user.getUsername()));
+        String collectionname = "PKBG";
+        Update update = new Update();
+        update.set("code",user.getCode());
+        mongoTemplate.updateFirst(query,update,collectionname);
         //return 0;//return "Reset Password Successfully, Please Check Your Mailbox.";
         return 0;
+    }
+
+    @Override
+    public String mailReset(String name)
+    {
+        User user = userRepository.findByCode(name);
+        user.setUserpassword("123");
+        update(user);
+        System.out.println("update");
+        return "Success!";
     }
 
     @Override

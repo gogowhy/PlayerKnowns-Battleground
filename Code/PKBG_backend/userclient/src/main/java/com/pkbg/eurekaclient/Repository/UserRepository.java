@@ -13,5 +13,5 @@ package com.pkbg.eurekaclient.Repository;
 public interface UserRepository extends MongoRepository<User, Integer> {
 
     public User findByUsername(String username);
-
+    public User findByCode(String code);
 }

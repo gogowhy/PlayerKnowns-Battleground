@@ -197,6 +197,7 @@ public class GameDaoImpl implements GameDao {
             Map<String,Object> map2 = new HashMap<>();
             map2.put("code",8);
             map2.put("shooter",playername);
+            map2.put("damage",damage);
             JSONArray json2 = JSONArray.fromObject(map2);
             String message2 = json2.toString();
             String playername2 = player2.getPlayername();
